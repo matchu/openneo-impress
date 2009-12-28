@@ -1,5 +1,8 @@
 <?php
+require_once dirname(__FILE__).'/biology_asset.class.php';
 require_once dirname(__FILE__).'/color.class.php';
+require_once dirname(__FILE__).'/db.class.php';
+require_once dirname(__FILE__).'/pet_type.class.php';
 require_once dirname(__FILE__).'/species.class.php';
 require_once dirname(__FILE__).'/swf_asset.class.php';
 
@@ -27,6 +30,15 @@ class Wearables_Pet {
     return $output;
   }
   
+  private function getBiologyAssets() {
+    $asset_data = $this->getPetData()->biology_by_zone;
+    $assets = array();
+    foreach($asset_data as $asset_typed_obj) {
+      $assets[] = new Wearables_BiologyAsset($asset_typed_obj->getAMFData());
+    }
+    return $assets;
+  }
+  
   public function getColor() {
     return new Wearables_Color($this->getColorId());
   }
@@ -38,6 +50,14 @@ class Wearables_Pet {
   public function getObjects() {
     $object_info_registry = $this->getViewerData()->object_info_registry;
     return Wearables_AMF::stripAMFCalls($object_info_registry);
+  }
+  
+  public function getPetType() {
+    $pet_type = new Wearables_PetType();
+    $pet_type->species_id = $this->getSpeciesId();
+    $pet_type->color_id = $this->getColorId();
+    $pet_type->assets = $this->getBiologyAssets();
+    return $pet_type;
   }
   
   public function getSpecies() {
@@ -66,6 +86,17 @@ class Wearables_Pet {
   private function getPetData() {
     $viewer_data = $this->getViewerData();
     return $viewer_data->custom_pet->getAMFData();
+  }
+  
+  public function saveData() {
+    $db = new Wearables_DB();
+    
+    // Save pet type
+    $this->getPetType()->save($db);
+    
+    // Save biology assets
+    $biology_assets = $this->getBiologyAssets();
+    Wearables_SWFAsset::saveCollection($biology_assets, $db);
   }
 }
 

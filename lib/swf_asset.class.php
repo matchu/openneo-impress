@@ -1,17 +1,33 @@
 <?php
 class Wearables_SWFAsset {
-  private $data;
+  static $columns = array('type', 'id', 'url', 'zone_id', 'zones_restrict');
 
   public function __construct($data) {
-    $this->data = $data;
+    $this->zone_id = $data->zone_id;
+    $this->url = $data->asset_url;
   }
   
   public function overlayHTML() {
-    $asset_url = $this->data->asset_url;
-    $zone_id = $this->data->zone_id;
-    return "<li data-zone-id='$zone_id' data-asset-url='$asset_url'>"
-      ."Zone $zone_id: $asset_url"
+    return "<li data-zone-id='$this->zone_id' data-asset-url='$this->url'>"
+      ."Zone $this->zone_id: $this->url"
       ."</li>";
+  }
+  
+  public function getValueSet($db) {
+    $values = array();
+    foreach(self::$columns as $column) {
+      $values[] = $db->quote($this->$column);
+    }
+    return '('.implode(', ', $values).')';
+  }
+  
+  static function saveCollection($assets, $db) {
+    $value_sets = array();
+    foreach($assets as $asset) {
+      $value_sets[] = $asset->getValueSet($db);
+    }
+    $db->query('REPLACE INTO swf_assets ('.implode(', ', self::$columns).')'
+      .' VALUES '.implode(', ', $value_sets));
   }
 }
 ?>

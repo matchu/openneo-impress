@@ -2,11 +2,18 @@
 require_once '../../lib/pet.class.php';
 
 $pet = new Wearables_Pet();
-if($_GET['name']) {
-  $pet->name = $_GET['name'];
+if($_POST['name']) {
+  $pet->name = $_POST['name'];
   try {
     $pet->getViewerData();
     $pet_loaded = true;
+    try {
+      $pet->saveData();
+      $notice = 'Pet data successfully saved.';
+    } catch(Exception $e) {
+      $error = "There was a problem saving your pet's data. Please try again. "
+        .'<span class="full-error-message">'.$e->getMessage().'</span>';
+    }
   } catch(Wearables_PetNotFoundException $e) {
     $error = 'Could not find any pet with that name.';
   }
@@ -23,13 +30,18 @@ if($_GET['name']) {
   <body>
     <h1>Load Pet</h1>
 <?php
+if($notice):
+?>
+    <p class="notice"><?= $notice ?></p>
+<?php
+endif;
 if($error):
 ?>
     <p class="error"><?= $error ?></p>
 <?php
 endif;
 ?>
-    <form action="" method="GET">
+    <form action="" method="POST">
       <label for="name">Pet Name</label>
       <input type="text" name="name" value="<?= htmlentities($pet->name) ?>" />
       <input type="submit" value="Submit Query" />

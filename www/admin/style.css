@@ -24,9 +24,19 @@ dt {
   font-weight: bold;
 }
 
+.notice {
+  color: green;
+  font-weight: bold;
+}
+
 .error {
   color: red;
   font-weight: bold;
+}
+
+.full-error-message {
+  color: #ccc;
+  font-size: .8em;
 }
 
 a img {
