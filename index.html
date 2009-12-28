@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Thing</title>
+<style type="text/css">
+#pet-image {
+  display: block;
+  height: 300px;
+  visibility: hidden;
+  width: 300px;
+}
+#pet-form-error {
+  display: none;
+}
+#pet-form select, #pet-form div {
+  float: left;
+  margin-right: .5em;
+}
+</style>
+</head>
+<body>
+<noscript><p>You need Javascript! Ohnoez!</p><hr/></noscript>
+<img id="pet-image">
+<form id="pet-form">
+  <select name="species">
+    <option selected>Shoyru</option>
+  </select>
+  <select name="color">
+    <option>Asparagus</option>
+    <option selected>Blue</option>
+    <option>Green</option>
+    <option>Plushie</option>
+  </select>
+  <div id="pet-form-error">
+    Pet not found!
+  </div>
+</form>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+<script type="text/javascript">
+function petImageURL(code) {
+  return 'http://pets.neopets.com/cp/'+code+'/1/4.png';
+}
+(function () {
+  function onPetFormChange() {
+    $('#pet-form-error').hide();
+    $.ajax({
+      url: 'ajax/code.php',
+      data: $('#pet-form').serialize(),
+      success: function (data) {
+        $('#pet-image').attr('src', petImageURL(data)).css('visibility', 'visible');
+      },
+      error: function () {
+        $('#pet-form-error').show();
+      }
+    });
+  }
+  onPetFormChange();
+  $('#pet-form select').change(onPetFormChange);
+})();
+</script>
+</body>
+</html>

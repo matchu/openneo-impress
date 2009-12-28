@@ -1,0 +1,7 @@
+methods:
+  - name: getApplicationData
+  - name: getViewerData
+    arguments:
+      - name    : Pet name
+        default : matts_bat
+      - name    : Unknown
