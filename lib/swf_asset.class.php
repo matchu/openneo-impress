@@ -1,5 +1,5 @@
 <?php
-class Wearables_SWFImageAsset {
+class Wearables_SWFAsset {
   private $data;
 
   public function __construct($data) {

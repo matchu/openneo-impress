@@ -1,7 +1,7 @@
 <?php
 require_once dirname(__FILE__).'/color.class.php';
 require_once dirname(__FILE__).'/species.class.php';
-require_once dirname(__FILE__).'/swf_image_asset.class.php';
+require_once dirname(__FILE__).'/swf_asset.class.php';
 
 class Wearables_Pet {
   private $viewer_data;
@@ -20,7 +20,7 @@ class Wearables_Pet {
     $assets = array_merge($object_assets, $biology_assets);
     foreach($assets as $asset_typed_obj) {
       $asset_data = $asset_typed_obj->getAMFData();
-      $asset = new Wearables_SWFImageAsset(&$asset_data);
+      $asset = new Wearables_SWFAsset(&$asset_data);
       $output .= $asset->overlayHTML();
     }
     $output .= '</ol>';
