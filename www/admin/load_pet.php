@@ -15,7 +15,9 @@ if($_GET['name']) {
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Wearables - Load Pet</title>
+    <title>
+      Wearables - <?= $pet_loaded ? htmlentities($pet->name) : 'Load pet' ?>
+    </title>
     <link type="text/css" rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -29,7 +31,7 @@ endif;
 ?>
     <form action="" method="GET">
       <label for="name">Pet Name</label>
-      <input type="text" name="name" value="<?= $pet->name ?>" />
+      <input type="text" name="name" value="<?= htmlentities($pet->name) ?>" />
       <input type="submit" value="Submit Query" />
     </form>
 <?php
@@ -54,8 +56,8 @@ foreach($pet->getObjects() as $object):
 ?>
           <li>
             <a href="http://neoitems.net/search2.php?Name=<?= urlencode($object->name) ?>&AndOr=and&Category=All&Special=0&Status=Active&results=15&SearchType=8" target="_blank">
-              <img src="<?= $object->thumbnail_url ?>" alt="(image)" />
-              <?= $object->name ?>
+              <img src="<?= htmlentities($object->thumbnail_url) ?>" alt="(image)" />
+              <?= htmlentities($object->name) ?>
             </a>
           </li>
 <?php
