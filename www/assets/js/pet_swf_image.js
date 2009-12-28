@@ -9,7 +9,7 @@ function loadApplicationData(callback) {
 }
 
 $(function () {
-  var swfImageItemCount = 0,
+  var allAssetData = {}, swfImageItemCount = 0,
     swfImages = $('.pet-swf-image').each(function () {
       var list = $(this).addClass('active-pet-swf-image').addClass('loading-pet-swf-image'),
         width = list.width(), height = list.height();
@@ -25,14 +25,14 @@ $(function () {
         swfobject.embedSWF(item.attr('data-asset-url'), id,
           width, height, '9', '/assets/js/swfobject/expressInstall.swf', null,
           {wmode: 'transparent'});
-        $('#' + id).data('assetData', assetData);
+        allAssetData[id] = assetData;
       });
       list.removeClass('loading-pet-swf-image');
     });
   if(swfImages.length) {
     loadApplicationData(function (applicationData) {
       $('.pet-swf-image object').each(function () {
-        var swf = $(this), swfZoneId = swf.data('assetData').zone_id,
+        var swf = $(this), swfZoneId = allAssetData[swf.attr('id')].zone_id,
           zone = $.grep(applicationData.zones, function (grepped_zone) {
             return grepped_zone.id == swfZoneId;
           })[0];
@@ -41,3 +41,7 @@ $(function () {
     });
   }
 });
+
+function log(obj) {
+  if(console && console.log) console.log(obj);
+}
