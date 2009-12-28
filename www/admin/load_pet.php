@@ -53,7 +53,7 @@ if($pet_loaded):
 foreach($pet->getObjects() as $object):
 ?>
           <li>
-            <a href="http://neoitems.net/search2.php?Name=<?= $object->name ?>&AndOr=and&Category=All&Special=0&Status=Active&results=15&SearchType=8" target="_blank">
+            <a href="http://neoitems.net/search2.php?Name=<?= urlencode($object->name) ?>&AndOr=and&Category=All&Special=0&Status=Active&results=15&SearchType=8" target="_blank">
               <img src="<?= $object->thumbnail_url ?>" alt="(image)" />
               <?= $object->name ?>
             </a>
