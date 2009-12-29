@@ -2,6 +2,7 @@
 require_once dirname(__FILE__).'/biology_asset.class.php';
 require_once dirname(__FILE__).'/color.class.php';
 require_once dirname(__FILE__).'/db.class.php';
+require_once dirname(__FILE__).'/object.class.php';
 require_once dirname(__FILE__).'/outfit.class.php';
 require_once dirname(__FILE__).'/pet_type.class.php';
 require_once dirname(__FILE__).'/species.class.php';
@@ -38,7 +39,11 @@ class Wearables_Pet extends Wearables_Outfit {
   
   public function getObjects() {
     $object_info_registry = $this->getViewerData()->object_info_registry;
-    return Wearables_AMF::stripAMFCalls($object_info_registry);
+    $objects = array();
+    foreach($object_info_registry as $object_info) {
+      $objects[] = new Wearables_Object($object_info->getAMFData());
+    }
+    return $objects;
   }
   
   public function getPetType() {
