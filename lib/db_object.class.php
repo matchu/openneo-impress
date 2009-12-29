@@ -23,12 +23,14 @@ class Wearables_DBObject {
   }
   
   static function saveCollection($objects, $db, $table, $columns) {
-    $value_sets = array();
-    foreach($objects as $object) {
-      $value_sets[] = $object->getValueSet($db, $columns);
+    if($objects) {
+      $value_sets = array();
+      foreach($objects as $object) {
+        $value_sets[] = $object->getValueSet($db, $columns);
+      }
+      $db->exec("REPLACE INTO $table ".self::getColumnSet($columns)
+        .' VALUES '.implode(', ', $value_sets));
     }
-    $db->exec("REPLACE INTO $table ".self::getColumnSet($columns)
-      .' VALUES '.implode(', ', $value_sets));
   }
 }
 ?>
