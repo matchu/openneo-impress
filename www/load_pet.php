@@ -1,5 +1,5 @@
 <?php
-require_once '../../lib/pet.class.php';
+require_once '../lib/pet.class.php';
 
 $pet = new Wearables_Pet();
 if($_POST['name']) {
@@ -25,7 +25,7 @@ if($_POST['name']) {
     <title>
       Wearables - <?= $pet_loaded ? htmlentities($pet->name) : 'Load pet' ?>
     </title>
-    <link type="text/css" rel="stylesheet" href="style.css" />
+    <link type="text/css" rel="stylesheet" href="/assets/css/style.css" />
   </head>
   <body>
     <h1>Load Pet</h1>
@@ -58,7 +58,7 @@ if($pet_loaded):
       
       <dt>Image</dt>
       <dd>
-        <?= $pet->getImageHTML() ?>
+        <?= $pet->getPreviewHTML() ?>
       </dd>
       <dt>Objects</dt>
       <dd>
@@ -80,7 +80,7 @@ endforeach;
     </dl>
 <?php
 endif;
-include('../../includes/pet_swf_image_js.html');
+include('../includes/pet_swf_image_js.html');
 ?>
   </body>
 </html>

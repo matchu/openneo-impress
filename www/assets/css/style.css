@@ -51,18 +51,17 @@ a img {
 
 .pet-swf-image {
   font-size: 80%;
-  height: 200px;
 }
 
-.active-pet-swf-image {
-  height: 200px;
+.active-pet-swf-image .pet-swf-image-layers {
+  height: 300px;
   margin: 0;
   padding: 0;
   position: relative;
-  width: 200px;
+  width: 300px;
 }
 
-.active-pet-swf-image object {
+.pet-swf-image-layers object {
   left: 0;
   position: absolute;
   top: 0;
@@ -74,4 +73,13 @@ a img {
 
 .loading-pet-swf-image object {
   display: none;
+}
+
+.swf-image-toggle-bar {
+  font-size: 75%;
+}
+
+.swf-image-toggle-bar a {
+  color: blue;
+  margin-left: 1em;
 }

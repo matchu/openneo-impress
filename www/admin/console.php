@@ -14,7 +14,7 @@ if($_GET['method']) {
 <html>
   <head>
     <title>AMFPHP Console</title>
-    <link type="text/css" rel="stylesheet" href="style.css" />
+    <link type="text/css" rel="stylesheet" href="/assets/css/style.css" />
     <style type="text/css">
       pre.method-name {
         display: inline;
@@ -39,7 +39,7 @@ foreach($methods as $method):
 ?>
         <li>
           <label for="<?= $field_name ?>"><?= $argument['name'] ?></label>
-          <input type="text" name="<?= $field_name ?>"
+          <input type="text" id="<?= $field_name ?>" name="<?= $field_name ?>"
             value="<?= $argument['default'] ?>" />
         </li>
 <?php

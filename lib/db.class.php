@@ -13,6 +13,14 @@ class Wearables_DB {
     }
   }
   
+  public function exec($str) {
+    return self::$pdo->exec($str);
+  }
+  
+  public function lastInsertId() {
+    return self::$pdo->lastInsertId();
+  }
+  
   function query($str) {
     return self::$pdo->query($str);
   }

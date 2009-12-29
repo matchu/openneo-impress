@@ -1,10 +1,13 @@
 <?php
 class Wearables_SWFAsset {
-  static $columns = array('type', 'id', 'url', 'zone_id', 'zones_restrict');
+  static $columns = array('type', 'id', 'url', 'zone_id', 'zones_restrict',
+    'pet_type_id');
 
-  public function __construct($data) {
-    $this->zone_id = $data->zone_id;
-    $this->url = $data->asset_url;
+  public function __construct($data=null) {
+    if($data) {
+      $this->zone_id = $data->zone_id;
+      $this->url = $data->asset_url;
+    }
   }
   
   public function overlayHTML() {
@@ -14,6 +17,7 @@ class Wearables_SWFAsset {
   }
   
   public function getValueSet($db) {
+    if($this->pet_type) $this->pet_type_id = $this->pet_type->id;
     $values = array();
     foreach(self::$columns as $column) {
       $values[] = $db->quote($this->$column);
@@ -26,7 +30,7 @@ class Wearables_SWFAsset {
     foreach($assets as $asset) {
       $value_sets[] = $asset->getValueSet($db);
     }
-    $db->query('REPLACE INTO swf_assets ('.implode(', ', self::$columns).')'
+    $db->exec('REPLACE INTO swf_assets ('.implode(', ', self::$columns).')'
       .' VALUES '.implode(', ', $value_sets));
   }
 }
