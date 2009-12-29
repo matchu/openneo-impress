@@ -6,7 +6,7 @@ class Wearables_ObjectAsset extends Wearables_SWFAsset {
   
   function __construct($data) {
     $this->id = $data->asset_id;
-    $this->parent_id = $data->obj_info_id;
+    $this->object_id = $data->obj_info_id;
     parent::__construct($data);
   }
 }

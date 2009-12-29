@@ -32,6 +32,7 @@ class Wearables_Pet extends Wearables_Outfit {
     foreach($object_info_registry as $object_info) {
       $object = new Wearables_Object($object_info->getAMFData());
       $object->setAssetRegistry($this->getViewerData()->object_asset_registry);
+      $object->setOriginPetType($this->getPetType());
       $objects[] = $object;
     }
     return $objects;
@@ -41,6 +42,7 @@ class Wearables_Pet extends Wearables_Outfit {
     if(!$this->pet_type) {
       $this->pet_type = new Wearables_PetType($this->getPetData()->species_id,
         $this->getPetData()->color_id);
+      $this->pet_type->body_id = $this->getPetData()->body_id;
       $this->pet_type->setBiology($this->getPetData()->biology_by_zone);
     }
     return $this->pet_type;
@@ -72,9 +74,10 @@ class Wearables_Pet extends Wearables_Outfit {
   public function saveData() {
     $db = new Wearables_DB();
     
-    // Save pet type
+    // Save pet type, biology assets
     $this->getPetType()->deepSave($db);
     
+    // Save objects, object assets
     Wearables_Object::deepSaveCollection($this->getObjects(), $db);
   }
 }

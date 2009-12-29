@@ -4,7 +4,7 @@ require_once dirname(__FILE__).'/db_object.class.php';
 class Wearables_SWFAsset extends Wearables_DBObject {
   static $table = 'swf_assets';
   static $columns = array('type', 'id', 'url', 'zone_id', 'zones_restrict',
-    'parent_id');
+    'body_id', 'object_id');
   
   public function __construct($data=null) {
     if($data) {
@@ -19,8 +19,8 @@ class Wearables_SWFAsset extends Wearables_DBObject {
       ."</li>";
   }
   
-  public function setParent($parent) {
-    $this->parent_id = &$parent->id;
+  public function setOriginPetType($pet_type) {
+    $this->body_id = $pet_type->getBodyId();
   }
   
   static function saveCollection($assets, $db) {

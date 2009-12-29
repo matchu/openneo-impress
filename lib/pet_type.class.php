@@ -8,7 +8,7 @@ require_once dirname(__FILE__).'/species.class.php';
 
 class Wearables_PetType extends Wearables_DBObject {
   static $table = 'pet_types';
-  static $columns = array('species_id', 'color_id');
+  static $columns = array('species_id', 'color_id', 'body_id');
   
   public function __construct($species_id, $color_id) {
     $this->species_id = $species_id;
@@ -26,7 +26,7 @@ class Wearables_PetType extends Wearables_DBObject {
     if(!$this->assets) {
       $db = new Wearables_DB();
       $query = $db->query('SELECT * FROM swf_assets WHERE type = "biology" AND '
-        .'parent_id = '.intval($this->getId())
+        .'body_id = '.intval($this->getBodyId())
       );
       $this->assets = array();
       while($obj = $query->fetchObject('Wearables_BiologyAsset')) {
@@ -36,13 +36,15 @@ class Wearables_PetType extends Wearables_DBObject {
     return $this->assets;
   }
   
-  public function getColor() {
-    return new Wearables_Color($this->color_id);
+  public function getBodyId() {
+    if(!$this->body_id) {
+      $this->load('body_id', new Wearables_DB());
+    }
+    return $this->body_id;
   }
   
-  private function getId() {
-    if(!$this->id) $this->loadId(new Wearables_DB());
-    return $this->id;
+  public function getColor() {
+    return new Wearables_Color($this->color_id);
   }
   
   public function getSpecies() {
@@ -51,16 +53,18 @@ class Wearables_PetType extends Wearables_DBObject {
   
   protected function isSaved($db) {
     if($this->id) return true;
-    return $this->loadId($db);
+    return $this->load('id', $db);
   }
   
-  private function loadId($db) {
-    $query = $db->query('SELECT id FROM pet_types WHERE '
+  private function load($select='*', $db) {
+    $query = $db->query("SELECT $select FROM pet_types WHERE "
       .'species_id = '.intval($this->species_id).' AND '
       .'color_id = '.intval($this->color_id).' LIMIT 1');
-    $id = (int) $query->fetchColumn();
-    if($id) {
-      $this->id = $id;
+    $row = $query->fetch(PDO::FETCH_ASSOC);
+    if($row) {
+      foreach($row as $key => $value) {
+        $this->$key = $value;
+      }
       return true;
     } else {
       return false;
@@ -71,7 +75,7 @@ class Wearables_PetType extends Wearables_DBObject {
     $this->assets = array();
     foreach($biology as $asset_typed_obj) {
       $asset = new Wearables_BiologyAsset($asset_typed_obj->getAMFData());
-      $asset->setParent($this);
+      $asset->setOriginPetType($this);
       $this->assets[] = $asset;
     }
   }

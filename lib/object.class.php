@@ -21,15 +21,30 @@ class Wearables_Object extends Wearables_DBObject {
   }
   
   public function getAssets() {
+    if(!$this->assets) {
+      $this->assets = array();
+      foreach($this->assets_by_zone as $asset_id) {
+        $asset_data = $this->asset_registry[$asset_id]->getAMFData();
+        $asset = new Wearables_ObjectAsset($asset_data);
+        $asset->setOriginPetType($this->origin_pet_type);
+        $this->assets[] = $asset;
+      }
+    }
     return $this->assets;
   }
   
   public function setAssetRegistry($registry) {
-    $this->assets = array();
-    foreach($this->assets_by_zone as $asset_id) {
-      $asset_data = $registry[$asset_id]->getAMFData();
-      $this->assets[] = new Wearables_ObjectAsset($asset_data);
+    $this->asset_registry = &$registry;
+  }
+  
+  public function setAssetOrigin($pet) {
+    foreach($this->assets as $asset) {
+      $asset->body_id = $pet->getBodyId();
     }
+  }
+  
+  public function setOriginPetType($pet_type) {
+    $this->origin_pet_type = &$pet_type;
   }
   
   static function deepSaveCollection($objects, $db) {
