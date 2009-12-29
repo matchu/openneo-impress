@@ -1,8 +1,10 @@
 <?php
-class Wearables_SWFAsset {
+require_once dirname(__FILE__).'/db_object.class.php';
+
+class Wearables_SWFAsset extends Wearables_DBObject {
   static $columns = array('type', 'id', 'url', 'zone_id', 'zones_restrict',
     'parent_id');
-
+  
   public function __construct($data=null) {
     if($data) {
       $this->zone_id = $data->zone_id;
@@ -16,22 +18,12 @@ class Wearables_SWFAsset {
       ."</li>";
   }
   
-  public function getValueSet($db) {
-    if($this->parent) $this->parent_id = $this->parent->id;
-    $values = array();
-    foreach(self::$columns as $column) {
-      $values[] = $db->quote($this->$column);
-    }
-    return '('.implode(', ', $values).')';
+  public function setParent($parent) {
+    $this->parent_id = &$parent->id;
   }
   
   static function saveCollection($assets, $db) {
-    $value_sets = array();
-    foreach($assets as $asset) {
-      $value_sets[] = $asset->getValueSet($db);
-    }
-    $db->exec('REPLACE INTO swf_assets ('.implode(', ', self::$columns).')'
-      .' VALUES '.implode(', ', $value_sets));
+    return parent::saveCollection($assets, $db, self::$columns);
   }
 }
 ?>

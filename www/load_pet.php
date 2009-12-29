@@ -4,9 +4,8 @@ require_once '../lib/pet.class.php';
 $pet = new Wearables_Pet();
 if($_POST['name']) {
   $pet->name = $_POST['name'];
-  try {
-    $pet->getViewerData();
-    $pet_loaded = true;
+  $pet_exists = $pet->exists();
+  if($pet_exists) {
     try {
       $pet->saveData();
       $notice = 'Pet data successfully saved.';
@@ -14,8 +13,8 @@ if($_POST['name']) {
       $error = "There was a problem saving your pet's data. Please try again. "
         .'<span class="full-error-message">'.$e->getMessage().'</span>';
     }
-  } catch(Wearables_PetNotFoundException $e) {
-    $error = 'Could not find any pet with that name.';
+  } else {
+    $error = 'Pet not found.';
   }
 }
 ?>
@@ -23,7 +22,7 @@ if($_POST['name']) {
 <html>
   <head>
     <title>
-      Wearables - <?= $pet_loaded ? htmlentities($pet->name) : 'Load pet' ?>
+      Wearables - <?= $pet_exists ? htmlentities($pet->name) : 'Load pet' ?>
     </title>
     <link type="text/css" rel="stylesheet" href="/assets/css/style.css" />
   </head>
@@ -47,7 +46,7 @@ endif;
       <input type="submit" value="Submit Query" />
     </form>
 <?php
-if($pet_loaded):
+if($pet_exists):
 ?>
     <dl>
       <dt>Species</dt>
@@ -64,7 +63,7 @@ if($pet_loaded):
       <dd>
         <ul id="pet-objects">
 <?php
-foreach($pet->getObjects() as $object):
+  foreach($pet->getObjects() as $object):
 ?>
           <li>
             <a href="http://neoitems.net/search2.php?Name=<?= urlencode($object->name) ?>&AndOr=and&Category=All&Special=0&Status=Active&results=15&SearchType=8" target="_blank">
@@ -73,7 +72,7 @@ foreach($pet->getObjects() as $object):
             </a>
           </li>
 <?php
-endforeach;
+  endforeach;
 ?>
         </ul>
       </dd>

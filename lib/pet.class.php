@@ -1,38 +1,27 @@
 <?php
-require_once dirname(__FILE__).'/biology_asset.class.php';
-require_once dirname(__FILE__).'/color.class.php';
+require_once dirname(__FILE__).'/amf.class.php';
 require_once dirname(__FILE__).'/db.class.php';
 require_once dirname(__FILE__).'/object.class.php';
 require_once dirname(__FILE__).'/outfit.class.php';
 require_once dirname(__FILE__).'/pet_type.class.php';
-require_once dirname(__FILE__).'/species.class.php';
-require_once dirname(__FILE__).'/swf_asset.class.php';
 
 class Wearables_Pet extends Wearables_Outfit {
   private $viewer_data;
   
-  private function getBiologyAssets() {
-    $biology = $this->getPetData()->biology_by_zone;
-    $this->getPetType()->setBiology($biology);
-    return $this->getPetType()->getAssets();
+  public function exists() {
+    try {
+      $this->loadViewerData();
+      return true;
+    } catch(Wearables_PetNotFoundException $e) {
+      return false;
+    }
   }
   
-  public function getColor() {
-    return new Wearables_Color($this->getColorId());
-  }
-  
-  public function getColorId() {
-    return $this->getPetData()->color_id;
-  }
-  
-  public function getObjectAssets() {
-    $object_asset_registry = $this->getViewerData()->object_asset_registry;
-    $object_references = $this->getPetData()->equipped_by_zone;
+  protected function getObjectAssets() {
+    $objects = $this->getObjects();
     $object_assets = array();
-    foreach($object_references as $object_reference) {
-      $object_reference_data = $object_reference->getAMFData();
-      $object_asset_id = $object_reference_data->asset_id;
-      $object_assets[] = new Wearables_SWFAsset($object_asset_registry[$object_asset_id]->getAMFData());
+    foreach($objects as $object) {
+      $object_assets = array_merge($object_assets, $object->getAssets());
     }
     return $object_assets;
   }
@@ -41,37 +30,25 @@ class Wearables_Pet extends Wearables_Outfit {
     $object_info_registry = $this->getViewerData()->object_info_registry;
     $objects = array();
     foreach($object_info_registry as $object_info) {
-      $objects[] = new Wearables_Object($object_info->getAMFData());
+      $object = new Wearables_Object($object_info->getAMFData());
+      $object->setAssetRegistry($this->getViewerData()->object_asset_registry);
+      $objects[] = $object;
     }
     return $objects;
   }
   
-  public function getPetType() {
+  protected function getPetType() {
     if(!$this->pet_type) {
-      $this->pet_type = new Wearables_PetType($this->getSpeciesId(), $this->getColorId());
+      $this->pet_type = new Wearables_PetType($this->getPetData()->species_id,
+        $this->getPetData()->color_id);
+      $this->pet_type->setBiology($this->getPetData()->biology_by_zone);
     }
     return $this->pet_type;
   }
   
-  public function getSpecies() {
-    return new Wearables_Species($this->getSpeciesId());
-  }
-  
-  public function getSpeciesId() {
-    return $this->getPetData()->species_id;
-  }
-  
-  public function getViewerData() {
+  private function getViewerData() {
     if(!$this->viewer_data) {
-      require_once 'amf.class.php';
-      $amf = new Wearables_AMF();
-      try {
-        $response = $amf->sendRequest('getViewerData',
-          array($this->name, null));
-      } catch(Wearables_AMFConnectionError $e) {
-        throw new Wearables_PetNotFoundException();
-      }
-      $this->viewer_data = $response->getAMFData();
+      $this->loadViewerData();
     }
     return $this->viewer_data;
   }
@@ -81,15 +58,22 @@ class Wearables_Pet extends Wearables_Outfit {
     return $viewer_data->custom_pet->getAMFData();
   }
   
+  private function loadViewerData() {
+    $amf = new Wearables_AMF();
+    try {
+      $response = $amf->sendRequest('getViewerData',
+        array($this->name, null));
+    } catch(Wearables_AMFConnectionError $e) {
+      throw new Wearables_PetNotFoundException();
+    }
+    $this->viewer_data = $response->getAMFData();
+  }
+  
   public function saveData() {
     $db = new Wearables_DB();
     
     // Save pet type
-    $this->getPetType()->save($db);
-    
-    // Save biology assets
-    $biology_assets = $this->getBiologyAssets();
-    Wearables_SWFAsset::saveCollection($biology_assets, $db);
+    $this->getPetType()->deepSave($db);
     
     // TODO: Save object assets
   }

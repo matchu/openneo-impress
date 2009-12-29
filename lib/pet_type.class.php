@@ -1,7 +1,9 @@
 <?php
+require_once dirname(__FILE__).'/biology_asset.class.php';
+require_once dirname(__FILE__).'/color.class.php';
 require_once dirname(__FILE__).'/db.class.php';
 require_once dirname(__FILE__).'/outfit.class.php';
-require_once dirname(__FILE__).'/swf_asset.class.php';
+require_once dirname(__FILE__).'/species.class.php';
 
 class Wearables_PetType {
   public function __construct($species_id, $color_id) {
@@ -23,16 +25,24 @@ class Wearables_PetType {
         .'parent_id = '.intval($this->getId())
       );
       $this->assets = array();
-      while($obj = $query->fetchObject('Wearables_SWFAsset')) {
+      while($obj = $query->fetchObject('Wearables_BiologyAsset')) {
         $this->assets[] = $obj;
       }
     }
     return $this->assets;
   }
   
+  public function getColor() {
+    return new Wearables_Color($this->color_id);
+  }
+  
   private function getId() {
     if(!$this->id) $this->loadId(new Wearables_DB());
     return $this->id;
+  }
+  
+  public function getSpecies() {
+    return new Wearables_Species($this->species_id);
   }
   
   private function isSaved($db) {
@@ -57,12 +67,12 @@ class Wearables_PetType {
     $this->assets = array();
     foreach($biology as $asset_typed_obj) {
       $asset = new Wearables_BiologyAsset($asset_typed_obj->getAMFData());
-      $asset->parent = $this;
+      $asset->setParent($this);
       $this->assets[] = $asset;
     }
   }
   
-  public function save($db) {
+  public function deepSave($db) {
     if(!$this->isSaved($db)) {
       $db->exec('INSERT INTO pet_types (color_id, species_id) '
         .'VALUES ('
@@ -72,6 +82,7 @@ class Wearables_PetType {
       );
       $this->id = $db->lastInsertId();
     }
+    Wearables_BiologyAsset::saveCollection($this->assets, $db);
   }
 }
 
