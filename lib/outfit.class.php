@@ -1,5 +1,12 @@
 <?php
 class Wearables_Outfit {
+  private $objects = array();
+  
+  public function addObjectById($object_id) {
+    $object = Wearables_Object::find($object_id, array('select' => 'id, name'));
+    $this->objects[] = $object;
+  }
+
   protected function getBiologyAssets() {
     return $this->getPetType()->getAssets();
   }
@@ -9,7 +16,20 @@ class Wearables_Outfit {
   }
 
   protected function getObjectAssets() {
-    return array(); // FIXME
+    if(!$this->object_assets) {
+      $this->object_assets = array();
+      foreach($this->getObjects() as $object) {
+        $this->object_assets = array_merge($this->object_assets,
+          $object->getAssets(array(
+            'where' => 'body_id = '.intval($this->getPetType()->getBodyId())
+          )));
+      }
+    }
+    return $this->object_assets;
+  }
+  
+  protected function getObjects() {
+    return $this->objects;
   }
 
   protected function getPetType() {

@@ -26,7 +26,7 @@ class Wearables_PetType extends Wearables_DBObject {
     if(!$this->assets) {
       $db = new Wearables_DB();
       $query = $db->query('SELECT * FROM swf_assets WHERE type = "biology" AND '
-        .'body_id = '.intval($this->getBodyId())
+        .'parent_id = '.intval($this->getId())
       );
       $this->assets = array();
       while($obj = $query->fetchObject('Wearables_BiologyAsset')) {
@@ -45,6 +45,13 @@ class Wearables_PetType extends Wearables_DBObject {
   
   public function getColor() {
     return new Wearables_Color($this->color_id);
+  }
+  
+  public function getId() {
+    if(!$this->id) {
+      $this->load('id', new Wearables_DB());
+    }
+    return $this->id;
   }
   
   public function getSpecies() {

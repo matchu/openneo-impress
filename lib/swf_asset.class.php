@@ -4,7 +4,7 @@ require_once dirname(__FILE__).'/db_object.class.php';
 class Wearables_SWFAsset extends Wearables_DBObject {
   static $table = 'swf_assets';
   static $columns = array('type', 'id', 'url', 'zone_id', 'zones_restrict',
-    'body_id', 'object_id');
+    'body_id', 'parent_id');
   
   public function __construct($data=null) {
     if($data) {

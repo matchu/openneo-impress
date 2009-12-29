@@ -1,17 +1,25 @@
 <?php
 require_once '../lib/color.class.php';
+require_once '../lib/object.class.php';
 require_once '../lib/pet_type.class.php';
 require_once '../lib/species.class.php';
 
+$objects = Wearables_Object::all(array('select' => 'id, name'));
+$objects[] = new Wearables_Object();
+
 $fields = array(
   'color' => Wearables_Color::all(),
-  'species' => Wearables_Species::all()
+  'species' => Wearables_Species::all(),
+  'object' => $objects
 );
 
 if($pet_data = $_GET['pet']) {
   try {
     $pet_type = new Wearables_PetType($pet_data['species'], $pet_data['color']);
     $outfit = $pet_type->createOutfit();
+    if($object_id = $pet_data['object']) {
+      $outfit->addObjectById($object_id);
+    }
   } catch(Wearables_BiologyAssetsNotFoundException $e) {
     $error = "We don't have data on this type of pet yet. Sorry!";
   }

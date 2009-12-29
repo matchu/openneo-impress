@@ -17,15 +17,6 @@ class Wearables_Pet extends Wearables_Outfit {
     }
   }
   
-  protected function getObjectAssets() {
-    $objects = $this->getObjects();
-    $object_assets = array();
-    foreach($objects as $object) {
-      $object_assets = array_merge($object_assets, $object->getAssets());
-    }
-    return $object_assets;
-  }
-  
   public function getObjects() {
     $object_info_registry = $this->getViewerData()->object_info_registry;
     $objects = array();
