@@ -2,6 +2,7 @@
 require_once dirname(__FILE__).'/db_object.class.php';
 
 class Wearables_SWFAsset extends Wearables_DBObject {
+  static $table = 'swf_assets';
   static $columns = array('type', 'id', 'url', 'zone_id', 'zones_restrict',
     'parent_id');
   
@@ -23,7 +24,7 @@ class Wearables_SWFAsset extends Wearables_DBObject {
   }
   
   static function saveCollection($assets, $db) {
-    return parent::saveCollection($assets, $db, self::$columns);
+    return parent::saveCollection($assets, $db, self::$table, self::$columns);
   }
 }
 ?>

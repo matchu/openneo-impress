@@ -2,10 +2,14 @@
 require_once dirname(__FILE__).'/biology_asset.class.php';
 require_once dirname(__FILE__).'/color.class.php';
 require_once dirname(__FILE__).'/db.class.php';
+require_once dirname(__FILE__).'/db_object.class.php';
 require_once dirname(__FILE__).'/outfit.class.php';
 require_once dirname(__FILE__).'/species.class.php';
 
-class Wearables_PetType {
+class Wearables_PetType extends Wearables_DBObject {
+  static $table = 'pet_types';
+  static $columns = array('species_id', 'color_id');
+  
   public function __construct($species_id, $color_id) {
     $this->species_id = $species_id;
     $this->color_id = $color_id;
@@ -45,7 +49,7 @@ class Wearables_PetType {
     return new Wearables_Species($this->species_id);
   }
   
-  private function isSaved($db) {
+  protected function isSaved($db) {
     if($this->id) return true;
     return $this->loadId($db);
   }
@@ -73,15 +77,8 @@ class Wearables_PetType {
   }
   
   public function deepSave($db) {
-    if(!$this->isSaved($db)) {
-      $db->exec('INSERT INTO pet_types (color_id, species_id) '
-        .'VALUES ('
-        .intval($this->color_id).', '
-        .intval($this->species_id)
-        .')'
-      );
-      $this->id = $db->lastInsertId();
-    }
+    $new_id = $this->save($db, self::$table, self::$columns);
+    if(!$this->id) $this->id = $new_id;
     Wearables_BiologyAsset::saveCollection($this->assets, $db);
   }
 }

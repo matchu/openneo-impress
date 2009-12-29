@@ -11,12 +11,23 @@ class Wearables_DBObject {
     return '('.implode(', ', $values).')';
   }
   
-  static function saveCollection($assets, $db, $columns) {
-    $value_sets = array();
-    foreach($assets as $asset) {
-      $value_sets[] = $asset->getValueSet($db, $columns);
+  public function save($db, $table, $columns) {
+    if(!$this->isSaved($db)) { // to be determined by subclass
+      self::saveCollection(array($this), $db, $table, $columns);
+      return $db->lastInsertId();
     }
-    $db->exec('REPLACE INTO swf_assets ('.implode(', ', $columns).')'
+  }
+  
+  static function getColumnSet($columns) {
+    return '('.implode(', ', $columns).')';
+  }
+  
+  static function saveCollection($objects, $db, $table, $columns) {
+    $value_sets = array();
+    foreach($objects as $object) {
+      $value_sets[] = $object->getValueSet($db, $columns);
+    }
+    $db->exec("REPLACE INTO $table ".self::getColumnSet($columns)
       .' VALUES '.implode(', ', $value_sets));
   }
 }

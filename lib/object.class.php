@@ -21,5 +21,9 @@ class Wearables_Object extends Wearables_DBObject {
       $this->assets[] = new Wearables_ObjectAsset($asset_data);
     }
   }
+  
+  static function deepSaveCollection() {
+    // save object, get id
+  }
 }
 ?>
