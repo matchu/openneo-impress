@@ -4,10 +4,20 @@ require_once dirname(__FILE__).'/object_asset.class.php';
 /* Class definition for wearable objects, since that's what Neo calls them */
 
 class Wearables_Object extends Wearables_DBObject {
+  static $table = 'objects';
+  static $columns = array('id', 'zones_restrict', 'thumbnail_url', 'name',
+    'description', 'category', 'type', 'rarity', 'rarity_index', 'price',
+    'weight_lbs', 'species_support_ids');
+  
   public function __construct($data) {
     foreach($data as $key => $value) {
       $this->$key = $value;
     }
+    $this->id = $data->obj_info_id;
+  }
+  
+  protected function beforeSave() {
+    $this->species_support_ids = implode(',', $this->species_support);
   }
   
   public function getAssets() {
@@ -22,8 +32,13 @@ class Wearables_Object extends Wearables_DBObject {
     }
   }
   
-  static function deepSaveCollection() {
-    // save object, get id
+  static function deepSaveCollection($objects, $db) {
+    self::saveCollection($objects, $db, self::$table, self::$columns);
+    $assets = array();
+    foreach($objects as $object) {
+      $assets = array_merge($assets, $object->getAssets());
+    }
+    Wearables_ObjectAsset::saveCollection($assets, $db);
   }
 }
 ?>

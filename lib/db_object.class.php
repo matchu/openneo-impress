@@ -1,6 +1,6 @@
 <?php
 class Wearables_DBObject {
-  public function beforeSave() {}
+  protected function beforeSave() {}
   
   public function getValueSet($db, $columns) {
     $this->beforeSave();

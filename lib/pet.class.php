@@ -75,7 +75,7 @@ class Wearables_Pet extends Wearables_Outfit {
     // Save pet type
     $this->getPetType()->deepSave($db);
     
-    Wearables_Object::deepSaveCollection($this->getObjects());
+    Wearables_Object::deepSaveCollection($this->getObjects(), $db);
   }
 }
 
