@@ -1,7 +1,7 @@
 <?php
 class Wearables_SWFAsset {
   static $columns = array('type', 'id', 'url', 'zone_id', 'zones_restrict',
-    'pet_type_id');
+    'parent_id');
 
   public function __construct($data=null) {
     if($data) {
@@ -17,7 +17,7 @@ class Wearables_SWFAsset {
   }
   
   public function getValueSet($db) {
-    if($this->pet_type) $this->pet_type_id = $this->pet_type->id;
+    if($this->parent) $this->parent_id = $this->parent->id;
     $values = array();
     foreach(self::$columns as $column) {
       $values[] = $db->quote($this->$column);

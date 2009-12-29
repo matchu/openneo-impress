@@ -20,7 +20,7 @@ class Wearables_PetType {
     if(!$this->assets) {
       $db = new Wearables_DB();
       $query = $db->query('SELECT * FROM swf_assets WHERE type = "biology" AND '
-        .'pet_type_id = '.intval($this->getId())
+        .'parent_id = '.intval($this->getId())
       );
       $this->assets = array();
       while($obj = $query->fetchObject('Wearables_SWFAsset')) {
@@ -57,7 +57,7 @@ class Wearables_PetType {
     $this->assets = array();
     foreach($biology as $asset_typed_obj) {
       $asset = new Wearables_BiologyAsset($asset_typed_obj->getAMFData());
-      $asset->pet_type = $this;
+      $asset->parent = $this;
       $this->assets[] = $asset;
     }
   }
