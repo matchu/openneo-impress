@@ -1,10 +1,11 @@
 <?php
 require_once dirname(__FILE__).'/object_asset.class.php';
+require_once dirname(__FILE__).'/swf_asset_parent.class.php';
 
 /* Class definition for wearable objects, since that's what Neo calls them */
 
-class Wearables_Object extends Wearables_DBObject {
-  const CLASS_NAME = 'Wearables_Object';
+class Wearables_Object extends Wearables_SWFAssetParent {
+  protected $asset_type = 'object';
   static $table = 'objects';
   static $columns = array('id', 'zones_restrict', 'thumbnail_url', 'name',
     'description', 'category', 'type', 'rarity', 'rarity_index', 'price',
@@ -24,7 +25,7 @@ class Wearables_Object extends Wearables_DBObject {
   }
   
   public function getAssets($query_options=array()) {
-    if(!$this->assets) {
+    if(!$this->preloaded_assets && !$this->assets) {
       if($this->assets_by_zone) {
         $this->assets = array();
         foreach($this->assets_by_zone as $asset_id) {
@@ -44,6 +45,19 @@ class Wearables_Object extends Wearables_DBObject {
     return $this->assets;
   }
   
+  public function isBodySpecific() {
+    $is_specific = true;
+    foreach($this->getAssets() as $asset) {
+      $is_specific = $is_specific && $asset->isBodySpecific();
+    }
+    return $is_specific;
+  }
+  
+  public function needsToLoadAssets() {
+    return !$this->preloaded_assets && empty($this->assets_by_zone) &&
+      empty($this->assets);
+  }
+  
   public function setAssetRegistry($registry) {
     $this->asset_registry = &$registry;
   }
@@ -59,11 +73,11 @@ class Wearables_Object extends Wearables_DBObject {
   }
   
   static function all($options=array()) {
-    return parent::all($options, self::$table, self::CLASS_NAME);
+    return parent::all($options, self::$table, __CLASS__);
   }
   
   static function find($id, $options=array()) {
-    return parent::find($id, $options, self::$table, self::CLASS_NAME);
+    return parent::find($id, $options, self::$table, __CLASS__);
   }
   
   static function saveCollection($objects) {

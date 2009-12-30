@@ -19,15 +19,17 @@ class Wearables_Pet extends Wearables_Outfit {
   }
   
   public function getObjects() {
-    $object_info_registry = $this->getViewerData()->object_info_registry;
-    $objects = array();
-    foreach($object_info_registry as $object_info) {
-      $object = new Wearables_Object($object_info->getAMFData());
-      $object->setAssetRegistry($this->getViewerData()->object_asset_registry);
-      $object->setOriginPetType($this->getPetType());
-      $objects[] = $object;
+    if(!$this->objects) {
+      $object_info_registry = $this->getViewerData()->object_info_registry;
+      $this->objects = array();
+      foreach($object_info_registry as $object_info) {
+        $object = new Wearables_Object($object_info->getAMFData());
+        $object->setAssetRegistry($this->getViewerData()->object_asset_registry);
+        $object->setOriginPetType($this->getPetType());
+        $this->objects[] = $object;
+      }
     }
-    return $objects;
+    return $this->objects;
   }
   
   protected function getPetType() {

@@ -49,15 +49,11 @@ endif;
 foreach($fields as $field_name => $field_objects):
   $id_field_name = $field_name.'_id';
 ?>
-      <select name="pet[<?= $field_name ?>]">
-<?php
+      <select name="pet[<?= $field_name ?>]"><?php
   foreach($field_objects as $field_object):
     $selected = $field_object->id == $pet_type->$id_field_name? ' selected' : '';
 ?>
-        <option value="<?= $field_object->id ?>" <?= $selected ?>>
-          <?= $field_object->name."\n" ?>
-        </option>
-<?php
+<option value="<?= $field_object->id ?>" <?= $selected ?>><?= $field_object->name ?></option><?php
   endforeach;
 ?>
       </select>

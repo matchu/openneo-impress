@@ -1,4 +1,7 @@
 <?php
+require_once dirname(__FILE__).'/swf_asset_parent.class.php';
+require_once dirname(__FILE__).'/swf_asset.class.php';
+
 class Wearables_Outfit {
   private $objects = array();
   
@@ -8,7 +11,11 @@ class Wearables_Outfit {
   }
   
   protected function getAssets() {
-    return array_merge($this->getBiologyAssets(), $this->getObjectAssets());
+    if(!$this->assets) {
+      Wearables_SWFAssetParent::preloadAssetsForCollection($this->getPetType(), $this->getObjects());
+      $this->assets = array_merge($this->getBiologyAssets(), $this->getObjectAssets());
+    }
+    return $this->assets;
   }
 
   protected function getBiologyAssets() {
@@ -45,6 +52,7 @@ class Wearables_Outfit {
   }
   
   public function getPreviewHTML() {
+    Wearables_SWFAsset::preloadZonesForCollection($this->getAssets());
     $output = '<ol class="pet-swf-image">';
     $assets = $this->getAssets();
     foreach($assets as $asset) {

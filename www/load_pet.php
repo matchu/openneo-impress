@@ -70,6 +70,13 @@ if($pet_exists):
               <img src="<?= htmlentities($object->thumbnail_url) ?>" alt="(image)" />
               <?= htmlentities($object->name) ?>
             </a>
+<?php
+    if($object->isBodySpecific()):
+?>
+              (body-specific)
+<?php
+    endif;
+?>
           </li>
 <?php
   endforeach;

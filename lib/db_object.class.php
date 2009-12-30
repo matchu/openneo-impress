@@ -18,10 +18,6 @@ class Wearables_DBObject {
     }
   }
   
-  static function first($options=array()) {
-    var_dump(__CLASS__);
-  }
-  
   static function all($options=array(), $table, $subclass) {
     $options = array_merge(array(
       'select' => '*'

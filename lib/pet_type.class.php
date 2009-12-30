@@ -6,7 +6,8 @@ require_once dirname(__FILE__).'/db_object.class.php';
 require_once dirname(__FILE__).'/outfit.class.php';
 require_once dirname(__FILE__).'/species.class.php';
 
-class Wearables_PetType extends Wearables_DBObject {
+class Wearables_PetType extends Wearables_SWFAssetParent {
+  protected $asset_type = 'biology';
   static $table = 'pet_types';
   static $columns = array('species_id', 'color_id', 'body_id');
   
@@ -16,22 +17,19 @@ class Wearables_PetType extends Wearables_DBObject {
   }
   
   public function createOutfit() {
-    if(!$this->getAssets()) throw new Wearables_BiologyAssetsNotFoundException();
+    if(!$this->getId()) throw new Wearables_BiologyAssetsNotFoundException();
     $outfit = new Wearables_Outfit();
     $outfit->pet_type = &$this;
     return $outfit;
   }
   
   public function getAssets() {
-    if(!$this->assets) {
-      $db = new Wearables_DB();
-      $query = $db->query('SELECT * FROM swf_assets WHERE type = "biology" AND '
-        .'parent_id = '.intval($this->getId())
+    if(!$this->preloaded_assets && !$this->assets) {
+      $this->assets = Wearables_BiologyAsset::all(
+        array(
+          'where' => 'parent_id = '.intval($this->getId())
+        )
       );
-      $this->assets = array();
-      while($obj = $query->fetchObject('Wearables_BiologyAsset')) {
-        $this->assets[] = $obj;
-      }
     }
     return $this->assets;
   }
@@ -77,6 +75,10 @@ class Wearables_PetType extends Wearables_DBObject {
     } else {
       return false;
     }
+  }
+  
+  public function needsToLoadAssets() {
+    return !$this->preloaded_assets && empty($this->assets);
   }
   
   public function setBiology($biology) {
