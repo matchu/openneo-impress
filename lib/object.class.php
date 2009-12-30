@@ -36,7 +36,7 @@ class Wearables_Object extends Wearables_DBObject {
       } else {
         $query_options['where'] = self::mergeConditions(
           $query_options['where'],
-          'type = "object" AND parent_id = '.intval($this->id)
+          'parent_id = '.intval($this->id)
         );
         $this->assets = Wearables_ObjectAsset::all($query_options);
       }
@@ -66,13 +66,8 @@ class Wearables_Object extends Wearables_DBObject {
     return parent::find($id, $options, self::$table, self::CLASS_NAME);
   }
   
-  static function deepSaveCollection($objects, $db) {
-    self::saveCollection($objects, $db, self::$table, self::$columns);
-    $assets = array();
-    foreach($objects as $object) {
-      $assets = array_merge($assets, $object->getAssets());
-    }
-    Wearables_ObjectAsset::saveCollection($assets, $db);
+  static function saveCollection($objects) {
+    parent::saveCollection($objects, self::$table, self::$columns);
   }
 }
 ?>

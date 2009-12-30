@@ -23,8 +23,13 @@ class Wearables_SWFAsset extends Wearables_DBObject {
     $this->body_id = $pet_type->getBodyId();
   }
   
-  static function saveCollection($assets, $db) {
-    return parent::saveCollection($assets, $db, self::$table, self::$columns);
+  static function all($options, $table, $subclass) {
+    if(!$options['select']) $options['select'] = 'zone_id, url';
+    return parent::all($options, $table, $subclass);
+  }
+  
+  static function saveCollection($assets) {
+    return parent::saveCollection($assets, self::$table, self::$columns);
   }
 }
 ?>

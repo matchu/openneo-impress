@@ -4,6 +4,7 @@ require_once dirname(__FILE__).'/db.class.php';
 require_once dirname(__FILE__).'/object.class.php';
 require_once dirname(__FILE__).'/outfit.class.php';
 require_once dirname(__FILE__).'/pet_type.class.php';
+require_once dirname(__FILE__).'/swf_asset.class.php';
 
 class Wearables_Pet extends Wearables_Outfit {
   private $viewer_data;
@@ -63,13 +64,14 @@ class Wearables_Pet extends Wearables_Outfit {
   }
   
   public function saveData() {
-    $db = new Wearables_DB();
+    // Save pet type
+    $this->getPetType()->save();
     
-    // Save pet type, biology assets
-    $this->getPetType()->deepSave($db);
+    // Save objects
+    Wearables_Object::saveCollection($this->getObjects());
     
-    // Save objects, object assets
-    Wearables_Object::deepSaveCollection($this->getObjects(), $db);
+    // Save assets
+    Wearables_SWFAsset::saveCollection($this->getAssets());
   }
 }
 

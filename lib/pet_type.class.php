@@ -38,7 +38,7 @@ class Wearables_PetType extends Wearables_DBObject {
   
   public function getBodyId() {
     if(!$this->body_id) {
-      $this->load('body_id', new Wearables_DB());
+      $this->load('body_id');
     }
     return $this->body_id;
   }
@@ -49,7 +49,7 @@ class Wearables_PetType extends Wearables_DBObject {
   
   public function getId() {
     if(!$this->id) {
-      $this->load('id', new Wearables_DB());
+      $this->load('id');
     }
     return $this->id;
   }
@@ -58,12 +58,13 @@ class Wearables_PetType extends Wearables_DBObject {
     return new Wearables_Species($this->species_id);
   }
   
-  protected function isSaved($db) {
+  protected function isSaved() {
     if($this->id) return true;
-    return $this->load('id', $db);
+    return $this->load('id');
   }
   
-  private function load($select='*', $db) {
+  private function load($select='*') {
+    $db = new Wearables_DB();
     $query = $db->query("SELECT $select FROM pet_types WHERE "
       .'species_id = '.intval($this->species_id).' AND '
       .'color_id = '.intval($this->color_id).' LIMIT 1');
@@ -87,10 +88,9 @@ class Wearables_PetType extends Wearables_DBObject {
     }
   }
   
-  public function deepSave($db) {
-    $new_id = $this->save($db, self::$table, self::$columns);
+  public function save() {
+    $new_id = parent::save(self::$table, self::$columns);
     if(!$this->id) $this->id = $new_id;
-    Wearables_BiologyAsset::saveCollection($this->assets, $db);
   }
 }
 

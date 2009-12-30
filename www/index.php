@@ -1,8 +1,11 @@
 <?php
+require_once '../lib/db.class.php';
 require_once '../lib/color.class.php';
 require_once '../lib/object.class.php';
 require_once '../lib/pet_type.class.php';
 require_once '../lib/species.class.php';
+
+$db = new Wearables_DB();
 
 $objects = Wearables_Object::all(array('select' => 'id, name'));
 $objects[] = new Wearables_Object();

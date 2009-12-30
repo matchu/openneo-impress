@@ -11,11 +11,15 @@ class Wearables_DBObject {
     return '('.implode(', ', $values).')';
   }
   
-  public function save($db, $table, $columns) {
-    if(!$this->isSaved($db)) { // to be determined by subclass
-      self::saveCollection(array($this), $db, $table, $columns);
+  public function save($table, $columns) {
+    if(!$this->isSaved()) { // to be determined by subclass
+      $db = self::saveCollection(array($this), $table, $columns);
       return $db->lastInsertId();
     }
+  }
+  
+  static function first($options=array()) {
+    var_dump(__CLASS__);
   }
   
   static function all($options=array(), $table, $subclass) {
@@ -49,7 +53,8 @@ class Wearables_DBObject {
     return '('.implode(', ', $columns).')';
   }
   
-  static function saveCollection($objects, $db, $table, $columns) {
+  static function saveCollection($objects, $table, $columns) {
+    $db = new Wearables_DB();
     if($objects) {
       $value_sets = array();
       foreach($objects as $object) {
@@ -58,6 +63,7 @@ class Wearables_DBObject {
       $db->exec("REPLACE INTO $table ".self::getColumnSet($columns)
         .' VALUES '.implode(', ', $value_sets));
     }
+    return $db;
   }
 }
 ?>

@@ -6,6 +6,10 @@ class Wearables_Outfit {
     $object = Wearables_Object::find($object_id, array('select' => 'id, name'));
     $this->objects[] = $object;
   }
+  
+  protected function getAssets() {
+    return array_merge($this->getBiologyAssets(), $this->getObjectAssets());
+  }
 
   protected function getBiologyAssets() {
     return $this->getPetType()->getAssets();
@@ -42,9 +46,7 @@ class Wearables_Outfit {
   
   public function getPreviewHTML() {
     $output = '<ol class="pet-swf-image">';
-    $object_assets = $this->getObjectAssets();
-    $biology_assets = $this->getBiologyAssets();
-    $assets = array_merge($object_assets, $biology_assets);
+    $assets = $this->getAssets();
     foreach($assets as $asset) {
       $output .= $asset->overlayHTML();
     }
