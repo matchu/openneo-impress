@@ -1,7 +1,7 @@
 development:
   type: mysql
   host: localhost
-  post: 3306
+  port: 3306
   database: wearables
   user: wearables
   password:
