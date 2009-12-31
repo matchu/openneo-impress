@@ -6,10 +6,14 @@ class Wearables_AMF {
   const SERVICE_NAME = 'CustomPetService';
   
   function sendRequest($method, $arguments=null) {
-    $client = new SabreAMF_Client(self::GATEWAY_URL); // oddly, must be regenerated to do multiple requests
-    $response = $client->sendRequest(self::SERVICE_NAME.'.'.$method, $arguments);
+    try {
+      $client = new SabreAMF_Client(self::GATEWAY_URL); // oddly, must be regenerated to do multiple requests
+      $response = $client->sendRequest(self::SERVICE_NAME.'.'.$method, $arguments);
+    } catch(Exception $e) {
+      throw new Wearables_AMFConnectionError();
+    }
     if(!self::isTypedObject($response)) {
-      throw new Wearables_AMFConnectionError($response);
+      throw new Wearables_AMFResponseError($response);
     }
     return $response;
   }
@@ -46,7 +50,9 @@ class Wearables_AMF {
   }
 }
 
-class Wearables_AMFConnectionError extends Exception {
+class Wearables_AMFConnectionError extends Exception {}
+
+class Wearables_AMFResponseError extends Exception {
   private $response;
   
   public function __construct($response) {

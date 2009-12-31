@@ -59,7 +59,7 @@ class Wearables_Pet extends Wearables_Outfit {
     try {
       $response = $amf->sendRequest('getViewerData',
         array($this->name, null));
-    } catch(Wearables_AMFConnectionError $e) {
+    } catch(Wearables_AMFResponseError $e) {
       throw new Wearables_PetNotFoundException();
     }
     $this->viewer_data = $response->getAMFData();

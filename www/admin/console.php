@@ -14,7 +14,7 @@ if($_GET['method']) {
 <html>
   <head>
     <title>AMFPHP Console</title>
-    <link type="text/css" rel="stylesheet" href="/assets/css/style.css" />
+    <link type="text/css" rel="stylesheet" href="/assets/css/plain.css" />
     <style type="text/css">
       pre.method-name {
         display: inline;

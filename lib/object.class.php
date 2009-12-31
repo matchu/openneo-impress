@@ -45,6 +45,10 @@ class Wearables_Object extends Wearables_SWFAssetParent {
     return $this->assets;
   }
   
+  public function getId() {
+    return $this->id;
+  }
+  
   public function isBodySpecific() {
     $is_specific = true;
     foreach($this->getAssets() as $asset) {

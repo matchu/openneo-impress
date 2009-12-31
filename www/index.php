@@ -1,83 +1,59 @@
 <?php
-require_once '../lib/db.class.php';
-require_once '../lib/color.class.php';
-require_once '../lib/object.class.php';
-require_once '../lib/pet_type.class.php';
-require_once '../lib/species.class.php';
-
-$db = new Wearables_DB();
-
-$objects = Wearables_Object::all(array('select' => 'id, name'));
-$objects[] = new Wearables_Object();
-
-$fields = array(
-  'color' => Wearables_Color::all(),
-  'species' => Wearables_Species::all(),
-  'object' => $objects
+$errors = array(
+  'connection_error' => 'Could not get data on your pet. '
+    .'Please try again later!',
+  'no_name' => 'Make sure you entered a name in the box. ',
+  'not_found' => 'Could not find any pet by that name. '
+    .'Did you spell it correctly?'
 );
-
-if($pet_data = $_GET['pet']) {
-  try {
-    $pet_type = new Wearables_PetType($pet_data['species'], $pet_data['color']);
-    $outfit = $pet_type->createOutfit();
-    if($object_id = $pet_data['object']) {
-      $outfit->addObjectById($object_id);
-    }
-  } catch(Wearables_BiologyAssetsNotFoundException $e) {
-    $error = "We don't have data on this type of pet yet. Sorry!";
-  }
-}
+$error = $errors[$_GET['error']];
 ?>
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Preview</title>
-    <link type="text/css" rel="stylesheet" href="/assets/css/style.css" />
+    <title>The Wardrobe</title>
+    <link type="text/css" rel="stylesheet" href="/assets/css/blue.css" />
   </head>
-  <body>
-    <h1>Wearables</h1>
-    <h2>Preview Pet Color</h2>
+  <body class="index">
+    <h1>The Wardrobe</h1>
 <?php
 if($error):
 ?>
-    <p class="error"><?= $error ?></p>
+    <div class="error"><?= $error ?></div>
+<?php
+endif;
+if($_GET['warning'] == 'save_error'):
+?>
+    <div class="warning">
+      <p>
+        Oops! We found your pet's data, but had trouble saving a copy for
+        future users. But maybe some generous user of the past has already
+        uploaded all the data you need - would you like to check?
+      </p>
+      <p>
+        <a href="<?= htmlentities($_GET['destination']) ?>">Yes, please!</a>
+      </p>
+    </p>
 <?php
 endif;
 ?>
-    <form action="" method="GET">
-<?php
-foreach($fields as $field_name => $field_objects):
-  $id_field_name = $field_name.'_id';
-?>
-      <select name="pet[<?= $field_name ?>]"><?php
-  foreach($field_objects as $field_object):
-    $selected = $field_object->id == $pet_type->$id_field_name? ' selected' : '';
-?>
-<option value="<?= $field_object->id ?>" <?= $selected ?>><?= $field_object->name ?></option><?php
-  endforeach;
-?>
-      </select>
-<?php
-endforeach;
-?>
-      <input type="submit" />
+    <form id="form-1" action="load_pet.php" method="POST">
+      <fieldset>
+        <legend>Enter your pet's name</legend>
+        <input type="text" name="name"
+          value="<?= htmlentities($_GET['name']) ?>" />
+        <input type="submit" value="Go" />
+      </fieldset>
     </form>
-<?php
-if($outfit):
-?>
-    <h3>Resulting Outfit</h3>
-    <?= $outfit->getPreviewHTML() ?>
-<?php
-endif;
-?>
-    <h2>Add Pet Data</h2>
-    <form action="load_pet.php" method="POST">
-      <label for="pet_name">Pet Name</label>
-      <input id="pet_name" type="text" name="name" />
-      <input type="submit" />
+    <form id="form-2" action="wardrobe.html" method="GET">
+      <fieldset>
+        <legend>Or choose a pet to start with</legend>
+        <select name="color"><option>Alien</option></select>
+        <select name="species"><option>Aisha</option></select>
+        <input type="submit" value="Go" />
+      </fieldset>
     </form>
-<?php
-include('../includes/pet_swf_image_js.html');
-?>
+    <img id="pet-preview" src="/assets/images/blank.gif"
+      height="50" width="50" />
   </body>
 </html>

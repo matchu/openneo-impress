@@ -1,0 +1,178 @@
+/* Reset */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+
+body {
+	line-height: 1;
+}
+
+/* Styles */
+
+body {
+  background-color: #0B61A4;
+  color: #fff;
+  font-family: Delicious, Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #033E6B;
+}
+
+p {
+  margin-bottom: 1em;
+}
+
+input, select, option {
+  background: #3F92D2;
+  border: 1px solid #66A3D2;
+  color: #033E6B;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+input, select {
+  padding: .2em;
+}
+
+input:hover, select:hover {
+  border-color: #FF9200;
+}
+
+input:focus, select:focus {
+  border-color: #FFF;
+  color: #FFF;
+}
+
+input[type=submit] {
+  background: #FF9200;
+  border-color: #FFAD40;
+  color: #A65F00;
+  font-weight: bold;
+  padding-left: .5em;
+  padding-right: .5em;
+}
+
+.error, .warning {
+  padding: .5em 1em;
+}
+
+.error {
+  background: #FEF8F6;
+  border: 1px solid #CD0A0A;
+  color: #CD0A0A;
+}
+
+.warning {
+  background: #FFF6BF;
+  border: #FFD324;
+  color: #514721;
+}
+
+.warning a {
+  color: #514721;
+}
+
+/* Index */
+
+body.index {
+  background-image: url(/assets/images/blue/squares_bg.gif);
+  background-position: center center;
+}
+
+body.index h1 {
+  border-bottom: #033E6B 1px solid;
+  font-size: 500%;
+  line-height: 1;
+  margin-top: -1em;
+  padding-left: 1%;
+  width: 99%;
+}
+
+body.index h1 {
+  position: absolute;
+  top: 50%;
+}
+
+body.index form {
+  position: absolute;
+}
+
+body.index form {
+  left: 55%;
+}
+
+body.index #form-1 {
+  top: 30%;
+}
+
+body.index #form-1 fieldset {
+  top: 30%;
+}
+
+body.index #form-2 {
+  bottom: 30%;
+}
+
+body.index legend {
+  font-size: 125%;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+body.index #or {
+  font-size: 200%;
+  margin-left: -1em;
+}
+
+body.index #pet-preview {
+  background: url(/assets/images/blue/vertical_lines_fade.png) center center;
+  left: 50%;
+  margin: -25px 0 0 -50px;
+  padding: 1px 25px;
+  position: absolute;
+  top: 50%;
+}
+
+body.index input[type=text] {
+  width: 15em;
+}
+
+body.index select {
+  width: 7em;
+}
+
+body.index .error, body.index .warning {
+  left: 1%;
+  position: absolute;
+  top: 52%;
+  width: 30%;
+}
+
+/* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */
+@font-face {
+	font-family: Delicious;
+	src: url('/assets/fonts/Delicious-Roman.otf');
+}
+
+@font-face {
+	font-family: Delicious;
+	font-weight: bold;
+	src: url('/assets/fonts/Delicious-Bold.otf');
+}
