@@ -13,9 +13,9 @@ class Wearables_PetType extends Wearables_SWFAssetParent {
   static $table = 'pet_types';
   static $columns = array('species_id', 'color_id', 'body_id', 'image_hash');
   
-  public function __construct($species_id, $color_id) {
-    $this->species_id = $species_id;
-    $this->color_id = $color_id;
+  public function __construct($species_id=null, $color_id=null) {
+    if($species_id) $this->species_id = $species_id;
+    if($color_id) $this->color_id = $color_id;
   }
   
   public function beforeSave() {
@@ -123,4 +123,32 @@ class Wearables_PetType extends Wearables_SWFAssetParent {
 }
 
 class Wearables_BiologyAssetsNotFoundException extends Exception {}
+
+class Wearables_PetTypeAPIAccessor {
+  public function findBySpeciesAndColor($params) {
+    if(!is_array($params['select'])) return null;
+    $select = array();
+    foreach($params['select'] as $column) {
+      if(in_array($column, Wearables_PetType::$columns)) {
+        $select[] = $column;
+      }
+    }
+    $select_str = implode(', ', $select);
+    $results = Wearables_PetType::all(array(
+      'select' => $select_str,
+      'where' => 'species_id = '.intval($params['species_id'])
+        .' AND color_id = '.intval($params['color_id'])
+    ), Wearables_PetType::$table, 'Wearables_PetType');
+    $result = $results[0];
+    if($result) {
+      $general_result = new stdClass();
+      foreach($select as $column) {
+        $general_result->$column = $result->$column;
+      }
+      return $general_result;
+    } else {
+      return null;
+    }
+  }
+}
 ?>

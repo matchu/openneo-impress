@@ -92,7 +92,7 @@ input[type=submit] {
 /* Index */
 
 body.index {
-  background-image: url(/assets/images/blue/squares_bg.gif);
+  /*background-image: url(/assets/images/blue/squares_bg.gif);*/
   background-position: center center;
 }
 
@@ -110,12 +110,9 @@ body.index h1 {
   top: 50%;
 }
 
-body.index form {
-  position: absolute;
-}
-
-body.index form {
+body.index form, body.index #preview-response {
   left: 55%;
+  position: absolute;
 }
 
 body.index #form-1 {
@@ -142,11 +139,25 @@ body.index #or {
 }
 
 body.index #pet-preview {
-  background: url(/assets/images/blue/vertical_lines_fade.png) center center;
+  background-color: #0B61A4;
+  border: 1px solid #033E6B;
   left: 50%;
-  margin: -25px 0 0 -50px;
-  padding: 1px 25px;
+  margin: -35px 0 0 -50px;
+  padding: 10px;
   position: absolute;
+  top: 50%;
+}
+
+body.index #pet-preview.loading {
+  height: 0;
+  padding: 35px;
+  width: 0;
+}
+
+body.index #preview-response {
+  left: 52%;
+  margin-top: -1.5em;
+  padding: .5em 1em;
   top: 50%;
 }
 

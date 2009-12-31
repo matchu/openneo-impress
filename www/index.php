@@ -1,4 +1,7 @@
 <?php
+require_once '../lib/color.class.php';
+require_once '../lib/species.class.php';
+
 $errors = array(
   'connection_error' => 'Could not get data on your pet. '
     .'Please try again later!',
@@ -7,6 +10,11 @@ $errors = array(
     .'Did you spell it correctly?'
 );
 $error = $errors[$_GET['error']];
+
+$fields = array(
+  'color' => Wearables_Color::all(),
+  'species' => Wearables_Species::all()
+);
 ?>
 <!DOCTYPE html>
 <html>
@@ -40,20 +48,34 @@ endif;
     <form id="form-1" action="load_pet.php" method="POST">
       <fieldset>
         <legend>Enter your pet's name</legend>
-        <input type="text" name="name"
-          value="<?= htmlentities($_GET['name']) ?>" />
+        <input id="name" type="text" name="name"
+          value="<?= htmlentities($_GET['name']) ?>"
+          autocomplete="off" />
         <input type="submit" value="Go" />
       </fieldset>
     </form>
     <form id="form-2" action="wardrobe.html" method="GET">
       <fieldset>
         <legend>Or choose a pet to start with</legend>
-        <select name="color"><option>Alien</option></select>
-        <select name="species"><option>Aisha</option></select>
+<?php
+foreach($fields as $field_name => $options):
+?>
+        <select id="<?= $field_name ?>" name="<?= $field_name ?>"><?php
+  foreach($options as $option):
+?><option value="<?= $option->getId() ?>"><?= $option->getName() ?>
+<?php
+  endforeach;
+?></select>
+<?php
+endforeach;
+?>
         <input type="submit" value="Go" />
       </fieldset>
     </form>
     <img id="pet-preview" src="/assets/images/blank.gif"
       height="50" width="50" />
+    <div id="preview-response"></div>
+    <?php include('../includes/jquery.php'); ?>
+    <script type="text/javascript" src="/assets/js/index.js"></script>
   </body>
 </html>

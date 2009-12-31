@@ -86,7 +86,7 @@ if($pet_exists):
     </dl>
 <?php
 endif;
-include('../../includes/pet_swf_image_js.html');
+include('../../includes/pet_swf_image_js.php');
 ?>
   </body>
 </html>

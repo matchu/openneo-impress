@@ -77,7 +77,7 @@ endif;
       <input type="submit" />
     </form>
 <?php
-include('../../includes/pet_swf_image_js.html');
+include('../../includes/pet_swf_image_js.php');
 ?>
   </body>
 </html>

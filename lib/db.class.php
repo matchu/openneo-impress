@@ -63,11 +63,13 @@ class Wearables_DB {
   }
   
   static function outputQueryLog() {
-    echo '<h6>Query Log:</h6><ol style="font-size: 80%">';
-    foreach(self::$query_log as $query) {
-      echo "<li>$query</li>";
+    if($_GET['show_query_log']) {
+      echo '<h6>Query Log:</h6><ol style="font-size: 80%">';
+      foreach(self::$query_log as $query) {
+        echo "<li>$query</li>";
+      }
+      echo '</ol>';
     }
-    echo '</ol>';
   }
 }
 ?>
