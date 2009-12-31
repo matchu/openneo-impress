@@ -33,7 +33,7 @@ if($_GET['warning'] == 'save_error'):
       <p>
         <a href="<?= htmlentities($_GET['destination']) ?>">Yes, please!</a>
       </p>
-    </p>
+    </div>
 <?php
 endif;
 ?>

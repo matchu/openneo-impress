@@ -18,6 +18,10 @@ class Wearables_Pet extends Wearables_Outfit {
     }
   }
   
+  public function getBiology() {
+    return $this->getPetData()->biology_by_zone;
+  }
+  
   public function getObjects() {
     if(!$this->objects) {
       $object_info_registry = $this->getViewerData()->object_info_registry;
@@ -32,12 +36,16 @@ class Wearables_Pet extends Wearables_Outfit {
     return $this->objects;
   }
   
+  public function getName() {
+    return $this->name;
+  }
+  
   protected function getPetType() {
     if(!$this->pet_type) {
       $this->pet_type = new Wearables_PetType($this->getPetData()->species_id,
         $this->getPetData()->color_id);
       $this->pet_type->body_id = $this->getPetData()->body_id;
-      $this->pet_type->setBiology($this->getPetData()->biology_by_zone);
+      $this->pet_type->setOriginPet($this);
     }
     return $this->pet_type;
   }

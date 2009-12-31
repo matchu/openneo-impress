@@ -1,5 +1,14 @@
 <?php
+require_once '../lib/db.class.php';
 require_once '../lib/pet.class.php';
+
+function handleException($e) {
+  if(Wearables_DB::getEnvironment() == 'development') {
+    echo 'Error! Debug output (only for development mode): <xmp>';
+    var_dump($e);
+    die('</xmp>');
+  }
+}
 
 $pet = new Wearables_Pet();
 if($pet_name = $_POST['name']) {
@@ -9,12 +18,14 @@ if($pet_name = $_POST['name']) {
       try {
         $pet->saveData();
       } catch(Exception $e) {
+        handleException($e);
         $warning = 'save_error';
       }
     } else {
       $error = 'not_found';
     }
   } catch(Wearables_AMFConnectionError $e) {
+    handleException($e);
     $error = 'connection_error';
   }
   

@@ -7,13 +7,34 @@ require_once dirname(__FILE__).'/outfit.class.php';
 require_once dirname(__FILE__).'/species.class.php';
 
 class Wearables_PetType extends Wearables_SWFAssetParent {
+  const IMAGE_CPN_FORMAT = 'http://pets.neopets.com/cpn/%s/1/1.png';
+  const IMAGE_CP_HEADER_REGEX = '%^Location: /cp/(.+?)/1/1\.png$%';
   protected $asset_type = 'biology';
   static $table = 'pet_types';
-  static $columns = array('species_id', 'color_id', 'body_id');
+  static $columns = array('species_id', 'color_id', 'body_id', 'image_hash');
   
   public function __construct($species_id, $color_id) {
     $this->species_id = $species_id;
     $this->color_id = $color_id;
+  }
+  
+  public function beforeSave() {
+    // get image_hash value
+    $cpn_url = sprintf(self::IMAGE_CPN_FORMAT, $this->origin_pet->getName());
+    $ch = curl_init($cpn_url);
+    curl_setopt($ch, CURLOPT_HEADER, 1);
+    curl_setopt($ch, CURLOPT_NOBODY, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $response = curl_exec($ch);
+    if($response) {
+      list($headers, $body) = explode("\r\n\r\n", $response, 2);
+      $header_array = explode("\r\n", $headers);
+      foreach($header_array as $header) {
+        if(preg_match(self::IMAGE_CP_HEADER_REGEX, $header, $matches)) {
+          $this->image_hash = $matches[1];
+        }
+      }
+    }
   }
   
   public function createOutfit() {
@@ -52,13 +73,17 @@ class Wearables_PetType extends Wearables_SWFAssetParent {
     return $this->id;
   }
   
+  public function getImageHash() {
+    if(!$this->image_hash) $this->load('image_hash');
+    return $this->image_hash;
+  }
+  
   public function getSpecies() {
     return new Wearables_Species($this->species_id);
   }
   
   protected function isSaved() {
-    if($this->id) return true;
-    return $this->load('id');
+    return $this->getImageHash() ? true : false;
   }
   
   private function load($select='*') {
@@ -81,9 +106,10 @@ class Wearables_PetType extends Wearables_SWFAssetParent {
     return !$this->preloaded_assets && empty($this->assets);
   }
   
-  public function setBiology($biology) {
+  public function setOriginPet($pet) {
+    $this->origin_pet = $pet;
     $this->assets = array();
-    foreach($biology as $asset_typed_obj) {
+    foreach($pet->getBiology() as $asset_typed_obj) {
       $asset = new Wearables_BiologyAsset($asset_typed_obj->getAMFData());
       $asset->setOriginPetType($this);
       $this->assets[] = $asset;
