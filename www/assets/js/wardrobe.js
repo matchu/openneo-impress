@@ -42,12 +42,32 @@ var MainWardrobe = new function Wardrobe() {
   }
   
   var Outfit = new function WardrobeOutfit() {
-    this.update = function () {
+    var totalSWFsAppended = 0;
+    
+    function addAssets(klass, assets) {
+      $.each(assets, function() {
+        var id = 'outfit-asset-' + (totalSWFsAppended++);
+        $('<div id="' + id + '"></div>').appendTo('#outfit-preview');
+        swfobject.embedSWF(this.url, id, '100%', '100%', '9',
+          '/assets/js/swfobject/expressInstall.swf', null,
+          {wmode: 'transparent'},
+          {
+            'class': klass,
+            'style': 'z-index: ' + this.depth
+          });
+      });
+    }
+    
+    function updateBiology() {
       new WardrobeRequest('pet_type', 'getAssetsBySpeciesAndColor', {
         'species_id': HashDaemon.get('species'),
         'color_id': HashDaemon.get('color')
+      }, function (assets) {
+        addAssets('biology-pet-asset', assets);
       });
     }
+    
+    this.initialize = updateBiology;
   }
   
   var View = new function WardrobeView() {
@@ -56,12 +76,31 @@ var MainWardrobe = new function Wardrobe() {
     var toolbars = {};
     
     function onResize() {
-      var null_position = {top: null, left: null};
+      var null_position = {top: null, left: null},
+        available = {
+          height: $(window).height()-toolbars.bottom.height(),
+          width: $(window).width()-toolbars.right.width()
+        }
       $.each(toolbars, function () {
         this.css(null_position);
       });
-      toolbars.bottom.width($(window).width()-toolbars.right.width());
+      toolbars.bottom.width(available.width);
       toolbars.right.css('height', null);
+      if(available.height > available.width) {
+        $('#outfit-preview').css({
+          height: available.width,
+          left: null,
+          width: available.width,
+          top: (available.height - available.width) / 2
+        });
+      } else {
+        $('#outfit-preview').css({
+          height: available.height,
+          left: (available.width - available.height) / 2,
+          width: available.height,
+          top: null
+        });
+      }
     }
     
     var generic_toolbar_options = {
@@ -87,5 +126,5 @@ var MainWardrobe = new function Wardrobe() {
     });
   }
   
-  Outfit.update();
+  Outfit.initialize();
 }

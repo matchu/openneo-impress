@@ -164,6 +164,11 @@ body.index .floated-icon {
 
 /* Wardrobe */
 
+body.wardrobe h2 {
+  font-size: 200%;
+  margin: .25em;
+}
+
 body.wardrobe .toolbar {
   background: #FFF;
   border-color: #66A3D2;
@@ -189,9 +194,18 @@ body.wardrobe #toolbar-right {
   z-index: 3;
 }
 
-body.wardrobe h2 {
-  font-size: 200%;
-  margin: .25em;
+body.wardrobe #outfit-preview {
+  height: 75%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 70%;
+}
+
+body.wardrobe #outfit-preview object {
+  left: 0;
+  position: absolute;
+  top: 0;
 }
 
 /* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */
