@@ -69,26 +69,6 @@ input[type=submit] {
   padding-right: .5em;
 }
 
-.error, .warning {
-  padding: .5em 1em;
-}
-
-.error {
-  background: #FEF8F6;
-  border: 1px solid #CD0A0A;
-  color: #CD0A0A;
-}
-
-.warning {
-  background: #FFF6BF;
-  border: #FFD324;
-  color: #514721;
-}
-
-.warning a {
-  color: #514721;
-}
-
 /* Index */
 
 body.index {
@@ -169,11 +149,49 @@ body.index select {
   width: 7em;
 }
 
-body.index .error, body.index .warning {
+body.index .ui-state-error, body.index .ui-state-highlight {
   left: 1%;
+  padding: .5em 1em;
   position: absolute;
   top: 52%;
   width: 30%;
+}
+
+body.index .floated-icon {
+  float: left;
+  margin-right: .3em;
+}
+
+/* Wardrobe */
+
+body.wardrobe .toolbar {
+  background: #FFF;
+  border-color: #033E6B;
+  border-style: solid;
+  bottom: 0;
+  color: #0B61A4;
+  position: absolute;
+}
+
+body.wardrobe #toolbar-bottom {
+  border-width: 1px 0 0 0;
+  height: 25%;
+  left: 0;
+  width: 70%;
+  z-index: 2;
+}
+
+body.wardrobe #toolbar-right {
+  border-width: 0 0 0 1px;
+  height: 100%;
+  right: 0;
+  width: 30%;
+  z-index: 3;
+}
+
+body.wardrobe h2 {
+  font-size: 200%;
+  margin: .25em;
 }
 
 /* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */

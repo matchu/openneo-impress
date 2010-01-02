@@ -20,6 +20,7 @@ $fields = array(
 <html>
   <head>
     <title>The Wardrobe</title>
+    <link type="text/css" rel="stylesheet" href="/assets/css/start/jquery_ui.css" />
     <link type="text/css" rel="stylesheet" href="/assets/css/blue.css" />
   </head>
   <body class="index">
@@ -27,12 +28,16 @@ $fields = array(
 <?php
 if($error):
 ?>
-    <div class="error"><?= $error ?></div>
+    <div class="ui-state-error">
+      <span class="ui-icon ui-icon-alert floated-icon"></span>
+      <?= $error ?>
+    </div>
 <?php
 endif;
 if($_GET['warning'] == 'save_error'):
 ?>
-    <div class="warning">
+    <div class="ui-state-highlight">
+      <span class="ui-icon ui-icon-alert floated-icon"></span>
       <p>
         Oops! We found your pet's data, but had trouble saving a copy for
         future users. But maybe some generous user of the past has already
@@ -75,7 +80,7 @@ endforeach;
     <img id="pet-preview" src="/assets/images/blank.gif"
       height="50" width="50" />
     <div id="preview-response"></div>
-    <?php include('../includes/jquery.php'); ?>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
     <script type="text/javascript" src="/assets/js/index.js"></script>
   </body>
 </html>
