@@ -11,6 +11,10 @@ function handleException($e) {
 }
 
 $pet = new Wearables_Pet();
+
+$destination = '/';
+$query = array();
+
 if($pet_name = $_POST['name']) {
   $pet->name = $pet_name;
   try {
@@ -30,23 +34,24 @@ if($pet_name = $_POST['name']) {
   }
   
   if($error) {
-    $destination = "/index.php?error=$error&name=".urlencode($pet_name);
+    $query['error'] = $error;
+    $query['name'] = $pet_name;
+  } elseif($warning) {
+    $query['warning'] = $warning;
+    $query['name'] = $pet_name;
+    $query['destination'] = $destination;
   } else {
+    $destination = 'wardrobe.html';
     $object_ids = array();
     foreach($pet->getObjects() as $object) {
       $object_ids[] = $object->getId();
     }
-    $destination = '/wardrobe.html?color='.$pet->getColor()->getId()
-      .'&species='.$pet->getSpecies()->getId()
-      .'&objects='.implode(',', $object_ids);
-    if($warning) {
-      $destination = "/index.php?warning=$warning&name=$pet_name"
-        .'&destination='.urlencode($destination);
-    }
+    $query['color'] = $pet->getColor()->getId();
+    $query['species'] = $pet->getSpecies()->getId();
+    $query['objects'] = $object_ids;
   }
-} else {
-  $destination = '/';
 }
 
-header("Location: $destination");
+$query = http_build_query($query);
+header("Location: $destination?$query");
 ?>

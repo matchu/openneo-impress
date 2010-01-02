@@ -19,6 +19,16 @@ var MainWardrobe = new function Wardrobe() {
     query = query.join('&');
     $.getJSON('/get/' + type + '/' + method + '.json', query, callback);
   }
+  
+  function WardrobeObject() {
+    this.addToCloset = function () {
+      Closet.objects.push(this);
+    }
+  }
+  
+  var Closet = new function WardrobeCloset() {
+    this.objects = [];
+  }
 
   var HashDaemon = new function WardrobeHashDaemon() {
     var data = null;
@@ -35,14 +45,24 @@ var MainWardrobe = new function Wardrobe() {
       new_hash = new_hash.substr(1);
       new_hash_data = new_hash.split('&');
       $.each(new_hash_data, function() {
-        var data_pair = this.split('=');
-        data[data_pair[0]] = data_pair[1];
+        var data_pair = this.split('='),
+          key = decodeURIComponent(data_pair[0]),
+          value = decodeURIComponent(data_pair[1]),
+          matches = key.match(/(.+)\[([0-9]+)]/);
+        if(matches) {
+          if(!data[matches[1]]) data[matches[1]] = [];
+          data[matches[1]][matches[2]] = value;
+        } else {
+          data[key] = value;
+        }
       });
     }
   }
   
   var Outfit = new function WardrobeOutfit() {
-    var totalSWFsAppended = 0;
+    var Outfit = this, totalSWFsAppended = 0;
+    
+    this.pet_type = null;
     
     function addAssets(klass, assets) {
       $.each(assets, function() {
@@ -58,16 +78,39 @@ var MainWardrobe = new function Wardrobe() {
       });
     }
     
-    function updateBiology() {
-      new WardrobeRequest('pet_type', 'getAssetsBySpeciesAndColor', {
-        'species_id': HashDaemon.get('species'),
-        'color_id': HashDaemon.get('color')
-      }, function (assets) {
-        addAssets('biology-pet-asset', assets);
+    function updateObjects() {
+      WardrobeRequest('object', 'find', {
+        'ids': HashDaemon.get('objects')
+      }, function (object_data) {
+        var base_object = new WardrobeObject, object_ids = [];
+        $.each(object_data, function () {
+          object_ids.push(this.id);
+          object = $.extend(base_object, this);
+          object.addToCloset();
+        });
+        WardrobeRequest('object_asset', 'findByParentIdsAndBodyId', {
+          'parent_ids': object_ids,
+          'body_id': Outfit.pet_type.body_id
+        }, function (assets) {
+          addAssets('object-pet-asset', assets);
+        });
       });
     }
     
-    this.initialize = updateBiology;
+    function updatePetType(callback) {
+      WardrobeRequest('pet_type', 'findBySpeciesAndColor', {
+        'species_id': HashDaemon.get('species'),
+        'color_id': HashDaemon.get('color')
+      }, function (pet_type) {
+        Outfit.pet_type = pet_type;
+        addAssets('biology-pet-asset', pet_type.assets);
+        callback();
+      });
+    }
+    
+    this.initialize = function () {
+      updatePetType(updateObjects);
+    };
   }
   
   var View = new function WardrobeView() {
@@ -104,7 +147,8 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     var generic_toolbar_options = {
-      resize: onResize
+      ghost: true,
+      stop: onResize
     };
     
     var toolbar_options = {
@@ -123,6 +167,7 @@ var MainWardrobe = new function Wardrobe() {
         );
       });
       $(window).resize(onResize);
+      onResize();
     });
   }
   

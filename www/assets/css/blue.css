@@ -178,12 +178,22 @@ body.wardrobe .toolbar {
   position: absolute;
 }
 
+body.wardrobe #toolbar-bottom .ui-resizable-n {
+  height: 12px;
+  top: -10px;
+}
+
+body.wardrobe #toolbar-right .ui-resizable-w {
+  left: -10px;
+  width: 12px;
+}
+
 body.wardrobe #toolbar-bottom {
   border-width: 10px 0 0 0;
   height: 25%;
   left: 0;
   width: 70%;
-  z-index: 2;
+  z-index: 101;
 }
 
 body.wardrobe #toolbar-right {
@@ -191,7 +201,7 @@ body.wardrobe #toolbar-right {
   height: 100%;
   right: 0;
   width: 30%;
-  z-index: 3;
+  z-index: 102;
 }
 
 body.wardrobe #outfit-preview {

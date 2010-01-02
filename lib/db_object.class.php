@@ -1,4 +1,6 @@
 <?php
+require_once dirname(__FILE__).'/db.class.php';
+
 class Wearables_DBObject {
   protected function beforeSave() {}
   

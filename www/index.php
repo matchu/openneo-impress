@@ -5,7 +5,6 @@ require_once '../lib/species.class.php';
 $errors = array(
   'connection_error' => 'Could not get data on your pet. '
     .'Please try again later!',
-  'no_name' => 'Make sure you entered a name in the box. ',
   'not_found' => 'Could not find any pet by that name. '
     .'Did you spell it correctly?'
 );

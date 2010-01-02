@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__FILE__).'/api_accessor.class.php';
 require_once dirname(__FILE__).'/object_asset.class.php';
 require_once dirname(__FILE__).'/swf_asset_parent.class.php';
 
@@ -86,6 +87,19 @@ class Wearables_Object extends Wearables_SWFAssetParent {
   
   static function saveCollection($objects) {
     parent::saveCollection($objects, self::$table, self::$columns);
+  }
+}
+
+class Wearables_ObjectAPIAccessor extends Wearables_APIAccessor {
+  public function find($params) {
+    if(!$params['ids']) return array();
+    $ids = implode(', ', array_map('intval', $params['ids']));
+    $select = array('id', 'name');
+    $objects = Wearables_Object::all(array(
+      'select' => 'id, name',
+      'where' => 'id IN ('.$ids.')'
+    ));
+    return $this->resultObjects($objects, $select);
   }
 }
 ?>

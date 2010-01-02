@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__FILE__).'/api_accessor.class.php';
 require_once dirname(__FILE__).'/biology_asset.class.php';
 require_once dirname(__FILE__).'/color.class.php';
 require_once dirname(__FILE__).'/db.class.php';
@@ -120,12 +121,17 @@ class Wearables_PetType extends Wearables_SWFAssetParent {
     $new_id = parent::save(self::$table, self::$columns);
     if(!$this->id) $this->id = $new_id;
   }
+  
+  static function all($options) {
+    return parent::all($options, Wearables_PetType::$table,
+      'Wearables_PetType');
+  }
 }
 
 class Wearables_BiologyAssetsNotFoundException extends Exception {}
 
-class Wearables_PetTypeAPIAccessor {
-  public function findBySpeciesAndColor($params) {
+class Wearables_PetTypeAPIAccessor extends Wearables_APIAccessor {
+  public function getImageHashBySpeciesAndColor($params) {
     /*if(!is_array($params['select'])) return null;
     $select = array();
     foreach($params['select'] as $column) {
@@ -136,43 +142,36 @@ class Wearables_PetTypeAPIAccessor {
     $select = array('image_hash'); // why support more until we need to?
     $select_str = implode(', ', $select);
     
-    $results = $this->resultObjects(Wearables_PetType::all(
-      array(
-        'select' => 'image_hash',
-        'where' => 'species_id = '.intval($params['species_id'])
-        .' AND color_id = '.intval($params['color_id']),
-        'limit' => 1
-      ), Wearables_PetType::$table, 'Wearables_PetType'
-    ), $select);
-    return $results[0];
+    $results = Wearables_PetType::all(array(
+      'select' => 'image_hash',
+      'where' => 'species_id = '.intval($params['species_id'])
+      .' AND color_id = '.intval($params['color_id']),
+      'limit' => 1
+    ));
+    return $results[0]->image_hash;
   }
   
-  public function getAssetsBySpeciesAndColor($params) {
-    $select = array('url', 'zone_id', 'depth');
-    $select_str = implode(', ', $select);
-    return $this->resultObjects(Wearables_BiologyAsset::all(array(
-      'select' => $select_str,
-      'joins' => 'INNER JOIN zones z ON z.id = swf_assets.zone_id',
-      'where' => 'swf_assets.parent_id = (SELECT id FROM pet_types pt WHERE '
-        .'pt.species_id = '.intval($params['species_id']).' AND '
-        .'pt.color_id = '.intval($params['color_id']).')'
-    )), $select);
-  }
-  
-  private function resultObjects($results, $select) {
-    $result_objects = array();
-    foreach($results as $result) {
-      if($result) {
-        $general_result = new stdClass();
-        foreach($select as $column) {
-          $general_result->$column = $result->$column;
-        }
-      } else {
-        $general_result = null;
-      }
-      $result_objects[] = $general_result;
+  public function findBySpeciesAndColor($params) {
+    $pet_types = Wearables_PetType::all(array(
+      'select' => 'body_id',
+      'where' => 'species_id = '.intval($params['species_id']).' AND '
+        .'color_id = '.intval($params['color_id']),
+      'limit' => 1
+    ));
+    $pet_type = $pet_types[0];
+    if($pet_type) {
+      $assets_select = array('url', 'zone_id', 'depth');
+      $assets_select_str = implode(', ', $assets_select);
+      $pet_type->assets = $this->resultObjects(Wearables_BiologyAsset::all(array(
+        'select' => $assets_select_str,
+        'joins' => 'INNER JOIN zones z ON z.id = swf_assets.zone_id',
+        'where' => 'swf_assets.parent_id = (SELECT id FROM pet_types pt WHERE '
+          .'pt.species_id = '.intval($params['species_id']).' AND '
+          .'pt.color_id = '.intval($params['color_id']).')'
+      )), $assets_select);
     }
-    return $result_objects;
+    $objects = $this->resultObjects($pet_types, array('body_id', 'assets'));
+    return $objects[0];
   }
 }
 ?>
