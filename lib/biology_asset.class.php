@@ -9,14 +9,18 @@ class Wearables_BiologyAsset extends Wearables_SWFAsset {
     parent::__construct($data);
   }
   
+  public function beforeSave() {
+    $this->parent_id = $this->parent->getId();
+  }
+  
   public function setOriginPetType($pet_type) {
-    $this->parent_id = &$pet_type->id;
+    $this->parent = &$pet_type;
     parent::setOriginPetType($pet_type);
   }
   
   static function all($options) {
     $options['where'] = self::mergeConditions($options['where'],
-      'type = "biology"'
+      self::$table.'.type = "biology"'
     );
     return parent::all($options, self::$table, __CLASS__);
   }

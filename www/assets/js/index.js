@@ -67,8 +67,7 @@ $(function () {
       url: '/get/pet_type/findBySpeciesAndColor.json',
       data: {
         'species_id': type.species,
-        'color_id': type.color,
-        'select[]': 'image_hash'
+        'color_id': type.color
       },
       dataType: 'json',
       success: function (data) {

@@ -27,7 +27,7 @@ class Wearables_ObjectAsset extends Wearables_SWFAsset {
   
   static function all($options) {
     $options['where'] = self::mergeConditions($options['where'],
-      'type = "object"'
+      self::$table.'.type = "object"'
     );
     return parent::all($options, self::$table, __CLASS__);
   }

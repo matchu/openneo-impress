@@ -23,6 +23,7 @@ class Wearables_DBObject {
       'select' => '*'
     ), $options);
     $sql = "SELECT ${options['select']} FROM $table";
+    if($options['joins']) $sql .= " ${options['joins']}";
     if($options['where']) $sql .= " WHERE ${options['where']}";
     if($options['limit']) $sql .= " LIMIT ${options['limit']}";
     $db = new Wearables_DB();

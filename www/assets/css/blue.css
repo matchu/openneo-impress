@@ -166,7 +166,7 @@ body.index .floated-icon {
 
 body.wardrobe .toolbar {
   background: #FFF;
-  border-color: #033E6B;
+  border-color: #66A3D2;
   border-style: solid;
   bottom: 0;
   color: #0B61A4;
@@ -174,7 +174,7 @@ body.wardrobe .toolbar {
 }
 
 body.wardrobe #toolbar-bottom {
-  border-width: 1px 0 0 0;
+  border-width: 10px 0 0 0;
   height: 25%;
   left: 0;
   width: 70%;
@@ -182,7 +182,7 @@ body.wardrobe #toolbar-bottom {
 }
 
 body.wardrobe #toolbar-right {
-  border-width: 0 0 0 1px;
+  border-width: 0 0 0 10px;
   height: 100%;
   right: 0;
   width: 30%;
