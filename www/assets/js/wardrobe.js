@@ -79,21 +79,21 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     function updateObjects() {
+      var object_ids = HashDaemon.get('objects');
       WardrobeRequest('object', 'find', {
-        'ids': HashDaemon.get('objects')
+        'ids': object_ids
       }, function (object_data) {
-        var base_object = new WardrobeObject, object_ids = [];
+        var base_object = new WardrobeObject;
         $.each(object_data, function () {
-          object_ids.push(this.id);
           object = $.extend(base_object, this);
           object.addToCloset();
         });
-        WardrobeRequest('object_asset', 'findByParentIdsAndBodyId', {
-          'parent_ids': object_ids,
-          'body_id': Outfit.pet_type.body_id
-        }, function (assets) {
-          addAssets('object-pet-asset', assets);
-        });
+      });
+      WardrobeRequest('object_asset', 'findByParentIdsAndBodyId', {
+        'parent_ids': object_ids,
+        'body_id': Outfit.pet_type.body_id
+      }, function (assets) {
+        addAssets('object-pet-asset', assets);
       });
     }
     
