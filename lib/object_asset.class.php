@@ -38,9 +38,9 @@ class Wearables_ObjectAssetAPIAccessor extends Wearables_APIAccessor {
   public function findByParentIdsAndBodyId($params) {
     if(!$params['parent_ids']) return array();
     $parent_ids = implode(', ', array_map('intval', $params['parent_ids']));
-    $asset_select = array('url', 'zone_id', 'depth', 'parent_id');
+    $asset_select = array('url', 'zone_id', 'depth', 'parent_id', 'is_body_specific');
     return $this->resultObjects(Wearables_ObjectAsset::all(array(
-      'select' => 'url, zone_id, depth, parent_id',
+      'select' => 'url, zone_id, depth, parent_id, z.type_id < 3 as is_body_specific',
       'joins' => 'INNER JOIN zones z ON z.id = swf_assets.zone_id',
       'where' => 'swf_assets.parent_id IN ('.$parent_ids.') AND '
         .'(body_id = '.intval($params['body_id']).' OR body_id = 0)'

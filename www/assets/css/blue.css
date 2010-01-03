@@ -41,7 +41,7 @@ p {
 input, select, option {
   background: #3F92D2;
   border: 1px solid #66A3D2;
-  color: #033E6B;
+  color: #FFF;
   cursor: pointer;
   font-family: inherit;
   font-size: inherit;
@@ -90,20 +90,16 @@ body.index h1 {
 }
 
 body.index form, body.index #preview-response {
-  left: 55%;
+  left: 60%;
   position: absolute;
 }
 
 body.index #form-1 {
-  top: 30%;
-}
-
-body.index #form-1 fieldset {
-  top: 30%;
+  top: 28%;
 }
 
 body.index #form-2 {
-  bottom: 30%;
+  bottom: 28%;
 }
 
 body.index legend {
@@ -120,7 +116,7 @@ body.index #or {
 body.index #pet-preview {
   background-color: #0B61A4;
   border: 1px solid #033E6B;
-  left: 50%;
+  left: 56%;
   margin: -35px 0 0 -50px;
   padding: 10px;
   position: absolute;
@@ -134,7 +130,7 @@ body.index #pet-preview.loading {
 }
 
 body.index #preview-response {
-  left: 52%;
+  left: 58%;
   margin-top: -1.5em;
   padding: .5em 1em;
   top: 50%;
@@ -165,16 +161,21 @@ body.index .floated-icon {
 
 body.wardrobe h2 {
   font-size: 200%;
-  margin: .25em;
+  margin-bottom: .5em;
 }
 
-body.wardrobe .toolbar {
+body.wardrobe div.toolbar {
   background: #FFF;
   border-color: #66A3D2;
   border-style: solid;
   bottom: 0;
   color: #0B61A4;
   position: absolute;
+}
+
+body.wardrobe div.toolbar-modules {
+  height: 100%;
+  overflow: auto;
 }
 
 body.wardrobe #toolbar-bottom .ui-resizable-n {
@@ -215,6 +216,46 @@ body.wardrobe #outfit-preview object {
   left: 0;
   position: absolute;
   top: 0;
+}
+
+body.wardrobe div.module {
+  margin: .5em;
+  padding: .5em 0;
+}
+
+body.wardrobe #toolbar-right div.module {
+  border-top: 1px solid #66A3D2;
+}
+
+body.wardrobe #toolbar-right div.module:first-child {
+  border-top: 0;
+}
+
+body.wardrobe #header-module {
+  margin: 0 .5em;
+  padding: .5em 0 0 0;
+  text-align: right;
+}
+
+body.wardrobe #closet-module-objects {
+  overflow: hidden;
+}
+
+body.wardrobe .closet-module-object {
+  float: left;
+  padding: .5em;
+  text-align: center;
+  width: 100px;
+}
+
+body.wardrobe .closet-module-unavailable-object {
+  background: #eee;
+  filter: alpha(opacity=20);
+  opacity: 0.2;
+}
+
+body.wardrobe #pet-type-form {
+  visibility: hidden;
 }
 
 /* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */

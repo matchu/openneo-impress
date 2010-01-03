@@ -131,6 +131,13 @@ class Wearables_PetType extends Wearables_SWFAssetParent {
 class Wearables_BiologyAssetsNotFoundException extends Exception {}
 
 class Wearables_PetTypeAPIAccessor extends Wearables_APIAccessor {
+  public function allColorsAndSpecies() {
+    return array(
+      'color' => Wearables_Color::all(), 
+      'species' => Wearables_Species::all()
+    );
+  }
+  
   public function getImageHashBySpeciesAndColor($params) {
     /*if(!is_array($params['select'])) return null;
     $select = array();
