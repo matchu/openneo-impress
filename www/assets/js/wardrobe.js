@@ -1,7 +1,18 @@
+/* jQuery plugin for mouseenter, mouseleave */
+
+(function(b){function o(i){var f=2;b.each(i,function(g,l){if(b.isFunction(l)){f=g;return false}});return f}(function(){function i(a,c){return jQuery.event.proxy(a,function(d){if(this!==d.relatedTarget&&d.relatedTarget&&!g(this,d.relatedTarget)){d.type=c;a.apply(this,arguments)}})}function f(a,c,d){return jQuery.event.proxy(a,function(h){var k=this.parentNode;for(a.apply(this,arguments);k&&k!==d&&k!==h.relatedTarget;){b.multiFilter(c,[k])[0]&&a.apply(k,arguments);k=k.parentNode}})}var g=document.compareDocumentPosition?
+function(a,c){return a.compareDocumentPosition(c)&16}:function(a,c){return a!==c&&(a.contains?a.contains(c):true)},l=b.fn.live,j=b.fn.die,e={mouseenter:"mouseover",mouseleave:"mouseout"};b.fn.live=function(a){var c=this,d=arguments,h=o(d),k=d[h];b.each(a.split(" "),function(n,m){n=k;if(e[m]){n=i(n,m);m=e[m]}d[0]=m;d[h]=n;l.apply(c,d)});return this};b.fn.die=function(a,c){if(/mouseenter|mouseleave/.test(a)){if(a=="mouseenter")a=a.replace(/mouseenter/g,"mouseover");if(a=="mouseleave")a=a.replace(/mouseleave/g,
+"mouseout")}j.call(this,a,c);return this};b.fn.bubbleLive=function(){var a=arguments,c=o(a);a[c]=f(a[c],this.selector,this.context);b.fn.live.apply(this,a)};b.fn.liveHover=function(a,c){return this.live("mouseenter",a).live("mouseleave",c)}})();(function(){b.support.bubblingChange=!(b.browser.msie||b.browser.safari);if(!b.support.bubblingChange){var i=b.fn.live,f=b.fn.die;function g(j){return b.event.proxy(j,function(e){var a=b(e.target);if((e.type!=="keydown"||e.keyCode===13)&&a.is("input, textarea, select")){var c=
+a.data("changeVal"),d=a.is(":checkbox, :radio"),h;if(d&&a.is(":enabled")&&e.type==="click"){h=a.is(":checked");if((e.target.type!=="radio"||h===true)&&e.type!=="change"&&c!==h){e.type="change";a.trigger(e)}}else if(!d){h=a.val();if(c!==undefined&&c!==h){e.type="change";a.trigger(e)}}h!==undefined&&a.data("changeVal",h)}})}function l(j){return b.event.proxy(j,function(e){if(e.type==="change"){var a=b(e.target),c=a.is(":checkbox, :radio")?a.is(":checked"):a.val();if(c===a.data("changeVal"))return false;
+a.data("changeVal",c)}j.apply(this,arguments)})}b.fn.live=function(j){var e=this,a=arguments,c=o(a),d=a[c];if(j.indexOf("change")!=-1){b(this.context).bind("click focusin focusout keydown",g(d));d=l(d)}a[c]=d;i.apply(e,a);return this};b.fn.die=function(j,e){j.indexOf("change")!=-1&&b(this.context).unbind("click focusin focusout keydown",e);f.apply(this,arguments);return this}}})();(function(){b.support.focusInOut=!!b.browser.msie;b.support.focusInOut||b.each({focus:"focusin",blur:"focusout"},function(f,
+g){b.event.special[g]={setup:function(){if(!this.addEventListener)return false;this.addEventListener(f,b.event.special[g].handler,true)},teardown:function(){if(!this.removeEventListener)return false;this.removeEventListener(f,b.event.special[g].handler,true)},handler:function(l){arguments[0]=b.event.fix(l);arguments[0].type=g;return b.event.handle.apply(this,arguments)}}});var i=null;b(document).bind("focusin",function(f){var g=f.realTarget||f.target;if(i&&i!==g){f.type="focusout";b(i).trigger(f);
+f.type="focusin";f.target=g}i=g}).bind("focusout",function(){i=null})})()})(jQuery);
+
 /*
   Needs:
     - AJAX error handling
     - Data caching
+    - Loading messages
     - Tooltips
 */
 
@@ -25,29 +36,114 @@ var MainWardrobe = new function Wardrobe() {
     return query.join('&');
   }
 
-  function WardrobeObject() {
+  function WardrobeObject(data) {
     this.addToCloset = function () {
-      Closet.objects[this.id] = this;
+      var object_ids = Closet.getObjectIds();
+      object_ids.push(this.id);
+      HashDaemon.set('closet', object_ids);
     }
+    
+    this.addToOutfit = function () {
+      var object_ids = Outfit.getObjectIds();
+      object_ids.push(this.id);
+      HashDaemon.set('objects', object_ids);
+    }
+    
+    this.isAvailable = function () {
+      return !this.isUnavailable();
+    }
+    
+    this.isCloseted = function () {
+      return $.inArray(this.id, Closet.getObjectIds()) != -1;
+    }
+    
+    this.isUnavailable = function () {
+      return $.inArray(this.id, Closet.unavailable_object_ids) != -1;
+    }
+    
+    this.isWorn = function () {
+      return this.isAvailable() &&
+        $.inArray(this.id, Outfit.getObjectIds()) != -1;
+    }
+    
+    this.removeFromCloset = function () {
+      this.removeFromOutfit();
+      var object_ids = Closet.getObjectIds(), i = object_ids.indexOf(this.id);
+      object_ids.splice(i, 1);
+      HashDaemon.set('closet', object_ids);
+    }
+    
+    this.removeFromOutfit = function () {
+      var object_ids = Outfit.getObjectIds(), i = object_ids.indexOf(this.id);
+      object_ids.splice(i, 1);
+      HashDaemon.set('objects', object_ids);
+    }
+    
+    data.id = parseInt(data.id);
+    
+    for(var key in data) {
+      this[key] = data[key];
+    }
+    
+    if(!WardrobeObject.cache[this.id]) {
+      WardrobeObject.cache[this.id] = this;
+    }
+  }
+  
+  WardrobeObject.cache = {};
+  
+  WardrobeObject.find = function (id) {
+    return WardrobeObject.cache[id];
   }
 
   function WardrobeRequest(type, method, data, callback) {
     var query = data ? buildQuery(data) : '';
-    
     $.getJSON('/get/' + type + '/' + method + '.json', query, callback);
   }
   
   var Closet = new function WardrobeCloset() {    
-    this.objects = {};
     this.unavailable_object_ids = [];
     
     this.setUnavailableObjectIds = function (ids) {
-      this.unavailable_object_ids = ids;
+      this.unavailable_object_ids = $.map(ids,
+        function (x) { return parseInt(x) });
       View.modules.closet.updateObjectStatuses();
     }
     
     this.clearObjectStatuses = function () {
       this.unavailable_object_ids = [];
+    }
+    
+    this.getObjectIds = function () {
+      return $.map(HashDaemon.get('closet'), 
+        function (x) { return parseInt(x) });
+    }
+    
+    this.getObjects = function () {
+      return $.map(HashDaemon.get('closet'), function (id) {
+        return WardrobeObject.find(id);
+      });
+    }
+    
+    this.initialize = function () {
+      if(!HashDaemon.get('closet')) {
+        HashDaemon.set('closet', HashDaemon.get('objects'));
+      }
+      this.update();
+    }
+    
+    this.update = function () {
+      var object_ids = HashDaemon.get('closet');
+      Closet.clearObjectStatuses();
+      
+      WardrobeRequest('object', 'find', {
+        'ids': object_ids
+      }, function (object_data) {
+        $.each(object_data, function () {
+          object = new WardrobeObject(this);
+        });
+        View.modules.closet.update();
+      });
     }
   }
 
@@ -90,25 +186,19 @@ var MainWardrobe = new function Wardrobe() {
   }
   
   var Outfit = new function WardrobeOutfit() {
-    var Outfit = this, totalSWFsAppended = 0;
+    var Outfit = this;
     
+    this.assets = [];
     this.pet_type = null;
     
-    function addAssets(klass, assets) {
-      $.each(assets, function() {
-        var id = 'outfit-asset-' + (totalSWFsAppended++);
-        $('<div id="' + id + '"></div>').appendTo('#outfit-preview');
-        attrs = {
-          'class': klass,
-          'style': 'z-index: ' + this.depth
-        }
-        attrs['class'] += ' outfit-asset';
-        if(this.is_body_specific == 1) attrs['class'] += ' body-specific-asset';
-        swfobject.embedSWF(this.url, id, '100%', '100%', '9',
-          '/assets/js/swfobject/expressInstall.swf', null,
-          {wmode: 'transparent'},
-          attrs);
-      });
+    function addAssets(assets, is_object_asset) {
+      $.each(assets, function () { this.is_object_asset = is_object_asset });
+      Outfit.assets = Outfit.assets.concat(assets);
+    }
+    
+    this.getObjectIds = function () {
+      return $.map(HashDaemon.get('objects'),
+        function (x) { return parseInt(x) });
     }
     
     this.setPetType = function (species, color) {
@@ -116,26 +206,14 @@ var MainWardrobe = new function Wardrobe() {
       HashDaemon.set('color', color);
     }
     
-    function updateObjects() {
+    this.updateObjects = function () {
       var object_ids = HashDaemon.get('objects');
-      Closet.clearObjectStatuses();
-      
-      WardrobeRequest('object', 'find', {
-        'ids': object_ids
-      }, function (object_data) {
-        $.each(object_data, function () {
-          object = $.extend(new WardrobeObject, this);
-          object.addToCloset();
-        });
-        View.modules.closet.update();
-      });
-      
       WardrobeRequest('object_asset', 'findByParentIdsAndBodyId', {
         'parent_ids': object_ids,
         'body_id': Outfit.pet_type.body_id
       }, function (assets) {
         var unavailable_object_ids = $.extend([], object_ids);
-        addAssets('object-outfit-asset', assets);
+        addAssets(assets, true);
         $.each(assets, function () {
           var asset = this, i = unavailable_object_ids.indexOf(asset.parent_id);
           if(i != -1) {
@@ -143,6 +221,7 @@ var MainWardrobe = new function Wardrobe() {
           }
         });
         Closet.setUnavailableObjectIds(unavailable_object_ids);
+        View.Outfit.update();
       });
     }
     
@@ -153,19 +232,29 @@ var MainWardrobe = new function Wardrobe() {
       }, function (pet_type) {
         if(pet_type) {
           if(Outfit.pet_type && pet_type.body_id != Outfit.pet_type.body_id) {
-            $('.body-specific-asset').remove();
+            Outfit.assets = $.grep(Outfit.assets, function (asset) {
+              return asset.is_body_specific == 0;
+            });
           }
-          $('.biology-outfit-asset').remove();
+          Outfit.assets = $.grep(Outfit.assets, function (asset) {
+            return asset.is_object_asset;
+          });
           Outfit.pet_type = pet_type;
-          addAssets('biology-outfit-asset', pet_type.assets);
-          updateObjects();
+          addAssets(pet_type.assets, false);
+          Outfit.updateObjects();
         } else {
           View.error('Pet type not found!');
         }
       });
     }
     
+    // It feels silly, doesn't it? But updatePetType just starts the updating
+    // *chain*, and isn't really the whole function, so I feel weird about
+    // just plain calling it the update function.
+    
     this.update = updatePetType;
+    
+    this.initialize = this.update;
   }
   
   var View = new function WardrobeView() {
@@ -223,15 +312,54 @@ var MainWardrobe = new function Wardrobe() {
     $(window).resize(onResize);
     onResize();
     
+    this.Outfit = new function WardrobeViewOutfit() {
+      this.update = function () {
+        $('.outfit-asset').each(function () {
+          var el = $(this), parent_id = el.attr('data-parent-id'), object;
+          if(el.hasClass('object-asset')) {
+            object = WardrobeObject.find(parent_id);
+            if(!object.isWorn()) el.remove();
+          } else {
+            if(Outfit.pet_type.id != parent_id) el.remove();
+          }
+        });
+        
+        $.each(Outfit.assets, function() {
+          if(
+            (this.is_object_asset && WardrobeObject.find(this.parent_id).isWorn())
+            || (!this.is_object_asset)
+          ) {
+            var id = 'outfit-asset-' + this.id + '-'
+              + (this.is_object_asset ? 'object' : 'biology'),
+              klass = 'outfit-asset';
+            if(!$('#' + id).length) {
+              $('<div id="' + id + '"></div>')
+                .appendTo('#outfit-preview');
+              if(this.is_object_asset) klass += ' object-asset';
+              attrs = {
+                'class': klass,
+                'style': 'z-index: ' + this.depth,
+                'data-parent-id': this.parent_id
+              }
+              swfobject.embedSWF(this.url, id, '100%', '100%', '9',
+                '/assets/js/swfobject/expressInstall.swf', null,
+                {wmode: 'transparent'},
+                attrs);
+            }
+          }
+        });
+      }
+    }
+    
     this.modules = [];
     
     this.modules.closet = new function WardrobeClosetModule() {
       this.update = function () {
         var objects_wrapper = $('#closet-module-objects').html('');
-        $.each(Closet.objects, function () {
+        $.each(Closet.getObjects(), function () {
           var object = $('<div></div>').attr({
-            'id': 'closet-module-object-' + this.id,
-            'class': 'closet-module-object'
+            'id': 'object-' + this.id,
+            'class': 'object'
           }).data('object_id', this.id);
           $('<img />').attr({
             'src': this.thumbnail_url,
@@ -244,11 +372,10 @@ var MainWardrobe = new function Wardrobe() {
       }
       
       this.updateObjectStatuses = function () {
-        $('.closet-module-object').each(function () {
-          var el = $(this);
-          if($.inArray(el.data('object_id'), Closet.unavailable_object_ids) != -1) {
-            el.addClass('closet-module-unavailable-object');
-          }
+        $('.object').each(function () {
+          var el = $(this), object = WardrobeObject.find(el.data('object_id'));
+          el.toggleClass('unavailable-object', object.isUnavailable());
+          el.toggleClass('worn-object', object.isWorn());
         });
       }
     }
@@ -280,10 +407,65 @@ var MainWardrobe = new function Wardrobe() {
       });
     }
     
+    $('.object').live('mouseenter', function (e) {
+      var el = $(e.target);
+      if(el.is('.object') && !el.children('.object-actions').length) {
+        var object = WardrobeObject.find(el.data('object_id'));
+        
+        function addAction(name) {
+          var klass = name.toLowerCase();
+          $('<a href="#" class="object-action object-action-' + klass + '">'
+            + name + '</div>').appendTo(el);
+        }
+        
+        if(object.isWorn()) {
+          addAction('Unwear');
+        } else {
+          addAction('Wear');
+        }
+        
+        if(object.isCloseted()) {
+          addAction('Uncloset');
+        } else {
+          addAction('Closet');
+        }
+      }
+    }).live('mouseleave', function () {
+      $(this).children('.object-action').remove();
+    });
+
     this.error = function (message) {
       alert(message);
     }
   }
   
-  Outfit.update();
+  $('.object-action-wear').live('click', function (e) {
+    var el = $(this).parent(),
+      object = WardrobeObject.find(el.data('object_id'));
+    e.preventDefault();
+    object.addToOutfit();
+    View.Outfit.update();
+    View.modules.closet.update();
+  });
+  
+  $('.object-action-unwear').live('click', function (e) {
+    var el = $(this).parent(),
+      object = WardrobeObject.find(el.data('object_id'));
+    e.preventDefault();
+    object.removeFromOutfit();
+    View.Outfit.update();
+    View.modules.closet.update();
+  });
+  
+  $('.object-action-uncloset').live('click', function (e) {
+    var el = $(this).parent(),
+      object = WardrobeObject.find(el.data('object_id'));
+    e.preventDefault();
+    object.removeFromCloset();
+    View.Outfit.update();
+    View.modules.closet.update();
+  });
+  
+  Outfit.initialize();
+  Closet.initialize();
 }

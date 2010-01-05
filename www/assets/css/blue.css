@@ -171,7 +171,7 @@ body.wardrobe div.toolbar {
   bottom: 0;
   color: #0B61A4;
   position: absolute;
-}
+}-
 
 body.wardrobe div.toolbar-modules {
   height: 100%;
@@ -241,17 +241,49 @@ body.wardrobe #closet-module-objects {
   overflow: hidden;
 }
 
-body.wardrobe .closet-module-object {
+body.wardrobe .object {
   float: left;
+  opacity: 0.5; filter: alpha(opacity=5);
   padding: .5em;
+  position: relative;
   text-align: center;
   width: 100px;
 }
 
-body.wardrobe .closet-module-unavailable-object {
-  background: #eee;
-  filter: alpha(opacity=20);
-  opacity: 0.2;
+body.wardrobe .worn-object {
+  opacity: 1; filter: alpha(opacity=100);
+}
+
+body.wardrobe .unavailable-object {
+  background: #FBE3E4;
+  color: #8A1F11;
+}
+
+body.wardrobe .object-action {
+  color: #FFF;
+  padding: .25em;
+  position: absolute;
+}
+
+body.wardrobe .object-action-wear, body.wardrobe .object-action-unwear {
+  left: .5em;
+  top: .5em;
+}
+
+body.wardrobe .object-action-closet, body.wardrobe .object-action-uncloset {
+  margin-top: -.5em;
+  right: .5em;
+  top: 80px;
+}
+
+body.wardrobe .object-action-wear, body.wardrobe .object-action-closet {
+  background: #E6EFC2;
+  color: #264409;
+}
+
+body.wardrobe .object-action-unwear, body.wardrobe .object-action-uncloset {
+  background: #FBE3E4;
+  color: #8A1F11;
 }
 
 body.wardrobe #pet-type-form {

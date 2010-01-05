@@ -160,15 +160,15 @@ class Wearables_PetTypeAPIAccessor extends Wearables_APIAccessor {
   
   public function findBySpeciesAndColor($params) {
     $pet_types = Wearables_PetType::all(array(
-      'select' => 'body_id',
+      'select' => 'id, body_id',
       'where' => 'species_id = '.intval($params['species_id']).' AND '
         .'color_id = '.intval($params['color_id']),
       'limit' => 1
     ));
     $pet_type = $pet_types[0];
     if($pet_type) {
-      $assets_select = array('url', 'zone_id', 'depth');
-      $assets_select_str = implode(', ', $assets_select);
+      $assets_select = array('id', 'url', 'zone_id', 'depth', 'parent_id');
+      $assets_select_str = 'swf_assets.id, swf_assets.url, swf_assets.zone_id, z.depth, swf_assets.parent_id';
       $pet_type->assets = $this->resultObjects(Wearables_BiologyAsset::all(array(
         'select' => $assets_select_str,
         'joins' => 'INNER JOIN zones z ON z.id = swf_assets.zone_id',
@@ -177,7 +177,7 @@ class Wearables_PetTypeAPIAccessor extends Wearables_APIAccessor {
           .'pt.color_id = '.intval($params['color_id']).')'
       )), $assets_select);
     }
-    $objects = $this->resultObjects($pet_types, array('body_id', 'assets'));
+    $objects = $this->resultObjects($pet_types, array('id', 'body_id', 'assets'));
     return $objects[0];
   }
 }
