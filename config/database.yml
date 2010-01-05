@@ -5,3 +5,11 @@ development:
   database: wearables
   user: wearables
   password:
+  
+production:
+  type: mysql
+  host: localhost
+  port: 3306
+  database: wearables
+  user: wearables
+  password:

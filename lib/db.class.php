@@ -48,8 +48,8 @@ class Wearables_DB {
   
   static function getEnvironment() {
     static $registered_function = false;
-    $environment = isset($_ENV['WearablesEnvironment']) ?
-      $_ENV['WearablesEnvironment'] : 'development';
+    $environment = apache_getenv('WearablesEnv');
+    if(!$environment) $environment = 'development';
     if(!$registered_function && $environment == 'development') {
       register_shutdown_function(array('Wearables_DB', 'outputQueryLog'));
       $registered_function = true;

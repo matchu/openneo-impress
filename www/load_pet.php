@@ -10,6 +10,11 @@ function handleException($e) {
   }
 }
 
+function buildPath($path, $query) {
+  if($query) $path .= '?'.http_build_query($query);
+  return $path;
+}
+
 $pet = new Wearables_Pet();
 
 $destination = '/';
@@ -36,10 +41,6 @@ if($pet_name = $_POST['name']) {
   if($error) {
     $query['error'] = $error;
     $query['name'] = $pet_name;
-  } elseif($warning) {
-    $query['warning'] = $warning;
-    $query['name'] = $pet_name;
-    $query['destination'] = $destination;
   } else {
     $destination = 'wardrobe.html';
     $object_ids = array();
@@ -49,9 +50,16 @@ if($pet_name = $_POST['name']) {
     $query['color'] = $pet->getColor()->getId();
     $query['species'] = $pet->getSpecies()->getId();
     $query['objects'] = $object_ids;
+    if($warning) {
+      $would_be_destination = buildPath($destination, $query);
+      $query = array();
+      $query['warning'] = $warning;
+      $query['name'] = $pet_name;
+      $query['destination'] = $would_be_destination;
+      $destination = '/';
+    }
   }
 }
 
-$query = http_build_query($query);
-header("Location: $destination?$query");
+header('Location: '.buildPath($destination, $query));
 ?>
