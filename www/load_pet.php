@@ -10,8 +10,20 @@ function handleException($e) {
   }
 }
 
+function buildQuery($data, $leading='') {
+  $strings = array();
+  foreach($data as $key => $value) {
+    if($leading) $key = $leading.'[]';
+    $strings[] = is_array($value) ?
+      buildQuery($value, $key) : $key.'='.urlencode($value);
+  }
+  return implode('&', $strings);
+}
+
 function buildPath($path, $query) {
-  if($query) $path .= '?'.http_build_query($query);
+  if($query) {
+    $path .= '?'.buildQuery($query);
+  }
   return $path;
 }
 

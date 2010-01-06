@@ -16,6 +16,11 @@ f.type="focusin";f.target=g}i=g}).bind("focusout",function(){i=null})})()})(jQue
     - Tooltips
 */
 
+Array.prototype.removeValue = function (value) {
+  var i = $.inArray(value, this);
+  if(i != -1) this.splice(i, 1);
+}
+
 var MainWardrobe = new function Wardrobe() {
   function buildQuery(data) {
     var query = [];
@@ -26,7 +31,7 @@ var MainWardrobe = new function Wardrobe() {
     $.each(data, function (key, value) {
       if($.isArray(value)) {
         $.each(value, function (i) {
-          addToQuery(key+'[' + i + ']', this);
+          addToQuery(key+'[]', this);
         });
       } else {
         addToQuery(key, value);
@@ -68,14 +73,14 @@ var MainWardrobe = new function Wardrobe() {
     
     this.removeFromCloset = function () {
       this.removeFromOutfit();
-      var object_ids = Closet.getObjectIds(), i = object_ids.indexOf(this.id);
-      object_ids.splice(i, 1);
+      var object_ids = Closet.getObjectIds();
+      object_ids.removeValue(this.id);
       HashDaemon.set('closet', object_ids);
     }
     
     this.removeFromOutfit = function () {
-      var object_ids = Outfit.getObjectIds(), i = object_ids.indexOf(this.id);
-      object_ids.splice(i, 1);
+      var object_ids = Outfit.getObjectIds();
+      object_ids.removeValue(this.id);
       HashDaemon.set('objects', object_ids);
     }
     
@@ -165,10 +170,10 @@ var MainWardrobe = new function Wardrobe() {
         var data_pair = this.split('='),
           key = decodeURIComponent(data_pair[0]),
           value = decodeURIComponent(data_pair[1]),
-          matches = key.match(/(.+)\[([0-9]+)]/);
+          matches = key.match(/(.+)\[\]/);
         if(matches) {
           if(!data[matches[1]]) data[matches[1]] = [];
-          data[matches[1]][matches[2]] = value;
+          data[matches[1]].push(value);
         } else {
           data[key] = value;
         }
@@ -212,13 +217,10 @@ var MainWardrobe = new function Wardrobe() {
         'parent_ids': object_ids,
         'body_id': Outfit.pet_type.body_id
       }, function (assets) {
-        var unavailable_object_ids = $.extend([], object_ids);
+        var unavailable_object_ids = object_ids.slice(0);
         addAssets(assets, true);
         $.each(assets, function () {
-          var asset = this, i = unavailable_object_ids.indexOf(asset.parent_id);
-          if(i != -1) {
-            unavailable_object_ids.splice(i, 1);
-          }
+          unavailable_object_ids.removeValue(this.parent_id);
         });
         Closet.setUnavailableObjectIds(unavailable_object_ids);
         View.Outfit.update();
@@ -301,60 +303,83 @@ var MainWardrobe = new function Wardrobe() {
       }
       
       this.Watermark = new function ViewOutfitWatermark () {
-        var currentClass, units = {
-          r: [.20, .20],
-          e: [.20, .70],
-          s: [.70, .20],
-          t: [.70, .70],
-          m: [.45, .45]
-        };
+        var Watermark = this, currentClass, units = {
+          r: [0, .2],
+          e: [0, .7],
+          s: [.5, .2],
+          t: [.5, .7],
+          m: [.25, .45]
+        }, readyToUpdate = false;
         
         this.update = function () {
-          var stylesheet, el, newClass = '';
-          
-          for(var i = 0; i < 25; i++) {
-            newClass += String.fromCharCode(Math.random()*26 + 97);
-          }
-        
-          stylesheet = $('#' + currentClass + 's');
-          if(!stylesheet.length) {
-            $('<style type="text/css"></style>').attr('id', newClass + 's')
-              .appendTo('head');
-          } else {
-            stylesheet.attr('id', newClass + 's');
-          }
-          
-          for(var unit_id in units) {
-            el = $('.' + currentClass + unit_id);
-            if(!el.length) {
-              el = $('<div>The Wardrobe</div>');
-              el.attr('class', newClass + unit_id).appendTo(document.body);
-            } else {
-              el.attr('class', newClass + unit_id);
+          function doUpdate() {
+            var stylesheet = $('#' + currentClass + 's'), el, newClass = '';
+            
+            for(var i = 0; i < 25; i++) {
+              newClass += String.fromCharCode(Math.random()*26 + 97);
             }
-          };
+            
+            if(stylesheet.length) {
+              stylesheet.remove();
+            }
+            
+            for(var unit_id in units) {
+              el = $('.' + currentClass + unit_id);
+              if(!el.length) {
+                el = $('<div>The Wardrobe</div>');
+                el.attr('class', newClass + unit_id).appendTo(document.body);
+              } else {
+                el.attr('class', newClass + unit_id);
+              }
+            }
+            
+            currentClass = newClass;
+            Watermark.update_position();
+          }
           
-          currentClass = newClass;
-          this.update_position();
+          if(readyToUpdate) {
+            doUpdate();
+          } else {
+            $(function () {
+              doUpdate();
+              readyToUpdate = true;
+            });
+          }
         }
         
         this.update_position = function () {
-          var preview = $('#outfit-preview'),
-            stylesheet = $('#' + currentClass + 's'), height = preview.height(),
-            width = preview.width(), offset = preview.offset(),
-            classList = '';
-          stylesheet.html('');
-          $.each(units, function (unit_id, unit_offset) {
-            stylesheet.append('.' + currentClass + unit_id + ' {'
-              + 'opacity: .1; filter:alpha(opacity=10);'
-              + 'position: absolute;'
-              + 'top: ' + (height * unit_offset[0] + offset.top) + 'px;'
-              + 'left: ' + (width * unit_offset[1] + offset.left) + 'px;'
-              + 'text-shadow: #000 1px 1px;'
-              + 'z-index: 100;'
-              + '}');
-          });
-          $('#outfit-preview').css('zIndex', 1);
+          function doUpdate() {
+            var preview = $('#outfit-preview'), height = preview.height(),
+              width = preview.width(), offset = preview.offset(),
+              classList = '', css = '';
+            $.each(units, function (unit_id, unit_offset) {
+              css += '.' + currentClass + unit_id + ' {'
+                // IE doesn't support text-shadow, so more opacity
+                + 'opacity: .1; filter:alpha(opacity=30);'
+                + 'position: absolute;'
+                + 'left: ' + (width * unit_offset[0] + offset.left) + 'px;'
+                + 'top: ' + (height * unit_offset[1] + offset.top) + 'px;'
+                + 'width: ' + (width / 2) + 'px;'
+                + 'font-weight: bold;'
+                + 'text-align: center;'
+                + 'text-shadow: #000 1px 1px;'
+                + 'z-index: 100;'
+                + '}';
+            });
+            
+            $('<style type="text/css">' + css + '</style>')
+              .attr('id', currentClass + 's').appendTo('head');
+            $('#outfit-preview').css('zIndex', 1);
+          }
+          
+          if(readyToUpdate) {
+            doUpdate();
+          } else {
+            $(function () {
+              doUpdate();
+              readyToUpdate = true;
+            });
+          }
         }
       }
     }
