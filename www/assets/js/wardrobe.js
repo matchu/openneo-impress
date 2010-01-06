@@ -21,6 +21,14 @@ Array.prototype.removeValue = function (value) {
   if(i != -1) this.splice(i, 1);
 }
 
+Array.prototype.clone = function () {
+  return this.splice(0);
+}
+
+Array.prototype.toInt = function () {
+  return $.map(this, function (x) { return parseInt(x) });
+}
+
 var MainWardrobe = new function Wardrobe() {
   function buildQuery(data) {
     var query = [];
@@ -47,12 +55,19 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     data.id = parseInt(data.id);
+    data.parent_id = parseInt(data.parent_id);
     
     for(var key in data) {
       this[key] = data[key];
     }
     
     this.constructor.cache[this.id] = this;
+    
+    var parent_cache = this.constructor.cache_by_parent_id[this.parent_id];
+    if(!parent_cache) {
+      parent_cache = this.constructor.cache_by_parent_id[this.parent_id] = [];
+    }
+    parent_cache.push(this);
   }
   
   function WardrobeObjectAsset(data) {
@@ -72,8 +87,11 @@ var MainWardrobe = new function Wardrobe() {
   $.each([WardrobeObjectAsset, WardrobeBiologyAsset], function () {
     this.cache = {};
     this.find = function (id) {
+      id = parseInt(id);
       return this.cache[id];
     }
+    
+    this.cache_by_parent_id = {};
   });
 
   function WardrobeObject(data) {
@@ -87,6 +105,14 @@ var MainWardrobe = new function Wardrobe() {
       var object_ids = Outfit.getObjectIds();
       object_ids.push(this.id);
       HashDaemon.set('objects', object_ids);
+    }
+    
+    this.getAssets = function () {
+      return WardrobeObjectAsset.cache_by_parent_id[this.id] || [];
+    }
+    
+    this.hasAssets = function () {
+      return this.getAssets().length > 0;
     }
     
     this.isAvailable = function () {
@@ -131,6 +157,7 @@ var MainWardrobe = new function Wardrobe() {
   WardrobeObject.cache = {};
   
   WardrobeObject.find = function (id) {
+    id = parseInt(id);
     var object = WardrobeObject.cache[id];
     if(!object) {
       object = new WardrobeObject({id: id});
@@ -147,8 +174,7 @@ var MainWardrobe = new function Wardrobe() {
     this.unavailable_object_ids = [];
     
     this.setUnavailableObjectIds = function (ids) {
-      this.unavailable_object_ids = $.map(ids,
-        function (x) { return parseInt(x) });
+      this.unavailable_object_ids = ids.toInt();
       View.modules.closet.updateObjectStatuses();
     }
     
@@ -157,8 +183,7 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     this.getObjectIds = function () {
-      return $.map(HashDaemon.get('closet'), 
-        function (x) { return parseInt(x) });
+      return HashDaemon.get('closet').toInt();
     }
     
     this.getObjects = function () {
@@ -241,8 +266,7 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     this.getObjectIds = function () {
-      return $.map(HashDaemon.get('objects'),
-        function (x) { return parseInt(x) });
+      return HashDaemon.get('objects').toInt();
     }
     
     this.setPetType = function (species, color) {
@@ -251,19 +275,25 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     this.updateObjects = function () {
-      var object_ids = HashDaemon.get('objects');
-      WardrobeRequest('object_asset', 'findByParentIdsAndBodyId', {
-        'parent_ids': object_ids,
-        'body_id': Outfit.pet_type.body_id
-      }, function (assets) {
-        var unavailable_object_ids = object_ids.slice(0);
-        addAssets(assets, WardrobeObjectAsset);
-        $.each(assets, function () {
-          unavailable_object_ids.removeValue(this.parent_id);
-        });
-        Closet.setUnavailableObjectIds(unavailable_object_ids);
-        View.Outfit.update();
+      var object_ids = $.grep(this.getObjectIds(), function (object_id) {
+        return !WardrobeObject.find(object_id).hasAssets();
       });
+      if(object_ids.length) {
+        WardrobeRequest('object_asset', 'findByParentIdsAndBodyId', {
+          'parent_ids': object_ids,
+          'body_id': Outfit.pet_type.body_id
+        }, function (assets) {
+          var unavailable_object_ids = object_ids.slice(0);
+          addAssets(assets, WardrobeObjectAsset);
+          $.each(assets, function () {
+            unavailable_object_ids.removeValue(parseInt(this.parent_id));
+          });
+          Closet.setUnavailableObjectIds(unavailable_object_ids);
+          View.Outfit.update();
+        });
+      } else {
+        View.Outfit.update();
+      }
     }
     
     function updatePetType() {
@@ -569,7 +599,7 @@ var MainWardrobe = new function Wardrobe() {
         object = WardrobeObject.find(el.data('object_id'));
       e.preventDefault();
       object.addToOutfit();
-      View.Outfit.update();
+      Outfit.updateObjects();
       View.modules.closet.update();
     });
     
