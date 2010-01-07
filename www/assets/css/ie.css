@@ -1,0 +1,11 @@
+body.wardrobe .object img, body.wardrobe .object span {
+  filter: alpha(opacity=25);
+}
+
+body.wardrobe .worn-object img, body.wardrobe .worn-object span {
+  filter: alpha(opacity=100);
+}
+
+body.wardrobe .object span {
+  display: inline-block;
+}

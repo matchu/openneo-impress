@@ -243,15 +243,18 @@ body.wardrobe #closet-module-objects {
 
 body.wardrobe .object {
   float: left;
-  opacity: 0.5; filter: alpha(opacity=5);
   padding: .5em;
   position: relative;
   text-align: center;
   width: 100px;
 }
 
-body.wardrobe .worn-object {
-  opacity: 1; filter: alpha(opacity=100);
+body.wardrobe .object img, body.wardrobe .object span {
+  opacity: 0.25;
+}
+
+body.wardrobe .worn-object img, body.wardrobe .worn-object span {
+  opacity: 1;
 }
 
 body.wardrobe .unavailable-object {

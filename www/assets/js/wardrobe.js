@@ -469,7 +469,8 @@ var MainWardrobe = new function Wardrobe() {
             'title': this.description,
             'alt': ''
           }).appendTo(object);
-          object.append(this.name).appendTo(objects_wrapper);
+          object.append('<span>' + this.name + '</span>')
+            .appendTo(objects_wrapper);
         });
         this.updateObjectStatuses();
       }
