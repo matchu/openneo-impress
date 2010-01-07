@@ -564,14 +564,14 @@ var MainWardrobe = new function Wardrobe() {
     onResize();
     
     $('.object').live('mouseenter', function (e) {
-      var el = $(e.target);
-      if(el.is('.object') && !el.children('.object-actions').length) {
+      var el = $(this);
+      if(!el.children('.object-action').length) {
         var object = WardrobeObject.find(el.data('object_id'));
         
         function addAction(name) {
           var klass = name.toLowerCase();
           $('<a href="#" class="object-action object-action-' + klass + '">'
-            + name + '</div>').appendTo(el);
+            + name + '</a>').appendTo(el);
         }
         
         if(object.isWorn()) {
