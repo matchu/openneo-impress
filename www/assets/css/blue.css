@@ -26,7 +26,6 @@ body {
 
 body {
   background-color: #0B61A4;
-  color: #fff;
   font-family: Delicious, Helvetica, Arial, sans-serif;
 }
 
@@ -73,6 +72,7 @@ input[type=submit] {
 
 body.index {
   background-position: center center;
+  color: #fff;
 }
 
 body.index h1 {
@@ -159,7 +159,11 @@ body.index .floated-icon {
 
 /* Wardrobe */
 
-body.wardrobe h2 {
+body.wardrobe {
+  color: #0B61A4;
+}
+
+body.wardrobe div.toolbar h1 {
   font-size: 200%;
   margin-bottom: .5em;
 }
@@ -169,9 +173,8 @@ body.wardrobe div.toolbar {
   border-color: #66A3D2;
   border-style: solid;
   bottom: 0;
-  color: #0B61A4;
   position: absolute;
-}-
+}
 
 body.wardrobe div.toolbar-modules {
   height: 100%;
@@ -287,6 +290,40 @@ body.wardrobe .object-action-wear, body.wardrobe .object-action-closet {
 body.wardrobe .object-action-unwear, body.wardrobe .object-action-uncloset {
   background: #FBE3E4;
   color: #8A1F11;
+}
+
+body.wardrobe #object-description {
+  background-color: #FFF;
+  background-position: 10px center;
+  background-repeat: no-repeat;
+  border-color: #000;
+  border-style: solid;
+  border-width: 1px 0 0 1px;
+  display: none;
+  padding: 10px 10px 10px 100px;
+  position: absolute;
+  width: 30em;
+  z-index: 100;
+}
+
+body.wardrobe #object-description img {
+  margin-right: .5em;
+}
+
+body.wardrobe #object-description dt {
+  clear: left;
+  float: left;
+  font-weight: bold;
+  text-align: right;
+  width: 4em;
+}
+
+body.wardrobe #object-description dt:after {
+  content: ":";
+}
+
+body.wardrobe #object-description dd {
+  margin: 0 0 0 4.5em;
 }
 
 body.wardrobe #pet-type-form {

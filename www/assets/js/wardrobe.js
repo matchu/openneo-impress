@@ -430,6 +430,7 @@ var MainWardrobe = new function Wardrobe() {
                 + 'left: ' + (width * unit_offset[0] + offset.left) + 'px;'
                 + 'top: ' + (height * unit_offset[1] + offset.top) + 'px;'
                 + 'width: ' + (width / 2) + 'px;'
+                + 'color: #fff;'
                 + 'font-weight: bold;'
                 + 'text-align: center;'
                 + 'text-shadow: #000 1px 1px;'
@@ -467,7 +468,9 @@ var MainWardrobe = new function Wardrobe() {
           $('<img />').attr({
             'src': this.thumbnail_url,
             'title': this.description,
-            'alt': ''
+            'alt': '',
+            'height': 80,
+            'width': 80
           }).appendTo(object);
           object.append('<span>' + this.name + '</span>')
             .appendTo(objects_wrapper);
@@ -538,6 +541,10 @@ var MainWardrobe = new function Wardrobe() {
         });
       }
       View.Outfit.Watermark.update_position();
+      $('#object-description').css({
+        bottom: toolbars.bottom.outerHeight(),
+        right: toolbars.right.outerWidth()
+      });
     }
     
     var toolbars = {};
@@ -565,7 +572,7 @@ var MainWardrobe = new function Wardrobe() {
     onResize();
     
     $('.object').live('mouseenter', function (e) {
-      var el = $(this);
+      var el = $(this), descriptionEl = $('#object-description');
       if(!el.children('.object-action').length) {
         var object = WardrobeObject.find(el.data('object_id'));
         
@@ -586,9 +593,22 @@ var MainWardrobe = new function Wardrobe() {
         } else {
           addAction('Closet');
         }
+        
+        descriptionEl.html(
+          '<h1>'+
+            object.name +
+            ' (' + [object.rarity, object.rarity_index].join(' - ') + ')' +
+          '</h1>' +
+          '<p>' + object.description + '</p>' +
+          '<dl>' +
+            '<dt>Type</dt><dd>' + object.type + '</dd>' +
+            '<dt>Est. Price</dt><dd>' + object.price + '</dd>' +
+          '</dl>'
+        ).css('backgroundImage', 'url('+object.thumbnail_url+')').show();
       }
     }).live('mouseleave', function () {
       $(this).children('.object-action').remove();
+      $('#object-description').hide();
     });
 
     this.error = function (message) {

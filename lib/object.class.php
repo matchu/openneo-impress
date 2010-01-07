@@ -94,7 +94,10 @@ class Wearables_ObjectAPIAccessor extends Wearables_APIAccessor {
   public function find($params) {
     if(!$params['ids']) return array();
     $ids = implode(', ', array_map('intval', $params['ids']));
-    $select = array('id', 'name', 'description', 'thumbnail_url');
+    $select = array(
+      'id', 'name', 'thumbnail_url', 'description', 'type', 'rarity',
+        'rarity_index', 'price', 'weight_lbs'
+    );
     $objects = Wearables_Object::all(array(
       'select' => implode(', ', $select),
       'where' => 'id IN ('.$ids.')'
