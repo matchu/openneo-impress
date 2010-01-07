@@ -574,7 +574,7 @@ var MainWardrobe = new function Wardrobe() {
     $('.object').live('mouseenter', function (e) {
       var el = $(this), descriptionEl = $('#object-description');
       if(!el.children('.object-action').length) {
-        var object = WardrobeObject.find(el.data('object_id'));
+        var object = WardrobeObject.find(el.data('object_id')), error = '';
         
         function addAction(name) {
           var klass = name.toLowerCase();
@@ -594,12 +594,20 @@ var MainWardrobe = new function Wardrobe() {
           addAction('Closet');
         }
         
+        if(object.isUnavailable()) {
+          error = '<p class="ui-state-error">' +
+            "We haven't seen this body type wearing this item before. " +
+            'If you have, go to the homepage and add the pet, so we can ' +
+            'get that data! Thanks!</p>'
+        }
+        
         descriptionEl.html(
           '<h1>'+
             object.name +
             ' (' + [object.rarity, object.rarity_index].join(' - ') + ')' +
           '</h1>' +
           '<p>' + object.description + '</p>' +
+          error +
           '<dl>' +
             '<dt>Type</dt><dd>' + object.type + '</dd>' +
             '<dt>Est. Price</dt><dd>' + object.price + '</dd>' +

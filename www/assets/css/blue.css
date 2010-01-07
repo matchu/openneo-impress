@@ -326,6 +326,11 @@ body.wardrobe #object-description dd {
   margin: 0 0 0 4.5em;
 }
 
+body.wardrobe #object-description .ui-state-error {
+  margin-bottom: 1em;
+  padding: .25em;
+}
+
 body.wardrobe #pet-type-form {
   visibility: hidden;
 }
