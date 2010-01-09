@@ -245,10 +245,12 @@ body.wardrobe #closet-module-objects {
 }
 
 body.wardrobe .object {
-  float: left;
+  display: -moz-inline-stack;
+  display: inline-block;
   padding: .5em;
   position: relative;
   text-align: center;
+  vertical-align: top;
   width: 100px;
 }
 

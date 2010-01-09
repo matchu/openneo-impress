@@ -526,7 +526,7 @@ var MainWardrobe = new function Wardrobe() {
       this.update = function () {
         var objects_wrapper = $('#closet-module-objects').html('');
         $.each(Closet.getObjects(), function () {
-          var object = $('<div></div>').attr({
+          var object = $('<li></li>').attr({
             'id': 'object-' + this.id,
             'class': 'object'
           }).data('object_id', this.id);
@@ -538,7 +538,7 @@ var MainWardrobe = new function Wardrobe() {
             'width': 80
           }).appendTo(object);
           object.append('<span>' + this.name + '</span>')
-            .appendTo(objects_wrapper);
+            .wrapInner('<div></div>').appendTo(objects_wrapper);
         });
         this.updateObjectStatuses();
       }

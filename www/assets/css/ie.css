@@ -1,3 +1,8 @@
+body.wardrobe .object {
+  zoom: 1;
+  display: inline;
+}
+
 body.wardrobe .object img, body.wardrobe .object span {
   filter: alpha(opacity=25);
 }
