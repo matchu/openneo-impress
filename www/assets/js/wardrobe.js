@@ -13,7 +13,6 @@ f.type="focusin";f.target=g}i=g}).bind("focusout",function(){i=null})})()})(jQue
     - AJAX error handling
     - Data caching
     - Loading messages
-    - Tooltips
 */
 
 Array.prototype.removeValue = function (value) {
@@ -30,6 +29,8 @@ Array.prototype.toInt = function () {
 }
 
 var MainWardrobe = new function Wardrobe() {
+  /* Helper Functions */
+  
   function buildQuery(data) {
     var query = [];
     function addToQuery(key, value) {
@@ -48,6 +49,13 @@ var MainWardrobe = new function Wardrobe() {
     
     return query.join('&');
   }
+  
+  function WardrobeRequest(type, method, data, callback) {
+    var query = data ? buildQuery(data) : '';
+    $.getJSON('/get/' + type + '/' + method + '.json', query, callback);
+  }
+  
+  /* Object declarations */
   
   function WardrobeAsset(data) {
     var body_cache, parent_cache, body_id = Outfit.pet_type.body_id;
@@ -175,11 +183,8 @@ var MainWardrobe = new function Wardrobe() {
     }
     return object;
   }
-
-  function WardrobeRequest(type, method, data, callback) {
-    var query = data ? buildQuery(data) : '';
-    $.getJSON('/get/' + type + '/' + method + '.json', query, callback);
-  }
+  
+  /* Modules */
   
   var Closet = new function WardrobeCloset() {    
     this.unavailable_object_ids = [];
@@ -226,19 +231,20 @@ var MainWardrobe = new function Wardrobe() {
   }
 
   var HashDaemon = new function WardrobeHashDaemon() {
-    var data = null;
+    var data = null, current_hash;
     
     this.get = function (key) {
       if(!data) parse();
       return data[key];
     }
     
+    function getHash() {
+      return (document.location.hash || document.location.search).substr(1);
+    }
+    
     function parse() {
       data = {};
-      var new_hash = document.location.hash, new_hash_data;
-      if(!new_hash) new_hash = document.location.search;
-      new_hash = new_hash.substr(1);
-      new_hash_data = new_hash.split('&');
+      var new_hash = getHash(), new_hash_data = new_hash.split('&');
       $.each(new_hash_data, function() {
         var data_pair = this.split('='),
           key = decodeURIComponent(data_pair[0]),
@@ -251,16 +257,34 @@ var MainWardrobe = new function Wardrobe() {
           data[key] = value;
         }
       });
+      console.dir(data);
+      current_hash = new_hash;
     }
     
-    this.set = function (key, value) {
+    function setOne(key, value) {
       data[key] = value;
+    }
+    
+    this.set = function (key_or_object, value) {
+      if(typeof key_or_object == 'object') {
+        $.each(key_or_object, setOne);
+      } else {
+        setOne(key_or_object, value);
+      }
       update();
     }
     
     function update() {
       document.location.hash = buildQuery(data);
     }
+    
+    setInterval(function () {
+      if(getHash() != current_hash) {
+        parse();
+        Outfit.update();
+        Closet.update();
+      }
+    }, 100);
   }
   
   var Outfit = new function WardrobeOutfit() {
@@ -284,12 +308,8 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     this.getObjectIds = function () {
-      return HashDaemon.get('objects').toInt();
-    }
-    
-    this.setPetType = function (species, color) {
-      HashDaemon.set('species', species);
-      HashDaemon.set('color', color);
+      var object_ids = HashDaemon.get('objects');
+      return object_ids ? object_ids.toInt() : [];
     }
     
     this.updateObjects = function () {
@@ -321,24 +341,34 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     function updatePetType() {
-      View.Outfit.hideBiologyAssets();
-      WardrobeRequest('pet_type', 'findBySpeciesAndColor', {
-        'species_id': HashDaemon.get('species'),
-        'color_id': HashDaemon.get('color')
-      }, function (pet_type) {
-        if(pet_type) {
-          if(Outfit.pet_type && pet_type.body_id != Outfit.pet_type.body_id) {
-            View.Outfit.removeBodySpecificAssets();
+      var species = HashDaemon.get('species'), color = HashDaemon.get('color');
+      if(
+        !this.pet_type || species != this.pet_type.species_id ||
+        color != this.pet_type.color_id
+      ) {
+        View.Outfit.hideBiologyAssets();
+        WardrobeRequest('pet_type', 'findBySpeciesAndColor', {
+          'species_id': species,
+          'color_id': color
+        }, function (pet_type) {
+          if(pet_type) {
+            if(Outfit.pet_type && pet_type.body_id != Outfit.pet_type.body_id) {
+              View.Outfit.removeBodySpecificAssets();
+            }
+            pet_type.species_id = species;
+            pet_type.color_id = color;
+            Outfit.pet_type = pet_type;
+            addAssets(pet_type.assets, WardrobeBiologyAsset);
+            Outfit.updateObjects();
+            View.Outfit.update();
+          } else {
+            View.error('Pet type not found!');
+            View.Outfit.showBiologyAssets();
           }
-          Outfit.pet_type = pet_type;
-          addAssets(pet_type.assets, WardrobeBiologyAsset);
-          View.Outfit.update();
-          Outfit.updateObjects();
-        } else {
-          View.error('Pet type not found!');
-          View.Outfit.showBiologyAssets();
-        }
-      });
+        });
+      } else {
+        Outfit.updateObjects();
+      }
     }
     
     // It feels silly, doesn't it? But updatePetType just starts the updating
@@ -541,10 +571,11 @@ var MainWardrobe = new function Wardrobe() {
       
       $('#pet-type-form').submit(function (e) {
         e.preventDefault();
+        var toSet = {};
         $.each(['species', 'color'], function () {
-          var option = $('#pet-type-form-' + this + ' option:selected');
-          HashDaemon.set(this, option.val());
+          toSet[this] = $('#pet-type-form-' + this + ' option:selected').val();
         });
+        HashDaemon.set(toSet);
         Outfit.update();
       });
     }
