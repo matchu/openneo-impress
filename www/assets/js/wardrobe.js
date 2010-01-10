@@ -257,7 +257,6 @@ var MainWardrobe = new function Wardrobe() {
           data[key] = value;
         }
       });
-      console.dir(data);
       current_hash = new_hash;
     }
     
