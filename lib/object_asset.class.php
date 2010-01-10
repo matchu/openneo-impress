@@ -4,7 +4,7 @@ require_once dirname(__FILE__).'/swf_asset.class.php';
 require_once dirname(__FILE__).'/zone.class.php';
 
 class Wearables_ObjectAsset extends Wearables_SWFAsset {
-  protected $type = 'object';
+  public $type = 'object';
   
   function __construct($data=null) {
     if($data) {
@@ -32,19 +32,23 @@ class Wearables_ObjectAsset extends Wearables_SWFAsset {
     );
     return parent::all($options, self::$table, __CLASS__);
   }
+  
+  static function getAssetsByParents($parent_ids, $options) {
+    return parent::getAssetsByParents('object', $parent_ids, $options);
+  }
 }
 
 class Wearables_ObjectAssetAPIAccessor extends Wearables_APIAccessor {
   public function findByParentIdsAndBodyId($params) {
     if(!$params['parent_ids']) return array();
-    $parent_ids = implode(', ', array_map('intval', $params['parent_ids']));
     $asset_select = array('id', 'url', 'zone_id', 'depth', 'parent_id', 'is_body_specific');
-    return $this->resultObjects(Wearables_ObjectAsset::all(array(
-      'select' => 'swf_assets.id, url, zone_id, depth, parent_id, z.type_id < 3 as is_body_specific',
-      'joins' => 'INNER JOIN zones z ON z.id = swf_assets.zone_id',
-      'where' => 'swf_assets.parent_id IN ('.$parent_ids.') AND '
-        .'(body_id = '.intval($params['body_id']).' OR body_id = 0)'
-    )), $asset_select);
+    return $this->resultObjects(Wearables_ObjectAsset::getAssetsByParents(
+      $params['parent_ids'], array(
+        'select' => 'swf_assets.id, url, zone_id, depth, parents_swf_assets.parent_id, z.type_id < 3 as is_body_specific',
+        'joins' => 'INNER JOIN zones z ON z.id = swf_assets.zone_id',
+        'where' => '(body_id = '.intval($params['body_id']).' OR body_id = 0)'
+      )
+    ), $asset_select);
   }
 }
 ?>

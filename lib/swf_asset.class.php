@@ -1,17 +1,25 @@
 <?php
 require_once dirname(__FILE__).'/db_object.class.php';
+require_once dirname(__FILE__).'/parent_swf_asset_relationship.class.php';
 require_once dirname(__FILE__).'/zone.class.php';
 
 class Wearables_SWFAsset extends Wearables_DBObject {
   static $table = 'swf_assets';
   static $columns = array('type', 'id', 'url', 'zone_id', 'zones_restrict',
-    'body_id', 'parent_id');
+    'body_id');
   
   public function __construct($data=null) {
     if($data) {
       $this->zone_id = $data->zone_id;
       $this->url = $data->asset_url;
     }
+  }
+  
+  public function getParentId() {
+    if(!$this->parent_id) {
+      $this->parent_id = $this->parent->getId();
+    }
+    return $this->parent_id;
   }
   
   public function getZone() {
@@ -62,7 +70,35 @@ class Wearables_SWFAsset extends Wearables_DBObject {
     self::preloadZonesForCollection($assets, array(
       'select' => 'id, depth, type_id'
     ));
-    return parent::saveCollection($assets, self::$table, self::$columns);
+    $relationships = array();
+    foreach($assets as $asset) {
+      $relationships[] =
+        new Wearables_ParentSWFAssetRelationship($asset);
+    }
+    $db = Wearables_DB::getInstance();
+    $db->beginTransaction();
+    try {
+      parent::saveCollection($assets, self::$table, self::$columns);
+      Wearables_ParentSWFAssetRelationship::saveCollection($relationships);
+    } catch(PDOException $e) {
+      $db->rollBack();
+    }
+    $db->commit();
+  }
+  
+  static function getAssetsByParents($type, $parent_ids, $options) {
+    $parent_ids = implode(', ', array_map('intval', $parent_ids));
+    $where = Wearables_SWFAsset::mergeConditions(
+      "swf_assets.type = \"$type\" AND parents_swf_assets.parent_id IN ($parent_ids)",
+      $options['where']
+    );
+    return Wearables_SWFAsset::all(array(
+      'select' => $options['select'],
+      'joins' => 'INNER JOIN parents_swf_assets ON '
+                .'parents_swf_assets.swf_asset_type = swf_assets.type AND '
+                .'parents_swf_assets.swf_asset_id = swf_assets.id '.$options['joins'],
+      'where' => $where
+    ));
   }
 }
 ?>

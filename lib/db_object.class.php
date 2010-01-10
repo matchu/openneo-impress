@@ -14,8 +14,9 @@ class Wearables_DBObject {
   }
   
   public function save($table, $columns) {
+    $db = Wearables_DB::getInstance();
     if(!$this->isSaved()) { // to be determined by subclass
-      $db = self::saveCollection(array($this), $table, $columns);
+      self::saveCollection(array($this), $table, $columns);
       return $db->lastInsertId();
     }
   }
@@ -28,7 +29,7 @@ class Wearables_DBObject {
     if($options['joins']) $sql .= " ${options['joins']}";
     if($options['where']) $sql .= " WHERE ${options['where']}";
     if($options['limit']) $sql .= " LIMIT ${options['limit']}";
-    $db = new Wearables_DB();
+    $db = Wearables_DB::getInstance();
     $query = $db->query($sql);
     $objects = array();
     while($object = $query->fetchObject($subclass)) {
@@ -53,16 +54,17 @@ class Wearables_DBObject {
   }
   
   static function saveCollection($objects, $table, $columns) {
-    $db = new Wearables_DB();
+    $db = Wearables_DB::getInstance();
     if($objects) {
       $value_sets = array();
       foreach($objects as $object) {
         $value_sets[] = $object->getValueSet($db, $columns);
       }
-      $db->exec("REPLACE INTO $table ".self::getColumnSet($columns)
+      return $db->exec("REPLACE INTO $table ".self::getColumnSet($columns)
         .' VALUES '.implode(', ', $value_sets));
+    } else {
+      return false;
     }
-    return $db;
   }
 }
 ?>

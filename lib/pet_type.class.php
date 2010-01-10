@@ -88,7 +88,7 @@ class Wearables_PetType extends Wearables_SWFAssetParent {
   }
   
   private function load($select='*') {
-    $db = new Wearables_DB();
+    $db = Wearables_DB::getInstance();
     $query = $db->query("SELECT $select FROM pet_types WHERE "
       .'species_id = '.intval($this->species_id).' AND '
       .'color_id = '.intval($this->color_id).' LIMIT 1');
@@ -168,14 +168,13 @@ class Wearables_PetTypeAPIAccessor extends Wearables_APIAccessor {
     $pet_type = $pet_types[0];
     if($pet_type) {
       $assets_select = array('id', 'url', 'zone_id', 'depth', 'parent_id');
-      $assets_select_str = 'swf_assets.id, swf_assets.url, swf_assets.zone_id, z.depth, swf_assets.parent_id';
-      $pet_type->assets = $this->resultObjects(Wearables_BiologyAsset::all(array(
-        'select' => $assets_select_str,
-        'joins' => 'INNER JOIN zones z ON z.id = swf_assets.zone_id',
-        'where' => 'swf_assets.parent_id = (SELECT id FROM pet_types pt WHERE '
-          .'pt.species_id = '.intval($params['species_id']).' AND '
-          .'pt.color_id = '.intval($params['color_id']).')'
-      )), $assets_select);
+      $assets_select_str = 'swf_assets.id, swf_assets.url, swf_assets.zone_id, z.depth, parents_swf_assets.parent_id';
+      $pet_type->assets = $this->resultObjects(Wearables_BiologyAsset::getAssetsByParents(
+        array($pet_type->id), array(
+          'select' => $assets_select_str,
+          'joins' => 'INNER JOIN zones z ON z.id = swf_assets.zone_id'
+        )
+      ), $assets_select);
     }
     $objects = $this->resultObjects($pet_types, array('id', 'body_id', 'assets'));
     return $objects[0];
