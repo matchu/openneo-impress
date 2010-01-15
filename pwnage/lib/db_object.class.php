@@ -1,7 +1,5 @@
 <?php
-require_once dirname(__FILE__).'/db.class.php';
-
-class Wearables_DBObject {
+class Pwnage_DbObject {
   protected function beforeSave() {}
   
   public function getValueSet($db, $columns) {
@@ -14,7 +12,7 @@ class Wearables_DBObject {
   }
   
   public function save($table, $columns) {
-    $db = Wearables_DB::getInstance();
+    $db = Pwnage_Db::getInstance();
     if(!$this->isSaved()) { // to be determined by subclass
       self::saveCollection(array($this), $table, $columns);
       return $db->lastInsertId();
@@ -29,7 +27,7 @@ class Wearables_DBObject {
     if($options['joins']) $sql .= " ${options['joins']}";
     if($options['where']) $sql .= " WHERE ${options['where']}";
     if($options['limit']) $sql .= " LIMIT ${options['limit']}";
-    $db = Wearables_DB::getInstance();
+    $db = Pwnage_Db::getInstance();
     $query = $db->query($sql);
     $objects = array();
     while($object = $query->fetchObject($subclass)) {
@@ -54,7 +52,7 @@ class Wearables_DBObject {
   }
   
   static function saveCollection($objects, $table, $columns) {
-    $db = Wearables_DB::getInstance();
+    $db = Pwnage_Db::getInstance();
     if($objects) {
       $value_sets = array();
       foreach($objects as $object) {

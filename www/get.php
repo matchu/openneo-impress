@@ -1,4 +1,6 @@
 <?php
+require_once '../pwnage/bootstrap.php';
+
 function handle_error($errno, $errstr, $errfile, $errline) {
   throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
 }
@@ -23,7 +25,7 @@ set_error_handler('handle_error', error_reporting());
 $class = $_GET['class'];
 die_unless(preg_match('/^[a-z_]+$/', $class), 'Bad data type');
 
-$lib_path = '../lib/'.$class.'.class.php';
+$lib_path = '../app/models/'.$class.'.class.php';
 die_unless(file_exists($lib_path), 'Non-existant data type');
 require $lib_path;
 

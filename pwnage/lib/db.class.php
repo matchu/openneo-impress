@@ -1,7 +1,7 @@
 <?php
-require_once dirname(__FILE__).'/spyc.php';
+require_once PWNAGE_ROOT.'/pwnage/lib/spyc.php';
 
-class Wearables_DB {
+class Pwnage_Db {
   protected $query_log = array();
   protected $pdo;
   static $_instance;
@@ -82,12 +82,12 @@ class Wearables_DB {
   }
   
   static function getConfig() {
-    return Spyc::YAMLLoad(dirname(__FILE__).'/../config/database.yml');
+    return Spyc::YAMLLoad(PWNAGE_ROOT.'/config/database.yml');
   }
   
   static function getInstance() {
     if(!self::$_instance) {
-      self::$_instance = new Wearables_DB();
+      self::$_instance = new self;
     }
     return self::$_instance;
   }

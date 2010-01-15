@@ -1,9 +1,5 @@
 <?php
-require_once dirname(__FILE__).'/api_accessor.class.php';
-require_once dirname(__FILE__).'/swf_asset.class.php';
-require_once dirname(__FILE__).'/zone.class.php';
-
-class Wearables_ObjectAsset extends Wearables_SWFAsset {
+class Wearables_ObjectAsset extends Wearables_SwfAsset {
   public $type = 'object';
   
   function __construct($data=null) {
@@ -38,7 +34,7 @@ class Wearables_ObjectAsset extends Wearables_SWFAsset {
   }
 }
 
-class Wearables_ObjectAssetAPIAccessor extends Wearables_APIAccessor {
+class Wearables_ObjectAssetAPIAccessor extends Wearables_ApiAccessor {
   public function findByParentIdsAndBodyId($params) {
     if(!$params['parent_ids']) return array();
     $asset_select = array('id', 'url', 'zone_id', 'depth', 'parent_id', 'is_body_specific');

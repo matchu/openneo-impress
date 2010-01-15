@@ -1,6 +1,5 @@
 <?php
-require_once '../lib/color.class.php';
-require_once '../lib/species.class.php';
+require_once '../pwnage/bootstrap.php';
 
 $errors = array(
   'connection_error' => 'Could not get data on your pet. '

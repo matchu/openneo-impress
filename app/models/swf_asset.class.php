@@ -1,9 +1,5 @@
 <?php
-require_once dirname(__FILE__).'/db_object.class.php';
-require_once dirname(__FILE__).'/parent_swf_asset_relationship.class.php';
-require_once dirname(__FILE__).'/zone.class.php';
-
-class Wearables_SWFAsset extends Wearables_DBObject {
+class Wearables_SwfAsset extends Pwnage_DbObject {
   static $table = 'swf_assets';
   static $columns = array('type', 'id', 'url', 'zone_id', 'zones_restrict',
     'body_id');
@@ -73,13 +69,13 @@ class Wearables_SWFAsset extends Wearables_DBObject {
     $relationships = array();
     foreach($assets as $asset) {
       $relationships[] =
-        new Wearables_ParentSWFAssetRelationship($asset);
+        new Wearables_ParentSwfAssetRelationship($asset);
     }
-    $db = Wearables_DB::getInstance();
+    $db = Pwnage_Db::getInstance();
     $db->beginTransaction();
     try {
       parent::saveCollection($assets, self::$table, self::$columns);
-      Wearables_ParentSWFAssetRelationship::saveCollection($relationships);
+      Wearables_ParentSwfAssetRelationship::saveCollection($relationships);
     } catch(PDOException $e) {
       $db->rollBack();
     }
@@ -88,11 +84,11 @@ class Wearables_SWFAsset extends Wearables_DBObject {
   
   static function getAssetsByParents($type, $parent_ids, $options) {
     $parent_ids = implode(', ', array_map('intval', $parent_ids));
-    $where = Wearables_SWFAsset::mergeConditions(
+    $where = Wearables_SwfAsset::mergeConditions(
       "swf_assets.type = \"$type\" AND parents_swf_assets.parent_id IN ($parent_ids)",
       $options['where']
     );
-    return Wearables_SWFAsset::all(array(
+    return Wearables_SwfAsset::all(array(
       'select' => $options['select'],
       'joins' => 'INNER JOIN parents_swf_assets ON '
                 .'parents_swf_assets.swf_asset_type = swf_assets.type AND '

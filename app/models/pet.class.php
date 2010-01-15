@@ -1,11 +1,4 @@
 <?php
-require_once dirname(__FILE__).'/amf.class.php';
-require_once dirname(__FILE__).'/db.class.php';
-require_once dirname(__FILE__).'/object.class.php';
-require_once dirname(__FILE__).'/outfit.class.php';
-require_once dirname(__FILE__).'/pet_type.class.php';
-require_once dirname(__FILE__).'/swf_asset.class.php';
-
 class Wearables_Pet extends Wearables_Outfit {
   private $viewer_data;
   
@@ -63,11 +56,11 @@ class Wearables_Pet extends Wearables_Outfit {
   }
   
   private function loadViewerData() {
-    $amf = new Wearables_AMF();
+    $amf = new Wearables_Amf();
     try {
       $response = $amf->sendRequest('getViewerData',
         array($this->name, null));
-    } catch(Wearables_AMFResponseError $e) {
+    } catch(Wearables_AmfResponseError $e) {
       throw new Wearables_PetNotFoundException();
     }
     $this->viewer_data = $response->getAMFData();
@@ -81,7 +74,7 @@ class Wearables_Pet extends Wearables_Outfit {
     Wearables_Object::saveCollection($this->getObjects());
     
     // Save assets
-    Wearables_SWFAsset::saveCollection($this->getAssets());
+    Wearables_SwfAsset::saveCollection($this->getAssets());
   }
 }
 

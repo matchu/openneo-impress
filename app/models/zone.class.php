@@ -1,7 +1,5 @@
 <?php
-require_once dirname(__FILE__).'/db_object.class.php';
-
-class Wearables_Zone extends Wearables_DBObject {
+class Wearables_Zone extends Pwnage_DbObject {
   static $table = 'zones';
   
   function getId() {

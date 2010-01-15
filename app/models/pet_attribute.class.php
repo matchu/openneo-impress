@@ -25,9 +25,10 @@ class Wearables_PetAttribute {
   }
   
   static function allNamesByType($type) {
+    // FIXME: move attribute names elsewhere!
     return array_filter(
       explode("\n",
-        file_get_contents(dirname(__FILE__).'/'.$type.'_names.txt')
+        file_get_contents(PWNAGE_ROOT.'/app/models/'.$type.'_names.txt')
       )
     );
   }

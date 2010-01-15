@@ -1,13 +1,5 @@
 <?php
-require_once dirname(__FILE__).'/api_accessor.class.php';
-require_once dirname(__FILE__).'/biology_asset.class.php';
-require_once dirname(__FILE__).'/color.class.php';
-require_once dirname(__FILE__).'/db.class.php';
-require_once dirname(__FILE__).'/db_object.class.php';
-require_once dirname(__FILE__).'/outfit.class.php';
-require_once dirname(__FILE__).'/species.class.php';
-
-class Wearables_PetType extends Wearables_SWFAssetParent {
+class Wearables_PetType extends Wearables_SwfAssetParent {
   const IMAGE_CPN_FORMAT = 'http://pets.neopets.com/cpn/%s/1/1.png';
   const IMAGE_CP_HEADER_REGEX = '%^Location: /cp/(.+?)/1/1\.png$%';
   protected $asset_type = 'biology';
@@ -88,7 +80,7 @@ class Wearables_PetType extends Wearables_SWFAssetParent {
   }
   
   private function load($select='*') {
-    $db = Wearables_DB::getInstance();
+    $db = Pwnage_Db::getInstance();
     $query = $db->query("SELECT $select FROM pet_types WHERE "
       .'species_id = '.intval($this->species_id).' AND '
       .'color_id = '.intval($this->color_id).' LIMIT 1');
@@ -130,7 +122,7 @@ class Wearables_PetType extends Wearables_SWFAssetParent {
 
 class Wearables_BiologyAssetsNotFoundException extends Exception {}
 
-class Wearables_PetTypeAPIAccessor extends Wearables_APIAccessor {
+class Wearables_PetTypeAPIAccessor extends Wearables_ApiAccessor {
   public function allColorsAndSpecies() {
     return array(
       'color' => Wearables_Color::all(), 

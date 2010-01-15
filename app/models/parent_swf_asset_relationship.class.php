@@ -1,6 +1,5 @@
 <?php
-require_once dirname(__FILE__).'/db_object.class.php';
-class Wearables_ParentSWFAssetRelationship extends Wearables_DBObject {
+class Wearables_ParentSwfAssetRelationship extends Pwnage_DbObject {
   static $table = 'parents_swf_assets';
   static $columns = array('parent_id', 'swf_asset_id', 'swf_asset_type');
   

@@ -1,11 +1,8 @@
 <?php
-require_once dirname(__FILE__).'/api_accessor.class.php';
-require_once dirname(__FILE__).'/object_asset.class.php';
-require_once dirname(__FILE__).'/swf_asset_parent.class.php';
+// Class definition for wearable objects, since that's what Neo calls them.
+// We're not talking about, like, stdClass-type objects.
 
-/* Class definition for wearable objects, since that's what Neo calls them */
-
-class Wearables_Object extends Wearables_SWFAssetParent {
+class Wearables_Object extends Wearables_SwfAssetParent {
   protected $asset_type = 'object';
   static $table = 'objects';
   static $columns = array('id', 'zones_restrict', 'thumbnail_url', 'name',
@@ -90,7 +87,7 @@ class Wearables_Object extends Wearables_SWFAssetParent {
   }
 }
 
-class Wearables_ObjectAPIAccessor extends Wearables_APIAccessor {
+class Wearables_ObjectAPIAccessor extends Wearables_ApiAccessor {
   public function find($params) {
     if(!$params['ids']) return array();
     $ids = implode(', ', array_map('intval', $params['ids']));

@@ -1,7 +1,5 @@
 <?php
-require_once dirname(__FILE__).'/swf_asset.class.php';
-
-class Wearables_BiologyAsset extends Wearables_SWFAsset {
+class Wearables_BiologyAsset extends Wearables_SwfAsset {
   public $type = 'biology';
   
   public function __construct($data=null) {
