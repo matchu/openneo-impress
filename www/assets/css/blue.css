@@ -144,12 +144,23 @@ body.index select {
   width: 7em;
 }
 
-body.index .ui-state-error, body.index .ui-state-highlight {
+body.index .error, body.index .warning {
   left: 1%;
   padding: .5em 1em;
   position: absolute;
   top: 52%;
   width: 30%;
+}
+
+body.index .error {
+  background: #E14F1C;
+  border: 1px solid #CD0A0A;
+}
+
+body.index .warning {
+  background: #F8DA4E;
+  border: 1px solid #FCD113;
+  color: #915608;
 }
 
 body.index .floated-icon {

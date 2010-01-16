@@ -1,5 +1,5 @@
 <?php
-class Pwnage_DbObject {
+class PwnageCore_DbObject {
   protected function beforeSave() {}
   
   public function getValueSet($db, $columns) {
@@ -12,7 +12,7 @@ class Pwnage_DbObject {
   }
   
   public function save($table, $columns) {
-    $db = Pwnage_Db::getInstance();
+    $db = PwnageCore_Db::getInstance();
     if(!$this->isSaved()) { // to be determined by subclass
       self::saveCollection(array($this), $table, $columns);
       return $db->lastInsertId();
@@ -27,7 +27,7 @@ class Pwnage_DbObject {
     if($options['joins']) $sql .= " ${options['joins']}";
     if($options['where']) $sql .= " WHERE ${options['where']}";
     if($options['limit']) $sql .= " LIMIT ${options['limit']}";
-    $db = Pwnage_Db::getInstance();
+    $db = PwnageCore_Db::getInstance();
     $query = $db->query($sql);
     $objects = array();
     while($object = $query->fetchObject($subclass)) {
@@ -52,7 +52,7 @@ class Pwnage_DbObject {
   }
   
   static function saveCollection($objects, $table, $columns) {
-    $db = Pwnage_Db::getInstance();
+    $db = PwnageCore_Db::getInstance();
     if($objects) {
       $value_sets = array();
       foreach($objects as $object) {

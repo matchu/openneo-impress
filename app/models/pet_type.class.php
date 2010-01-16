@@ -80,7 +80,7 @@ class Pwnage_PetType extends Pwnage_SwfAssetParent {
   }
   
   private function load($select='*') {
-    $db = Pwnage_Db::getInstance();
+    $db = PwnageCore_Db::getInstance();
     $query = $db->query("SELECT $select FROM pet_types WHERE "
       .'species_id = '.intval($this->species_id).' AND '
       .'color_id = '.intval($this->color_id).' LIMIT 1');

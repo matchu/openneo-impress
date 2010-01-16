@@ -1,7 +1,7 @@
 <?php
 require_once PWNAGE_ROOT.'/pwnage/lib/spyc.php';
 
-class Pwnage_Db {
+class PwnageCore_Db {
   protected $query_log = array();
   protected $pdo;
   static $_instance;

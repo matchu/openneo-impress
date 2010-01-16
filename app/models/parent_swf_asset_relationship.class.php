@@ -1,5 +1,5 @@
 <?php
-class Pwnage_ParentSwfAssetRelationship extends Pwnage_DbObject {
+class Pwnage_ParentSwfAssetRelationship extends PwnageCore_DbObject {
   static $table = 'parents_swf_assets';
   static $columns = array('parent_id', 'swf_asset_id', 'swf_asset_type');
   

@@ -1,5 +1,5 @@
 <?php
-class Pwnage_SwfAssetParent extends Pwnage_DbObject {
+class Pwnage_SwfAssetParent extends PwnageCore_DbObject {
   public $assets = array();
   
   static function preloadAssetsForCollection($pet_type, $objects) {

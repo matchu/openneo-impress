@@ -34,6 +34,9 @@ $(function () {
     previousName = name;
   }
   
+  var name = document.location.search.match(/\?name=(.+)/);
+  if(name) name = name[1];
+  $('#name').val(name);
   updatePreviewWithName();
   
   $('#name').keyup(function () {

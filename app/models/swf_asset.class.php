@@ -1,5 +1,5 @@
 <?php
-class Pwnage_SwfAsset extends Pwnage_DbObject {
+class Pwnage_SwfAsset extends PwnageCore_DbObject {
   static $table = 'swf_assets';
   static $columns = array('type', 'id', 'url', 'zone_id', 'zones_restrict',
     'body_id');
@@ -71,7 +71,7 @@ class Pwnage_SwfAsset extends Pwnage_DbObject {
       $relationships[] =
         new Pwnage_ParentSwfAssetRelationship($asset);
     }
-    $db = Pwnage_Db::getInstance();
+    $db = PwnageCore_Db::getInstance();
     $db->beginTransaction();
     try {
       parent::saveCollection($assets, self::$table, self::$columns);

@@ -10,3 +10,4 @@ Dependencies:
   - PHP5
   - PEAR modules:
     - SabreAMF
+  - Smarty
