@@ -1,5 +1,5 @@
 <?php
-class Wearables_PetType extends Wearables_SwfAssetParent {
+class Pwnage_PetType extends Pwnage_SwfAssetParent {
   const IMAGE_CPN_FORMAT = 'http://pets.neopets.com/cpn/%s/1/1.png';
   const IMAGE_CP_HEADER_REGEX = '%^Location: /cp/(.+?)/1/1\.png$%';
   protected $asset_type = 'biology';
@@ -31,15 +31,15 @@ class Wearables_PetType extends Wearables_SwfAssetParent {
   }
   
   public function createOutfit() {
-    if(!$this->getId()) throw new Wearables_BiologyAssetsNotFoundException();
-    $outfit = new Wearables_Outfit();
+    if(!$this->getId()) throw new Pwnage_BiologyAssetsNotFoundException();
+    $outfit = new Pwnage_Outfit();
     $outfit->pet_type = &$this;
     return $outfit;
   }
   
   public function getAssets() {
     if(!$this->preloaded_assets && !$this->assets) {
-      $this->assets = Wearables_BiologyAsset::all(
+      $this->assets = Pwnage_BiologyAsset::all(
         array(
           'where' => 'parent_id = '.intval($this->getId())
         )
@@ -56,7 +56,7 @@ class Wearables_PetType extends Wearables_SwfAssetParent {
   }
   
   public function getColor() {
-    return new Wearables_Color($this->color_id);
+    return new Pwnage_Color($this->color_id);
   }
   
   public function getId() {
@@ -72,7 +72,7 @@ class Wearables_PetType extends Wearables_SwfAssetParent {
   }
   
   public function getSpecies() {
-    return new Wearables_Species($this->species_id);
+    return new Pwnage_Species($this->species_id);
   }
   
   protected function isSaved() {
@@ -103,7 +103,7 @@ class Wearables_PetType extends Wearables_SwfAssetParent {
     $this->origin_pet = $pet;
     $this->assets = array();
     foreach($pet->getBiology() as $asset_typed_obj) {
-      $asset = new Wearables_BiologyAsset($asset_typed_obj->getAMFData());
+      $asset = new Pwnage_BiologyAsset($asset_typed_obj->getAMFData());
       $asset->setOriginPetType($this);
       $this->assets[] = $asset;
     }
@@ -115,18 +115,18 @@ class Wearables_PetType extends Wearables_SwfAssetParent {
   }
   
   static function all($options) {
-    return parent::all($options, Wearables_PetType::$table,
-      'Wearables_PetType');
+    return parent::all($options, Pwnage_PetType::$table,
+      'Pwnage_PetType');
   }
 }
 
-class Wearables_BiologyAssetsNotFoundException extends Exception {}
+class Pwnage_BiologyAssetsNotFoundException extends Exception {}
 
-class Wearables_PetTypeAPIAccessor extends Wearables_ApiAccessor {
+class Pwnage_PetTypeAPIAccessor extends Pwnage_ApiAccessor {
   public function allColorsAndSpecies() {
     return array(
-      'color' => Wearables_Color::all(), 
-      'species' => Wearables_Species::all()
+      'color' => Pwnage_Color::all(), 
+      'species' => Pwnage_Species::all()
     );
   }
   
@@ -134,14 +134,14 @@ class Wearables_PetTypeAPIAccessor extends Wearables_ApiAccessor {
     /*if(!is_array($params['select'])) return null;
     $select = array();
     foreach($params['select'] as $column) {
-      if(in_array($column, Wearables_PetType::$columns)) {
+      if(in_array($column, Pwnage_PetType::$columns)) {
         $select[] = $column;
       }
     }*/
     $select = array('image_hash'); // why support more until we need to?
     $select_str = implode(', ', $select);
     
-    $results = Wearables_PetType::all(array(
+    $results = Pwnage_PetType::all(array(
       'select' => 'image_hash',
       'where' => 'species_id = '.intval($params['species_id'])
       .' AND color_id = '.intval($params['color_id']),
@@ -151,7 +151,7 @@ class Wearables_PetTypeAPIAccessor extends Wearables_ApiAccessor {
   }
   
   public function findBySpeciesAndColor($params) {
-    $pet_types = Wearables_PetType::all(array(
+    $pet_types = Pwnage_PetType::all(array(
       'select' => 'id, body_id',
       'where' => 'species_id = '.intval($params['species_id']).' AND '
         .'color_id = '.intval($params['color_id']),
@@ -161,7 +161,7 @@ class Wearables_PetTypeAPIAccessor extends Wearables_ApiAccessor {
     if($pet_type) {
       $assets_select = array('id', 'url', 'zone_id', 'depth', 'parent_id');
       $assets_select_str = 'swf_assets.id, swf_assets.url, swf_assets.zone_id, z.depth, parents_swf_assets.parent_id';
-      $pet_type->assets = $this->resultObjects(Wearables_BiologyAsset::getAssetsByParents(
+      $pet_type->assets = $this->resultObjects(Pwnage_BiologyAsset::getAssetsByParents(
         array($pet_type->id), array(
           'select' => $assets_select_str,
           'joins' => 'INNER JOIN zones z ON z.id = swf_assets.zone_id'

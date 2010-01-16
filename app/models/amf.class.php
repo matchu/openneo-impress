@@ -1,7 +1,7 @@
 <?php
 require_once 'SabreAMF/Client.php';
 
-class Wearables_Amf {
+class Pwnage_Amf {
   const GATEWAY_URL = 'http://www.neopets.com/amfphp/gateway.php';
   const SERVICE_NAME = 'CustomPetService';
   
@@ -10,10 +10,10 @@ class Wearables_Amf {
       $client = new SabreAMF_Client(self::GATEWAY_URL); // oddly, must be regenerated to do multiple requests
       $response = $client->sendRequest(self::SERVICE_NAME.'.'.$method, $arguments);
     } catch(Exception $e) {
-      throw new Wearables_AmfConnectionError();
+      throw new Pwnage_AmfConnectionError();
     }
     if(!self::isTypedObject($response)) {
-      throw new Wearables_AmfResponseError($response);
+      throw new Pwnage_AmfResponseError($response);
     }
     return $response;
   }
@@ -21,7 +21,7 @@ class Wearables_Amf {
   static function getApplicationData() {
     static $application_data;
     if(!$application_data) {
-      $amf = new Wearables_Amf();
+      $amf = new Pwnage_Amf();
       $application_data = $amf->sendRequest('getApplicationData')->getAMFData();
     }
     return $application_data;
@@ -50,9 +50,9 @@ class Wearables_Amf {
   }
 }
 
-class Wearables_AmfConnectionError extends Exception {}
+class Pwnage_AmfConnectionError extends Exception {}
 
-class Wearables_AmfResponseError extends Exception {
+class Pwnage_AmfResponseError extends Exception {
   private $response;
   
   public function __construct($response) {

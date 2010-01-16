@@ -6,7 +6,7 @@ $config = Spyc::YAMLLoad('console.yaml');
 $methods = $config['methods'];
 
 if($_GET['method']) {
-  $amf = new Wearables_AMF();
+  $amf = new Pwnage_AMF();
   $response = $amf->sendRequest($_GET['method'], $_GET['arguments']);
 }
 ?>

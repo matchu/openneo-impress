@@ -2,7 +2,7 @@
 // Class definition for wearable objects, since that's what Neo calls them.
 // We're not talking about, like, stdClass-type objects.
 
-class Wearables_Object extends Wearables_SwfAssetParent {
+class Pwnage_Object extends Pwnage_SwfAssetParent {
   protected $asset_type = 'object';
   static $table = 'objects';
   static $columns = array('id', 'zones_restrict', 'thumbnail_url', 'name',
@@ -28,7 +28,7 @@ class Wearables_Object extends Wearables_SwfAssetParent {
         $this->assets = array();
         foreach($this->assets_by_zone as $asset_id) {
           $asset_data = $this->asset_registry[$asset_id]->getAMFData();
-          $asset = new Wearables_ObjectAsset($asset_data);
+          $asset = new Pwnage_ObjectAsset($asset_data);
           $asset->setOriginPetType($this->origin_pet_type);
           $this->assets[] = $asset;
         }
@@ -37,7 +37,7 @@ class Wearables_Object extends Wearables_SwfAssetParent {
           $query_options['where'],
           'parent_id = '.intval($this->id)
         );
-        $this->assets = Wearables_ObjectAsset::all($query_options);
+        $this->assets = Pwnage_ObjectAsset::all($query_options);
       }
     }
     return $this->assets;
@@ -87,7 +87,7 @@ class Wearables_Object extends Wearables_SwfAssetParent {
   }
 }
 
-class Wearables_ObjectAPIAccessor extends Wearables_ApiAccessor {
+class Pwnage_ObjectAPIAccessor extends Pwnage_ApiAccessor {
   public function find($params) {
     if(!$params['ids']) return array();
     $ids = implode(', ', array_map('intval', $params['ids']));
@@ -95,7 +95,7 @@ class Wearables_ObjectAPIAccessor extends Wearables_ApiAccessor {
       'id', 'name', 'thumbnail_url', 'description', 'type', 'rarity',
         'rarity_index', 'price', 'weight_lbs'
     );
-    $objects = Wearables_Object::all(array(
+    $objects = Pwnage_Object::all(array(
       'select' => implode(', ', $select),
       'where' => 'id IN ('.$ids.')'
     ));

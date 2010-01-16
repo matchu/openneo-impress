@@ -1,12 +1,12 @@
 <?php
-class Wearables_Pet extends Wearables_Outfit {
+class Pwnage_Pet extends Pwnage_Outfit {
   private $viewer_data;
   
   public function exists() {
     try {
       $this->loadViewerData();
       return true;
-    } catch(Wearables_PetNotFoundException $e) {
+    } catch(Pwnage_PetNotFoundException $e) {
       return false;
     }
   }
@@ -20,7 +20,7 @@ class Wearables_Pet extends Wearables_Outfit {
       $object_info_registry = $this->getViewerData()->object_info_registry;
       $this->objects = array();
       foreach($object_info_registry as $object_info) {
-        $object = new Wearables_Object($object_info->getAMFData());
+        $object = new Pwnage_Object($object_info->getAMFData());
         $object->setAssetRegistry($this->getViewerData()->object_asset_registry);
         $object->setOriginPetType($this->getPetType());
         $this->objects[] = $object;
@@ -35,7 +35,7 @@ class Wearables_Pet extends Wearables_Outfit {
   
   protected function getPetType() {
     if(!$this->pet_type) {
-      $this->pet_type = new Wearables_PetType($this->getPetData()->species_id,
+      $this->pet_type = new Pwnage_PetType($this->getPetData()->species_id,
         $this->getPetData()->color_id);
       $this->pet_type->body_id = $this->getPetData()->body_id;
       $this->pet_type->setOriginPet($this);
@@ -56,12 +56,12 @@ class Wearables_Pet extends Wearables_Outfit {
   }
   
   private function loadViewerData() {
-    $amf = new Wearables_Amf();
+    $amf = new Pwnage_Amf();
     try {
       $response = $amf->sendRequest('getViewerData',
         array($this->name, null));
-    } catch(Wearables_AmfResponseError $e) {
-      throw new Wearables_PetNotFoundException();
+    } catch(Pwnage_AmfResponseError $e) {
+      throw new Pwnage_PetNotFoundException();
     }
     $this->viewer_data = $response->getAMFData();
   }
@@ -71,12 +71,12 @@ class Wearables_Pet extends Wearables_Outfit {
     $this->getPetType()->save();
     
     // Save objects
-    Wearables_Object::saveCollection($this->getObjects());
+    Pwnage_Object::saveCollection($this->getObjects());
     
     // Save assets
-    Wearables_SwfAsset::saveCollection($this->getAssets());
+    Pwnage_SwfAsset::saveCollection($this->getAssets());
   }
 }
 
-class Wearables_PetNotFoundException extends Exception {}
+class Pwnage_PetNotFoundException extends Exception {}
 ?>

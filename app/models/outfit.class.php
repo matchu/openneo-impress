@@ -1,15 +1,15 @@
 <?php
-class Wearables_Outfit {
+class Pwnage_Outfit {
   private $objects = array();
   
   public function addObjectById($object_id) {
-    $object = Wearables_Object::find($object_id, array('select' => 'id, name'));
+    $object = Pwnage_Object::find($object_id, array('select' => 'id, name'));
     $this->objects[] = $object;
   }
   
   protected function getAssets() {
     if(!$this->assets) {
-      Wearables_SwfAssetParent::preloadAssetsForCollection($this->getPetType(), $this->getObjects());
+      Pwnage_SwfAssetParent::preloadAssetsForCollection($this->getPetType(), $this->getObjects());
       $this->assets = array_merge($this->getBiologyAssets(), $this->getObjectAssets());
     }
     return $this->assets;
@@ -49,7 +49,7 @@ class Wearables_Outfit {
   }
   
   public function getPreviewHTML() {
-    Wearables_SwfAsset::preloadZonesForCollection($this->getAssets());
+    Pwnage_SwfAsset::preloadZonesForCollection($this->getAssets());
     $output = '<ol class="pet-swf-image">';
     $assets = $this->getAssets();
     foreach($assets as $asset) {

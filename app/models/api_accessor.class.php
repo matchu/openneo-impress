@@ -1,5 +1,5 @@
 <?php
-class Wearables_ApiAccessor {
+class Pwnage_ApiAccessor {
   protected function resultObjects($results, $select) {
     $result_objects = array();
     foreach($results as $result) {

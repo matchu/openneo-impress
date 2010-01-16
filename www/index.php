@@ -10,8 +10,8 @@ $errors = array(
 $error = $errors[$_GET['error']];
 
 $fields = array(
-  'color' => Wearables_Color::all(),
-  'species' => Wearables_Species::all()
+  'color' => Pwnage_Color::all(),
+  'species' => Pwnage_Species::all()
 );
 ?>
 <!DOCTYPE html>

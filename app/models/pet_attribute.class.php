@@ -1,5 +1,5 @@
 <?php
-class Wearables_PetAttribute {
+class Pwnage_PetAttribute {
   public function __construct($id) {
     $this->id = $id;
   }

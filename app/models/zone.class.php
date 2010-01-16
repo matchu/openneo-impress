@@ -1,5 +1,5 @@
 <?php
-class Wearables_Zone extends Pwnage_DbObject {
+class Pwnage_Zone extends Pwnage_DbObject {
   static $table = 'zones';
   
   function getId() {

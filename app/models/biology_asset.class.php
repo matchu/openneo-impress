@@ -1,5 +1,5 @@
 <?php
-class Wearables_BiologyAsset extends Wearables_SwfAsset {
+class Pwnage_BiologyAsset extends Pwnage_SwfAsset {
   public $type = 'biology';
   
   public function __construct($data=null) {

@@ -33,7 +33,7 @@ $camel_cased_class = '';
 foreach(explode('_', $class) as $class_part) {
   $camel_cased_class .= ucfirst($class_part);
 }
-$full_class = 'Wearables_'.$camel_cased_class.'APIAccessor';
+$full_class = 'Pwnage_'.$camel_cased_class.'APIAccessor';
 $api_accessor = new $full_class;
 
 die_unless(method_exists($api_accessor, $_GET['method']), 'Method does not exist');

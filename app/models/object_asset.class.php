@@ -1,5 +1,5 @@
 <?php
-class Wearables_ObjectAsset extends Wearables_SwfAsset {
+class Pwnage_ObjectAsset extends Pwnage_SwfAsset {
   public $type = 'object';
   
   function __construct($data=null) {
@@ -34,11 +34,11 @@ class Wearables_ObjectAsset extends Wearables_SwfAsset {
   }
 }
 
-class Wearables_ObjectAssetAPIAccessor extends Wearables_ApiAccessor {
+class Pwnage_ObjectAssetAPIAccessor extends Pwnage_ApiAccessor {
   public function findByParentIdsAndBodyId($params) {
     if(!$params['parent_ids']) return array();
     $asset_select = array('id', 'url', 'zone_id', 'depth', 'parent_id', 'is_body_specific');
-    return $this->resultObjects(Wearables_ObjectAsset::getAssetsByParents(
+    return $this->resultObjects(Pwnage_ObjectAsset::getAssetsByParents(
       $params['parent_ids'], array(
         'select' => 'swf_assets.id, url, zone_id, depth, parents_swf_assets.parent_id, z.type_id < 3 as is_body_specific',
         'joins' => 'INNER JOIN zones z ON z.id = swf_assets.zone_id',

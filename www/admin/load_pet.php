@@ -1,7 +1,7 @@
 <?php
 require_once '../../lib/pet.class.php';
 
-$pet = new Wearables_Pet();
+$pet = new Pwnage_Pet();
 if($_POST['name']) {
   $pet->name = $_POST['name'];
   $pet_exists = $pet->exists();

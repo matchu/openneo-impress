@@ -1,5 +1,5 @@
 <?php
-class Wearables_SwfAssetParent extends Pwnage_DbObject {
+class Pwnage_SwfAssetParent extends Pwnage_DbObject {
   public $assets = array();
   
   static function preloadAssetsForCollection($pet_type, $objects) {
@@ -19,7 +19,7 @@ class Wearables_SwfAssetParent extends Pwnage_DbObject {
         $where[] = '(type = "'.$type.'" AND parent_id IN ('.implode(', ', array_keys($parents_by_id)).'))';
       }
       $where = '('.implode(' OR ', $where).') AND (body_id = '.intval($pet_type->getBodyId()).' OR body_id = 0)';
-      $assets = Wearables_SwfAsset::all(
+      $assets = Pwnage_SwfAsset::all(
         array(
           'select' => 'zone_id, url, type, parent_id',
           'where' => $where

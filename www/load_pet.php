@@ -26,7 +26,7 @@ function buildPath($path, $query) {
   return $path;
 }
 
-$pet = new Wearables_Pet();
+$pet = new Pwnage_Pet();
 
 $destination = '/';
 $query = array();
@@ -44,7 +44,7 @@ if($pet_name = $_POST['name']) {
     } else {
       $error = 'not_found';
     }
-  } catch(Wearables_AMFConnectionError $e) {
+  } catch(Pwnage_AMFConnectionError $e) {
     handleException($e);
     $error = 'connection_error';
   }

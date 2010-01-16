@@ -1,5 +1,5 @@
 <?php
-class Wearables_SwfAsset extends Pwnage_DbObject {
+class Pwnage_SwfAsset extends Pwnage_DbObject {
   static $table = 'swf_assets';
   static $columns = array('type', 'id', 'url', 'zone_id', 'zones_restrict',
     'body_id');
@@ -53,7 +53,7 @@ class Wearables_SwfAsset extends Pwnage_DbObject {
         'select' => 'id, depth',
         'where' => 'id IN ('.implode(', ', array_keys($assets_by_zone)).')'
       ), $options);
-      $zones = Wearables_Zone::all($options);
+      $zones = Pwnage_Zone::all($options);
       foreach($zones as &$zone) {
         foreach($assets_by_zone[$zone->id] as &$asset) {
           $asset->zone = &$zone;
@@ -69,13 +69,13 @@ class Wearables_SwfAsset extends Pwnage_DbObject {
     $relationships = array();
     foreach($assets as $asset) {
       $relationships[] =
-        new Wearables_ParentSwfAssetRelationship($asset);
+        new Pwnage_ParentSwfAssetRelationship($asset);
     }
     $db = Pwnage_Db::getInstance();
     $db->beginTransaction();
     try {
       parent::saveCollection($assets, self::$table, self::$columns);
-      Wearables_ParentSwfAssetRelationship::saveCollection($relationships);
+      Pwnage_ParentSwfAssetRelationship::saveCollection($relationships);
     } catch(PDOException $e) {
       $db->rollBack();
     }
@@ -84,11 +84,11 @@ class Wearables_SwfAsset extends Pwnage_DbObject {
   
   static function getAssetsByParents($type, $parent_ids, $options) {
     $parent_ids = implode(', ', array_map('intval', $parent_ids));
-    $where = Wearables_SwfAsset::mergeConditions(
+    $where = Pwnage_SwfAsset::mergeConditions(
       "swf_assets.type = \"$type\" AND parents_swf_assets.parent_id IN ($parent_ids)",
       $options['where']
     );
-    return Wearables_SwfAsset::all(array(
+    return Pwnage_SwfAsset::all(array(
       'select' => $options['select'],
       'joins' => 'INNER JOIN parents_swf_assets ON '
                 .'parents_swf_assets.swf_asset_type = swf_assets.type AND '
