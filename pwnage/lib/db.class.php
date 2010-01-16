@@ -7,6 +7,11 @@ class Pwnage_Db {
   static $_instance;
   
   protected function __construct() {
+    static $registered_function = false;
+    if(!$registered_function && PWNAGE_ENVIRONMENT == 'development') {
+      register_shutdown_function(array($this, 'outputQueryLog'));
+      $registered_function = true;
+    }
     $config = $this->getEnvironmentConfig();
     $this->pdo = new PDO($this->getDSN(),
       $config['user'], $config['password']);
@@ -29,20 +34,9 @@ class Pwnage_Db {
       ."port=${config['port']};dbname=${config['database']}";
   }
   
-  protected function getEnvironment() {
-    static $registered_function = false;
-    $environment = apache_getenv('WearablesEnv');
-    if(!$environment) $environment = 'development';
-    if(!$registered_function && $environment == 'development') {
-      register_shutdown_function(array($this, 'outputQueryLog'));
-      $registered_function = true;
-    }
-    return $environment;    
-  }
-  
   protected function getEnvironmentConfig() {
     $config = self::getConfig();
-    return $config[$this->getEnvironment()];
+    return $config[PWNAGE_ENVIRONMENT];
   }
   
   public function exec($str) {
@@ -55,7 +49,7 @@ class Pwnage_Db {
   }
   
   protected function logQuery($str) {
-    if($this->getEnvironment() == 'development') $this->query_log[] = $str;
+    if(PWNAGE_ENVIRONMENT == 'development') $this->query_log[] = $str;
   }
   
   public function outputQueryLog() {

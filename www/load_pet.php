@@ -2,7 +2,7 @@
 require_once '../pwnage/bootstrap.php';
 
 function handleException($e) {
-  if(Pwnage_DB::getEnvironment() == 'development') {
+  if(PWNAGE_ENVIRONMENT == 'development') {
     echo 'Error! Debug output (only for development mode): <xmp>';
     var_dump($e);
     die('</xmp>');
