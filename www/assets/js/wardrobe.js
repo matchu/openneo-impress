@@ -40,9 +40,9 @@ var MainWardrobe = new function Wardrobe() {
     return query.join('&');
   }
   
-  function WardrobeRequest(type, method, data, callback) {
+  function WardrobeRequest(path, data, callback) {
     var query = data ? buildQuery(data) : '';
-    $.getJSON('/get/' + type + '/' + method + '.json', query, callback);
+    $.getJSON(path, query, callback);
   }
   
   /* Object declarations */
@@ -542,7 +542,7 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     this.modules.pet_type = new function WardrobePetTypeModule() {
-      WardrobeRequest('pet_type', 'allColorsAndSpecies', null, function (data) {
+      WardrobeRequest('/pet_attributes.json', null, function (data) {
         $.each(data, function (type, values) {
           var select = $('#pet-type-form-' + type),
             selected_value = HashDaemon.get(type);

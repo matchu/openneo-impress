@@ -3,21 +3,22 @@ require_once 'smarty/Smarty.class.php';
 
 class PwnageCore_Controller {
   private $cache_id;
-  private $controller_name;
+  private $name;
+  protected $format;
+  private $formats = array('html');
   protected $get = array();
   private $has_rendered_or_redirected = false;
   protected $post = array();
   private $smarty;
   private $view_data = array();
   
-  protected function __construct($controller_name) {
+  protected function __construct() {
     foreach(array('get' => $_GET, 'post' => $_POST) as $var_name => $data) {
       $this->$var_name = $data;
       if(get_magic_quotes_gpc()) {
         array_walk_recursive($this->$instance_var, 'stripslashes');
       }
     }
-    $this->controller_name = $controller_name;
     $this->smarty = new Smarty;
     $this->smarty->caching = 1;
     $this->smarty->compile_check = (PWNAGE_ENVIRONMENT == 'development');
@@ -44,7 +45,7 @@ class PwnageCore_Controller {
   }
   
   private function getTemplate($action_name) {
-    return "$this->controller_name/$action_name";
+    return "$this->name/$action_name";
   }
   
   protected function isCached($action_name) {
@@ -71,12 +72,28 @@ class PwnageCore_Controller {
     $this->clearFlash();
   }
   
+  protected function respondTo() {
+    $formats = func_get_args();
+    $this->formats = $formats;
+  }
+  
+  protected function respondWith($objects) {
+    if($this->format != 'json') throw new Pwnage_InvalidFormatException($this->format);
+    $this->prepareToRenderOrRedirect();
+    header('Content-type: application/json');
+    echo json_encode($objects);
+  }
+  
   protected function set($key, $value) {
     $this->smarty->assign($key, $value);
   }
   
   protected function setCacheId($id) {
     $this->cache_id = $id;
+  }
+  
+  protected function setName($name) {
+    $this->name = $name;
   }
   
   protected function setFlash($template, $type='notice') {
@@ -88,9 +105,23 @@ class PwnageCore_Controller {
     $_SESSION['flash'][$type][] = $template;
   }
   
-  static function getByName($controller_name) {
-    $controller_class = "Pwnage_${controller_name}Controller";
-    return new $controller_class($controller_name);
+  public function setFormat($format) {
+    $this->format = $format;
+  }
+  
+  static function getByName($name) {
+    $camel_name = PwnageCore_StringHelper::toCamelCase($name, PwnageCore_StringHelper::CapitalizeFirst);
+    $controller_class = "Pwnage_${camel_name}Controller";
+    $controller = new $controller_class;
+    $controller->setName($name);
+    return $controller;
+  }
+}
+
+class Pwnage_InvalidFormatException extends Exception {
+  public function __construct($format) {
+    // WARNING: format unescaped! Escape the error yourself before printing!
+    parent::__construct("The $format format is not available for this action");
   }
 }
 

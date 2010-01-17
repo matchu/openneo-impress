@@ -1,7 +1,6 @@
 Options -Indexes
 
 RewriteEngine On
-RewriteRule ^get/([a-z_]+)/([a-z]+)\.json$ get.php?class=$1&method=$2 [L,NC,QSA]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L,QSA]

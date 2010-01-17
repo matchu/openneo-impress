@@ -131,14 +131,7 @@ class Pwnage_PetTypeAPIAccessor extends Pwnage_ApiAccessor {
   }
   
   public function getImageHashBySpeciesAndColor($params) {
-    /*if(!is_array($params['select'])) return null;
-    $select = array();
-    foreach($params['select'] as $column) {
-      if(in_array($column, Pwnage_PetType::$columns)) {
-        $select[] = $column;
-      }
-    }*/
-    $select = array('image_hash'); // why support more until we need to?
+    $select = array('image_hash');
     $select_str = implode(', ', $select);
     
     $results = Pwnage_PetType::all(array(
