@@ -121,48 +121,4 @@ class Pwnage_PetType extends Pwnage_SwfAssetParent {
 }
 
 class Pwnage_BiologyAssetsNotFoundException extends Exception {}
-
-class Pwnage_PetTypeAPIAccessor extends Pwnage_ApiAccessor {
-  public function allColorsAndSpecies() {
-    return array(
-      'color' => Pwnage_Color::all(), 
-      'species' => Pwnage_Species::all()
-    );
-  }
-  
-  public function getImageHashBySpeciesAndColor($params) {
-    $select = array('image_hash');
-    $select_str = implode(', ', $select);
-    
-    $results = Pwnage_PetType::all(array(
-      'select' => 'image_hash',
-      'where' => 'species_id = '.intval($params['species_id'])
-      .' AND color_id = '.intval($params['color_id']),
-      'limit' => 1
-    ));
-    return $results[0]->image_hash;
-  }
-  
-  public function findBySpeciesAndColor($params) {
-    $pet_types = Pwnage_PetType::all(array(
-      'select' => 'id, body_id',
-      'where' => 'species_id = '.intval($params['species_id']).' AND '
-        .'color_id = '.intval($params['color_id']),
-      'limit' => 1
-    ));
-    $pet_type = $pet_types[0];
-    if($pet_type) {
-      $assets_select = array('id', 'url', 'zone_id', 'depth', 'parent_id');
-      $assets_select_str = 'swf_assets.id, swf_assets.url, swf_assets.zone_id, z.depth, parents_swf_assets.parent_id';
-      $pet_type->assets = $this->resultObjects(Pwnage_BiologyAsset::getAssetsByParents(
-        array($pet_type->id), array(
-          'select' => $assets_select_str,
-          'joins' => 'INNER JOIN zones z ON z.id = swf_assets.zone_id'
-        )
-      ), $assets_select);
-    }
-    $objects = $this->resultObjects($pet_types, array('id', 'body_id', 'assets'));
-    return $objects[0];
-  }
-}
 ?>
