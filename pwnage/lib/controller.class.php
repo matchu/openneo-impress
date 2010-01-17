@@ -91,16 +91,32 @@ class PwnageCore_Controller {
     $this->formats = $formats;
   }
   
-  protected function respondWith($objects) {
+  protected function respondWith($objects, $attributes=null) {
     if($this->format != 'json') throw new Pwnage_InvalidFormatException($this->format);
+    if($attributes) {
+      $objects = PwnageCore_ObjectHelper::sanitize($objects, &$attributes);
+    }
     $this->prepareToRenderOrRedirect();
     header('Content-type: application/json');
     echo json_encode($objects);
   }
   
-  protected function requireParam($collection, $name) {
-    if(!isset($collection[$name])) {
-      throw new Pwnage_MissingParamException($name);
+  protected function requireParam($collection, $name_or_names) {
+    if(is_array($name_or_names)) {
+      foreach($name_or_names as $name) {
+        $this->requireParam(&$collection, $name);
+      }
+    } else {
+      if(!isset($collection[$name_or_names])) {
+        throw new Pwnage_BadRequestException("\$$name_or_names required");
+      }
+    }
+  }
+  
+  protected function requireParamArray($collection, $name) {
+    $this->requireParam($collection, $name);
+    if(!is_array($collection[$name])) {
+      throw new Pwnage_BadRequestException("\$$name must be array");
     }
   }
   
@@ -152,10 +168,4 @@ class Pwnage_TooManyRendersException extends Exception {
 }
 
 class Pwnage_BadRequestException extends Exception {}
-
-class Pwnage_MissingParamException extends Pwnage_BadRequestException {
-  public function __construct($param) {
-    parent::__construct("\$$param required");
-  }
-}
 ?>

@@ -6,7 +6,7 @@ class Pwnage_PetTypesController extends PwnageCore_Controller {
   }
 
   public function index() {
-    if(!isset($this->get['for'])) throw new Pwnage_BadRequestException('$for required');
+    $this->requireParam($this->get, array('for', 'color_id', 'species_id'));
     $for = $this->get['for'];
     if($for == 'image') {
       $select = 'image_hash';
@@ -34,11 +34,10 @@ class Pwnage_PetTypesController extends PwnageCore_Controller {
             'joins' => 'INNER JOIN zones z ON z.id = swf_assets.zone_id'
           )
         );
-        $pet_type->assets = PwnageCore_ObjectHelper::sanitizeCollection(
+        $pet_type->assets = PwnageCore_ObjectHelper::sanitize(
           $pet_type->assets, $assets_select);
       }
-      $this->respondWith(PwnageCore_ObjectHelper::sanitize($pet_type,
-        $attributes));
+      $this->respondWith($pet_type, $attributes);
     } else {
       $this->respondWith(null);
     }

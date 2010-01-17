@@ -6,9 +6,7 @@ class Pwnage_ObjectsController extends PwnageCore_Controller {
   }
   
   public function index() {
-    if(!isset($this->get['ids'])) {
-      throw new Pwnage_BadRequestException('$ids required');
-    }
+    $this->requireParamArray($this->get, 'ids');
     $ids = implode(', ', array_map('intval', $this->get['ids']));
     $attributes = array(
       'id', 'name', 'thumbnail_url', 'description', 'type', 'rarity',
@@ -18,7 +16,7 @@ class Pwnage_ObjectsController extends PwnageCore_Controller {
       'select' => implode(', ', $attributes),
       'where' => 'id IN ('.$ids.')'
     ));
-    $this->respondWith(PwnageCore_ObjectHelper::sanitizeCollection($objects, $attributes));
+    $this->respondWith($objects, $attributes);
   }
 }
 ?>

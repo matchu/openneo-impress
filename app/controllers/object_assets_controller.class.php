@@ -7,7 +7,7 @@ class Pwnage_ObjectAssetsController extends PwnageCore_Controller {
   
   public function index() {
     $this->requireParam($this->get, 'body_id');
-    $this->requireParam($this->get, 'parent_ids');
+    $this->requireParamArray($this->get, 'parent_ids');
     $attributes = array('id', 'url', 'zone_id', 'depth', 'parent_id', 'is_body_specific');
     $assets = Pwnage_ObjectAsset::getAssetsByParents(
       $this->get['parent_ids'], array(
@@ -16,9 +16,7 @@ class Pwnage_ObjectAssetsController extends PwnageCore_Controller {
         'where' => '(body_id = '.intval($this->get['body_id']).' OR body_id = 0)'
       )
     );
-    $this->respondWith(
-      PwnageCore_ObjectHelper::sanitizeCollection($assets, $attributes)
-    );
+    $this->respondWith($assets, $attributes);
   }
 }
 ?>
