@@ -34,8 +34,8 @@
           success: function (data) {
             $('div').html(JSON.stringify(data, null, '&nbsp;&nbsp;').replace(/\n/g, '<br/>'));
           },
-          error: function (response) {
-            alert('Error!\n' + response.responseText);
+          error: function (xhr) {
+            $('div').html('<h1>Error ' + xhr.status + '!</h1>' + xhr.responseText);
           }
         });
       });
