@@ -209,7 +209,7 @@ var MainWardrobe = new function Wardrobe() {
       var object_ids = HashDaemon.get('closet');
       Closet.clearObjectStatuses();
       
-      WardrobeRequest('object', 'find', {
+      WardrobeRequest('/objects.json', {
         'ids': object_ids
       }, function (object_data) {
         $.each(object_data, function () {

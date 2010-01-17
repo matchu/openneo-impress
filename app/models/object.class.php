@@ -86,20 +86,4 @@ class Pwnage_Object extends Pwnage_SwfAssetParent {
     parent::saveCollection($objects, self::$table, self::$columns);
   }
 }
-
-class Pwnage_ObjectAPIAccessor extends Pwnage_ApiAccessor {
-  public function find($params) {
-    if(!$params['ids']) return array();
-    $ids = implode(', ', array_map('intval', $params['ids']));
-    $select = array(
-      'id', 'name', 'thumbnail_url', 'description', 'type', 'rarity',
-        'rarity_index', 'price', 'weight_lbs'
-    );
-    $objects = Pwnage_Object::all(array(
-      'select' => implode(', ', $select),
-      'where' => 'id IN ('.$ids.')'
-    ));
-    return $this->resultObjects($objects, $select);
-  }
-}
 ?>
