@@ -19,14 +19,6 @@ class PwnageCore_Controller {
         array_walk_recursive($this->$instance_var, 'stripslashes');
       }
     }
-    $this->smarty = new Smarty;
-    $this->smarty->caching = 1;
-    $this->smarty->compile_check = (PWNAGE_ENVIRONMENT == 'development');
-    $this->smarty->template_dir = PWNAGE_ROOT.'/app/views/';
-    $this->smarty->compile_dir = PWNAGE_ROOT.'/smarty/compiled/';
-    $this->smarty->cache_dir = PWNAGE_ROOT.'/smarty/cache/';
-    $this->smarty->config_dir = PWNAGE_ROOT.'/smarty/configs/';
-    $this->smarty->plugins_dir[] = PWNAGE_ROOT.'/smarty/plugins/';
   }
   
   private function clearFlash() {
@@ -56,12 +48,26 @@ class PwnageCore_Controller {
     return $this->cache_id;
   }
   
+  private function getSmarty() {
+    if(!isset($this->smarty)) {
+      $this->smarty = new Smarty;
+      $this->smarty->caching = 1;
+      $this->smarty->compile_check = (PWNAGE_ENVIRONMENT == 'development');
+      $this->smarty->template_dir = PWNAGE_ROOT.'/app/views/';
+      $this->smarty->compile_dir = PWNAGE_ROOT.'/smarty/compiled/';
+      $this->smarty->cache_dir = PWNAGE_ROOT.'/smarty/cache/';
+      $this->smarty->config_dir = PWNAGE_ROOT.'/smarty/configs/';
+      $this->smarty->plugins_dir[] = PWNAGE_ROOT.'/smarty/plugins/';
+    }
+    return $this->smarty;
+  }
+  
   private function getTemplate($action_name) {
     return "$this->name/$action_name";
   }
   
   protected function isCached($action_name) {
-    return $this->smarty->is_cached($this->getTemplate($action_name).'.tpl');
+    return $this->getSmarty()->is_cached($this->getTemplate($action_name).'.tpl');
   }
   
   private function prepareToRenderOrRedirect() {
@@ -80,9 +86,9 @@ class PwnageCore_Controller {
   protected function render($view) {
     $this->prepareToRenderOrRedirect();
     if(isset($_SESSION['flash'])) {
-      $this->smarty->assign('flash', $_SESSION['flash']);
+      $this->getSmarty()->assign('flash', $_SESSION['flash']);
     }
-    $this->smarty->display($view.'.tpl', $this->getCacheId());
+    $this->getSmarty()->display($view.'.tpl', $this->getCacheId());
     $this->clearFlash();
   }
   
@@ -121,7 +127,7 @@ class PwnageCore_Controller {
   }
   
   protected function set($key, $value) {
-    $this->smarty->assign($key, $value);
+    $this->getSmarty()->assign($key, $value);
   }
   
   protected function setCacheId($id) {
