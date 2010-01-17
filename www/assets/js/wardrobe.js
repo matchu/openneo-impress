@@ -317,7 +317,7 @@ var MainWardrobe = new function Wardrobe() {
       }
       
       if(object_ids.length) {
-        WardrobeRequest('object_asset', 'findByParentIdsAndBodyId', {
+        WardrobeRequest('/object_assets.json', {
           'parent_ids': object_ids,
           'body_id': Outfit.pet_type.body_id
         }, function (assets) {

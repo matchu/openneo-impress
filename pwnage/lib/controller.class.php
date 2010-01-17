@@ -98,6 +98,12 @@ class PwnageCore_Controller {
     echo json_encode($objects);
   }
   
+  protected function requireParam($collection, $name) {
+    if(!isset($collection[$name])) {
+      throw new Pwnage_MissingParamException($name);
+    }
+  }
+  
   protected function set($key, $value) {
     $this->smarty->assign($key, $value);
   }
@@ -146,4 +152,10 @@ class Pwnage_TooManyRendersException extends Exception {
 }
 
 class Pwnage_BadRequestException extends Exception {}
+
+class Pwnage_MissingParamException extends Pwnage_BadRequestException {
+  public function __construct($param) {
+    parent::__construct("\$$param required");
+  }
+}
 ?>
