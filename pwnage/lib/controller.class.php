@@ -34,7 +34,19 @@ class PwnageCore_Controller {
   }
   
   public function doAction($action_name) {
-    $this->$action_name();
+    try {
+      $this->$action_name();
+    } catch(Pwnage_BadRequestException $e) {
+      header('HTTP/1.0 400 Bad Request');
+      die(htmlentities($e->getMessage()));
+    } catch(Exception $e) {
+      header('HTTP/1.0 500 Internal Server Error');
+      if(PWNAGE_ENVIRONMENT == 'development') {
+        die('<h1>'.htmlentities($e->getMessage()).'</h1>'.nl2br($e->getTraceAsString()));
+      } else {
+        die('500 Internal Server Error');
+      }
+    }
     if(!$this->has_rendered_or_redirected) {
       $this->render($this->getTemplate($action_name));
     }
@@ -67,7 +79,9 @@ class PwnageCore_Controller {
   
   protected function render($view) {
     $this->prepareToRenderOrRedirect();
-    $this->smarty->assign('flash', $_SESSION['flash']);
+    if(isset($_SESSION['flash'])) {
+      $this->smarty->assign('flash', $_SESSION['flash']);
+    }
     $this->smarty->display($view.'.tpl', $this->getCacheId());
     $this->clearFlash();
   }
@@ -130,4 +144,6 @@ class Pwnage_TooManyRendersException extends Exception {
     parent::__construct('Too many renders or redirects in one action');
   }
 }
+
+class Pwnage_BadRequestException extends Exception {}
 ?>

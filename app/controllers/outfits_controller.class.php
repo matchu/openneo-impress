@@ -1,7 +1,9 @@
 <?php
 class Pwnage_OutfitsController extends PwnageCore_Controller {
   public function start() {
-    $this->set('destination', $_SESSION['destination']);
+    if(isset($_SESSION['destination'])) {
+      $this->set('destination', $_SESSION['destination']);
+    }
     
     if(!$this->isCached('start')) {
       $fields = array(

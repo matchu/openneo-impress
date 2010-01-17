@@ -67,15 +67,16 @@ $(function () {
     });
     previewLoading();
     $.ajax({
-      url: '/get/pet_type/getImageHashBySpeciesAndColor.json',
+      url: '/pet_types.json',
       data: {
+        'for': 'image',
         'species_id': type.species,
         'color_id': type.color
       },
       dataType: 'json',
       success: function (data) {
         if(data) {
-          updatePreview('http://pets.neopets.com/cp/' + data + '/1/1.png');
+          updatePreview('http://pets.neopets.com/cp/' + data.image_hash + '/1/1.png');
         } else {
           previewNotFound("We don't have data on that yet. If you own or know"
             + " of a pet of that type, please type its name in above!");

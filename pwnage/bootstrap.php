@@ -1,8 +1,14 @@
 <?php
+// Turn errors into ErrorExceptions so we can catch them
+function exception_error_handler($errno, $errstr, $errfile, $errline ) {
+  throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+}
+set_error_handler('exception_error_handler', E_ERROR);
+
 // Set PWNAGE_ROOT to the directory above this one
 $current_path = explode('/', dirname(__FILE__));
 array_pop($current_path);
-define(PWNAGE_ROOT, implode('/', $current_path));
+define('PWNAGE_ROOT', implode('/', $current_path));
 unset($current_path);
 
 // Start session, with saving to tmp folders
@@ -11,7 +17,7 @@ session_start();
 // Set PWNAGE_ENVIRONMENT to whatever is set by Apache
 $environment = apache_getenv('WearablesEnv');
 if(!$environment) $environment = 'development';
-define(PWNAGE_ENVIRONMENT, $environment);
+define('PWNAGE_ENVIRONMENT', $environment);
 unset($environment);
 
 // Load string helper manually, since autoloading depends on it
@@ -35,8 +41,8 @@ function __autoload($class_name) {
 
 // Establish, search routes
 require PWNAGE_ROOT.'/config/routes.php';
-list($path, $query) = explode('?', $_SERVER['REQUEST_URI'], 2);
-$split_path = explode('.', $path);
+$split_request = explode('?', $_SERVER['REQUEST_URI'], 2);
+$split_path = explode('.', $split_request[0]);
 if(count($split_path) > 1) {
   $format = array_pop($split_path);
 } else {

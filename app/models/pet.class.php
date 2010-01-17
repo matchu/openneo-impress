@@ -16,7 +16,7 @@ class Pwnage_Pet extends Pwnage_Outfit {
   }
   
   public function getObjects() {
-    if(!$this->objects) {
+    if(!isset($this->objects)) {
       $object_info_registry = $this->getViewerData()->object_info_registry;
       $this->objects = array();
       foreach($object_info_registry as $object_info) {
@@ -34,7 +34,7 @@ class Pwnage_Pet extends Pwnage_Outfit {
   }
   
   protected function getPetType() {
-    if(!$this->pet_type) {
+    if(!isset($this->pet_type)) {
       $this->pet_type = new Pwnage_PetType($this->getPetData()->species_id,
         $this->getPetData()->color_id);
       $this->pet_type->body_id = $this->getPetData()->body_id;
@@ -44,7 +44,7 @@ class Pwnage_Pet extends Pwnage_Outfit {
   }
   
   private function getViewerData() {
-    if(!$this->viewer_data) {
+    if(!isset($this->viewer_data)) {
       $this->loadViewerData();
     }
     return $this->viewer_data;

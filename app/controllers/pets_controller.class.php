@@ -5,6 +5,7 @@ class Pwnage_PetsController extends PwnageCore_Controller {
 
     $destination = '/';
     $query = array();
+    $error = false;
 
     if($pet_name = $this->post['name']) {
       $pet->name = $pet_name;
@@ -12,7 +13,6 @@ class Pwnage_PetsController extends PwnageCore_Controller {
         if($pet->exists()) {
           try {
             $pet->saveData();
-            throw new Exception();
           } catch(Exception $e) {
             $this->setFlash('pets/save_error', 'warning');
             $warning = true;
@@ -29,7 +29,7 @@ class Pwnage_PetsController extends PwnageCore_Controller {
       if($error) {
         $query['name'] = $pet_name;
       } else {
-        $destination = 'wardrobe.html';
+        $destination = '/wardrobe.html';
         $object_ids = array();
         foreach($pet->getObjects() as $object) {
           $object_ids[] = $object->getId();

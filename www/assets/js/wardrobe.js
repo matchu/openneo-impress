@@ -336,7 +336,8 @@ var MainWardrobe = new function Wardrobe() {
         color != this.pet_type.color_id
       ) {
         View.Outfit.hideBiologyAssets();
-        WardrobeRequest('pet_type', 'findBySpeciesAndColor', {
+        WardrobeRequest('/pet_types.json', {
+          'for': 'wardrobe',
           'species_id': species,
           'color_id': color
         }, function (pet_type) {

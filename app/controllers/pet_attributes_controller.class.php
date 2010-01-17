@@ -6,14 +6,13 @@ class Pwnage_PetAttributesController extends PwnageCore_Controller {
   }
   
   public function index() {
+    $options = array(
+      'select' => 'id, name'
+    );
     $attributes_by_type = array(
       'color' => Pwnage_Color::all(), 
       'species' => Pwnage_Species::all()
     );
-    foreach($attributes_by_type as $type => &$attributes) {
-      $attributes = PwnageCore_ObjectHelper::sanitize($attributes,
-        array('id', 'name'));
-    }
     $this->respondWith($attributes_by_type);
   }
 }

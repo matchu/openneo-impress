@@ -21,7 +21,7 @@
       <fieldset>
         <legend>Or choose a pet to start with</legend>
 {foreach from=$fields key=field_name item=field}{strip}
-{html_options name=$field_name options=$field}
+{html_options name=$field_name options=$field id=$field_name}
 {/strip}{/foreach}
         <input type="submit" value="Go" />
       </fieldset>
