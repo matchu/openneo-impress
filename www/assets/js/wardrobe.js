@@ -303,7 +303,9 @@ var MainWardrobe = new function Wardrobe() {
   }
   
   var Outfit = new function WardrobeOutfit() {
-    var Outfit = this, conflictCheckQueue = [];
+    var Outfit = this, conflict_check_queue = [];
+    
+    this.restricted_zones = [];
     
     this.pet_type = null;
     
@@ -334,11 +336,11 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     this.removeObjectsConflictingWith = function (object) {
-      conflictCheckQueue.push(object);
+      conflict_check_queue.push(object);
     }
     
     this.removeObjectsConflictingWithQueue = function () {
-      $.each(conflictCheckQueue, function () {
+      $.each(conflict_check_queue, function () {
         var object1 = this,
           assets1 = this.getAssetsByBodyId(Outfit.pet_type.body_id);
         $.each(assets1, function () {
@@ -356,7 +358,19 @@ var MainWardrobe = new function Wardrobe() {
           });
         });
       });
-      conflictCheckQueue = [];
+      conflict_check_queue = [];
+    }
+    
+    this.setRestrictedZones = function () {
+      this.restricted_zones = [];
+      $.each(this.getObjects(), function () {
+        var i, offset = 0;
+        while((i = this.zones_restrict.indexOf('1', offset)) != -1) {
+          var zone = i + 1;
+          Outfit.restricted_zones.push(zone);
+          offset = zone;
+        }
+      });
     }
     
     this.updateObjects = function () {
@@ -370,6 +384,7 @@ var MainWardrobe = new function Wardrobe() {
             return !WardrobeObject.find(object_id)
               .hasAssetsWithBodyId(Outfit.pet_type.body_id);
           });
+        Outfit.setRestrictedZones();
         Outfit.removeObjectsConflictingWithQueue();
         Closet.setUnavailableObjectIds(unavailable_object_ids);
         View.Outfit.update();
@@ -494,8 +509,9 @@ var MainWardrobe = new function Wardrobe() {
             var id = 'outfit-asset-' + this.id + '-'
               + (is_object_asset ? 'object' : 'biology'),
               klass = 'outfit-asset ' +
-                (is_object_asset ? 'object-asset' : 'biology-asset');
-            if(!$('#' + id).length) {
+                (is_object_asset ? 'object-asset' : 'biology-asset'),
+              el = $('#' + id);
+            if(!el.length) {
               $('<div id="' + id + '"></div>')
                 .appendTo('#outfit-preview');
               if(this.is_body_specific) klass += ' body-specific-asset';
@@ -509,6 +525,7 @@ var MainWardrobe = new function Wardrobe() {
                 {wmode: 'transparent'},
                 attrs);
             }
+            el.toggle($.inArray(parseInt(this.zone_id), Outfit.restricted_zones) == -1);
           }
         });
         
