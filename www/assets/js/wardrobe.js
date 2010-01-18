@@ -1,3 +1,8 @@
+/* Support for HTML5 placeholder attr in all browsers */
+
+(function(a){a.extend(a,{n:{e:function(){return this.a!==undefined?this.a:(this.a=!!("placeholder"in a('<input type="text">')[0]))},p:function(c){var d={color:"#888",f:"",c:4};a.extend(d,c);!this.e()&&a("input[placeholder]").d(d)}}});a.extend(a.k,{d:function(c){function d(b){var e=a(b).offsetParent().g(),f=a(b).g();return{top:f.top-e.top+(a(b).outerHeight()-a(b).height())/2+a(b).height()*0.07,left:f.left-e.left+c.c,width:a(b).width()-c.c}}return this.j(function(){if(a(this).data("placeholder"))return true;
+var b=a("<label />").text(a(this).i("placeholder")).h(c.f).b({position:"absolute",display:"inline","float":"none",overflow:"hidden",whiteSpace:"nowrap",textAlign:"left",color:c.color,cursor:"text",fontSize:parseInt(a(this).height()*0.85)}).b(d(this)).data("target",a(this)).click(function(){a(this).data("target").focus()}).m(this);a(this).data("placeholder",b).focus(function(){b.l()}).blur(function(){b[a(this).r().length?"hide":"show"]()}).q("blur");a(window).o(function(){var e=b.data("target");b.b(d(e))})})}})})(jQuery);
+
 /*
   Needs:
     - AJAX error handling
@@ -40,9 +45,14 @@ var MainWardrobe = new function Wardrobe() {
     return query.join('&');
   }
   
-  function WardrobeRequest(path, data, callback) {
+  function WardrobeRequest(path, data, callback, options) {
     var query = data ? buildQuery(data) : '';
-    $.getJSON(path, query, callback);
+    $.ajax($.extend({
+      url: path,
+      data: query,
+      dataType: 'json',
+      success: callback
+    }, options));
   }
   
   /* Object declarations */
@@ -106,6 +116,7 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     this.addToOutfit = function () {
+      if(!this.isCloseted()) this.addToCloset();
       var object_ids = Outfit.getObjectIds();
       object_ids.push(this.id);
       HashDaemon.set('objects', object_ids);
@@ -181,7 +192,7 @@ var MainWardrobe = new function Wardrobe() {
     
     this.setUnavailableObjectIds = function (ids) {
       this.unavailable_object_ids = ids.toInt();
-      View.modules.closet.updateObjectStatuses();
+      View.updateObjectStatuses();
     }
     
     this.clearObjectStatuses = function () {
@@ -359,7 +370,8 @@ var MainWardrobe = new function Wardrobe() {
       } else {
         Outfit.updateObjects();
       }
-    }
+    }    
+    
     
     // It feels silly, doesn't it? But updatePetType just starts the updating
     // *chain*, and isn't really the whole function, so I feel weird about
@@ -368,6 +380,34 @@ var MainWardrobe = new function Wardrobe() {
     this.update = updatePetType;
     
     this.initialize = this.update;
+  }
+  
+  var Search = new function WardrobeSearch() {
+    var objects = [];
+    
+    this.getObjects = function () {
+      return objects;
+    }
+    
+    $('#search-form').submit(function (e) {
+      e.preventDefault();
+      $('#search-module-error').hide();
+      WardrobeRequest('/objects.json', {
+        search: $('#search-form-query').val()
+      }, function (object_data) {
+        objects = [];
+        $.each(object_data, function () {
+          objects.push(new WardrobeObject(this));
+        });
+        View.modules.search.update();
+      }, {
+        error: function (xhr) {
+          $('#search-module-error').text(xhr.responseText).show();
+          objects = [];
+          View.modules.search.update();
+        }
+      });
+    });
   }
   
   var View = new function WardrobeView() {
@@ -510,12 +550,14 @@ var MainWardrobe = new function Wardrobe() {
       }
     }
     
-    this.modules = [];
-    
-    this.modules.closet = new function WardrobeClosetModule() {
+    function WardrobeObjectModule(objects_wrapper_query, object_owner) {
+      this.afterUpdate = function () {}
+      this.object_owner = object_owner;
+      this.objects_wrapper_query = objects_wrapper_query;
       this.update = function () {
-        var objects_wrapper = $('#closet-module-objects').html('');
-        $.each(Closet.getObjects(), function () {
+        var objects_wrapper = $(this.objects_wrapper_query).html(''),
+          last_object;
+        $.each(this.object_owner.getObjects(), function () {
           var object = $('<li></li>').attr({
             'id': 'object-' + this.id,
             'class': 'object'
@@ -530,17 +572,15 @@ var MainWardrobe = new function Wardrobe() {
           object.append('<span>' + this.name + '</span>')
             .wrapInner('<div></div>').appendTo(objects_wrapper);
         });
-        this.updateObjectStatuses();
-      }
-      
-      this.updateObjectStatuses = function () {
-        $('.object').each(function () {
-          var el = $(this), object = WardrobeObject.find(el.data('object_id'));
-          el.toggleClass('unavailable-object', object.isUnavailable());
-          el.toggleClass('worn-object', object.isWorn());
-        });
+        View.updateObjectStatuses();
+        this.afterUpdate();
       }
     }
+    
+    this.modules = [];
+    
+    this.modules.closet =
+      new WardrobeObjectModule('#closet-module-objects', Closet);
     
     this.modules.pet_type = new function WardrobePetTypeModule() {
       WardrobeRequest('/pet_attributes.json', null, function (data) {
@@ -570,11 +610,31 @@ var MainWardrobe = new function Wardrobe() {
       });
     }
     
+    this.modules.search =
+      new WardrobeObjectModule('#search-module-objects', Search);
+    this.modules.search.afterUpdate = function () {
+      var objects = this.object_owner.getObjects(),
+        wrapper = $(this.objects_wrapper_query),
+        width = wrapper.children('.object:first').outerWidth()*objects.length;
+      wrapper.width(width);
+      $('#toolbar-bottom').animate({
+        height: wrapper.outerHeight() + wrapper.position().top
+      }, 250, onResize);
+    }
+      
+    this.updateObjectStatuses = function () {
+      $('.object').each(function () {
+        var el = $(this), object = WardrobeObject.find(el.data('object_id'));
+        el.toggleClass('unavailable-object', object.isUnavailable());
+        el.toggleClass('worn-object', object.isWorn());
+      });
+    }
+    
     function onResize() {
       var null_position = {top: null, left: null},
         available = {
-          height: $(window).height()-toolbars.bottom.height(),
-          width: $(window).width()-toolbars.right.width()
+          height: $(window).height()-toolbars.bottom.outerHeight(),
+          width: $(window).width()-toolbars.right.outerWidth()
         }
       $.each(toolbars, function () {
         this.css(null_position);

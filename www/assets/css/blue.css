@@ -68,6 +68,22 @@ input[type=submit] {
   padding-right: .5em;
 }
 
+.error, .warning {
+  padding: .5em 1em;
+}
+
+.error {
+  background: #E14F1C;
+  border: 1px solid #CD0A0A;
+  color: #FFF;
+}
+
+.warning {
+  background: #F8DA4E;
+  border: 1px solid #FCD113;
+  color: #915608;
+}
+
 /* Index */
 
 body.index {
@@ -146,21 +162,9 @@ body.index select {
 
 body.index .error, body.index .warning {
   left: 1%;
-  padding: .5em 1em;
   position: absolute;
   top: 52%;
   width: 30%;
-}
-
-body.index .error {
-  background: #E14F1C;
-  border: 1px solid #CD0A0A;
-}
-
-body.index .warning {
-  background: #F8DA4E;
-  border: 1px solid #FCD113;
-  color: #915608;
 }
 
 body.index .floated-icon {
@@ -204,7 +208,7 @@ body.wardrobe #toolbar-right .ui-resizable-w {
 
 body.wardrobe #toolbar-bottom {
   border-width: 10px 0 0 0;
-  height: 25%;
+  padding-bottom: 1em;
   left: 0;
   width: 70%;
   z-index: 101;
@@ -346,6 +350,30 @@ body.wardrobe #object-description .ui-state-error {
 
 body.wardrobe #pet-type-form {
   visibility: hidden;
+}
+
+body.wardrobe #search-module h1 {
+  float: left;
+}
+
+body.wardrobe #search-form {
+  float: left;
+  margin-left: 2em;
+}
+
+body.wardrobe #search-form input {
+  background: #FFF;
+  border-color: #CCC;
+  color: #AAA;
+}
+
+body.wardrobe #search-module-objects, body.wardrobe #search-module-error {
+  clear: both;
+  float: left;
+}
+
+body.wardrobe #search-module-error {
+  display: none;
 }
 
 /* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */
