@@ -112,6 +112,7 @@ var MainWardrobe = new function Wardrobe() {
     
     this.addToOutfit = function () {
       if(!this.isCloseted()) this.addToCloset();
+      Outfit.removeObjectsConflictingWith(this);
       var object_ids = Outfit.getObjectIds();
       object_ids.push(this.id);
       HashDaemon.set('objects', object_ids);
@@ -125,7 +126,7 @@ var MainWardrobe = new function Wardrobe() {
       }
       return parent_cache ? parent_cache : [];
     }
-    
+
     this.hasAssetsWithBodyId = function (body_id) {
       return this.getAssetsByBodyId(body_id).length > 0;
     }
@@ -307,9 +308,34 @@ var MainWardrobe = new function Wardrobe() {
       return object_ids ? object_ids.toInt() : [];
     }
     
+    this.getObjects = function () {
+      return $.map(this.getObjectIds(), function (id) {
+        return WardrobeObject.find(id);
+      });
+    }
+    
+    this.getObjectsInZone = function (zone_id) {
+      
+    }
+    
+    this.removeObjectsConflictingWith = function (object) {
+      var assets = object.getAssetsByBodyId(this.pet_type.body_id);
+      $.each(assets, function () {
+        var asset = this;
+        $.each(Outfit.getObjects(), function () {
+          var assets = this.getAssetsByBodyId(Outfit.pet_type.body_id);
+          for(var i in assets) {
+            if(assets[i].zone_id == asset.zone_id) {
+              this.removeFromOutfit();
+            }
+          }
+        });
+      });
+    }
+    
     this.updateObjects = function () {
-      var object_ids = $.grep(this.getObjectIds(), function (object_id) {
-        return !WardrobeObject.find(object_id).hasAssetsWithBodyId(Outfit.pet_type.body_id);
+      var object_ids = $.grep(this.getObjectIds(), function (id) {
+        return !WardrobeObject.find(id).hasAssetsWithBodyId(Outfit.pet_type.body_id);
       });
       
       function updateAssets() {
