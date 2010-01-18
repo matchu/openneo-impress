@@ -629,7 +629,6 @@ var MainWardrobe = new function Wardrobe() {
           }).data('object_id', this.id);
           $('<img />').attr({
             'src': this.thumbnail_url,
-            'title': this.description,
             'alt': '',
             'height': 80,
             'width': 80
