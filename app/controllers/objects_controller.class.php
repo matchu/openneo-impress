@@ -8,7 +8,7 @@ class Pwnage_ObjectsController extends PwnageCore_Controller {
   public function index() {
     $attributes = array(
       'id', 'name', 'thumbnail_url', 'description', 'type', 'rarity',
-        'rarity_index', 'price', 'weight_lbs'
+        'rarity_index', 'price', 'weight_lbs', 'zones_restrict'
     );
     if(isset($this->get['ids'])) {
       $this->requireParamArray($this->get, 'ids');
