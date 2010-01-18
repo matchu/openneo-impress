@@ -364,7 +364,7 @@ body.wardrobe #search-form {
 body.wardrobe #search-form input {
   background: #FFF;
   border-color: #CCC;
-  color: #AAA;
+  color: #777;
 }
 
 body.wardrobe #search-module-objects, body.wardrobe #search-module-error {

@@ -124,10 +124,10 @@ var MainWardrobe = new function Wardrobe() {
     
     this.addToOutfit = function () {
       if(!this.isCloseted()) this.addToCloset();
-      Outfit.removeObjectsConflictingWith(this);
       var object_ids = Outfit.getObjectIds();
       object_ids.push(this.id);
       HashDaemon.set('objects', object_ids);
+      Outfit.removeObjectsConflictingWith(this);
     }
     
     this.getAssetsByBodyId = function (body_id) {
@@ -303,7 +303,7 @@ var MainWardrobe = new function Wardrobe() {
   }
   
   var Outfit = new function WardrobeOutfit() {
-    var Outfit = this;
+    var Outfit = this, conflictCheckQueue = [];
     
     this.pet_type = null;
     
@@ -334,29 +334,35 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     this.removeObjectsConflictingWith = function (object) {
-      return false;
-      var assets = object.getAssetsByBodyId(this.pet_type.body_id);
-      $.each(assets, function () {
-        var asset = this;
-        $.each(Outfit.getObjects(), function () {
-          var assets = this.getAssetsByBodyId(Outfit.pet_type.body_id);
-          for(var i in assets) {
-            if(assets[i].zone_id == asset.zone_id) {
-              this.removeFromOutfit();
+      conflictCheckQueue.push(object);
+    }
+    
+    this.removeObjectsConflictingWithQueue = function () {
+      $.each(conflictCheckQueue, function () {
+        var object1 = this,
+          assets1 = this.getAssetsByBodyId(Outfit.pet_type.body_id);
+        $.each(assets1, function () {
+          var asset1 = this;
+          $.each(Outfit.getObjects(), function () {
+            var assets2;
+            if(object1.id != this.id) {
+              assets2 = this.getAssetsByBodyId(Outfit.pet_type.body_id);
+              for(var i in assets2) {
+                if(assets2[i].zone_id == asset1.zone_id) {
+                  this.removeFromOutfit();
+                }
+              }
             }
-          }
+          });
         });
       });
+      conflictCheckQueue = [];
     }
     
     this.updateObjects = function () {
       var object_ids = $.grep(this.getObjectIds(), function (id) {
-        //console.dir(WardrobeObject.find(id).getAssetsByBodyId(Outfit.pet_type.body_id));
-        //console.log(WardrobeObject.find(id).hasAssetsWithBodyId(Outfit.pet_type.body_id));
         return !WardrobeObject.find(id).hasAssetsWithBodyId(Outfit.pet_type.body_id);
       });
-      
-      //console.log(object_ids);
       
       function updateAssets() {
         var unavailable_object_ids = $.grep(object_ids.clone(),
@@ -364,6 +370,7 @@ var MainWardrobe = new function Wardrobe() {
             return !WardrobeObject.find(object_id)
               .hasAssetsWithBodyId(Outfit.pet_type.body_id);
           });
+        Outfit.removeObjectsConflictingWithQueue();
         Closet.setUnavailableObjectIds(unavailable_object_ids);
         View.Outfit.update();
       }
