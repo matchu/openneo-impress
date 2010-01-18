@@ -3,6 +3,7 @@ require_once 'smarty/Smarty.class.php';
 
 class PwnageCore_Controller {
   private $cache_id;
+  private $cache_lifetime = 60;
   private $current_action;
   private $name;
   protected $format;
@@ -178,6 +179,16 @@ class PwnageCore_Controller {
           PwnageCore_ObjectHelper::SanitizeAssoc)
       )
     );
+  }
+  
+  protected function setCacheLifetime($minutes) {
+    $seconds = $minutes*60;
+    $this->cache_lifetime = $seconds;
+    if($this->isResource()) {
+      $this->getResourceCache()->setLifetime($seconds);
+    } else {
+      $this->getSmarty()->lifetime = $seconds;
+    }
   }
   
   protected function setName($name) {

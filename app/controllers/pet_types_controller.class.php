@@ -8,6 +8,7 @@ class Pwnage_PetTypesController extends PwnageCore_Controller {
   public function index() {
     $params = array('for', 'color_id', 'species_id');
     $this->requireParam($this->get, $params);
+    $this->setCacheLifetime(24*60);
     $this->setCacheIdWithParams($this->get, $params);
     if(!$this->isCached()) {
       $for = $this->get['for'];

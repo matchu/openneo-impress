@@ -1,8 +1,9 @@
 <?php
 class PwnageCore_ResourceCache {
   const PWNAGE_RELATIVE_CACHE_ROOT = '/tmp/resource_cache';
-  private $path;
   private $id;
+  private $lifetime;
+  private $path;
   
   public function __construct($path) {
     $this->path = $path;
@@ -21,7 +22,8 @@ class PwnageCore_ResourceCache {
   }
   
   public function isSaved() {
-    return file_exists($this->fullCachePath());
+    return file_exists($this->fullCachePath()) &&
+      time() - filemtime($this->fullCachePath()) < $this->lifetime;
   }
   
   public function output() {
@@ -38,6 +40,10 @@ class PwnageCore_ResourceCache {
   
   public function setId($id) {
     $this->id = $id;
+  }
+  
+  public function setLifetime($seconds) {
+    $this->lifetime = $seconds;
   }
 }
 ?>

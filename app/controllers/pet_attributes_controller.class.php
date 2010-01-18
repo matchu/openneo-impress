@@ -6,6 +6,7 @@ class Pwnage_PetAttributesController extends PwnageCore_Controller {
   }
   
   public function index() {
+    $this->setCacheLifetime(48*60);
     if(!$this->isCached()) {
       $options = array(
         'select' => 'id, name'
