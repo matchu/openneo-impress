@@ -1,13 +1,8 @@
-/* Support for HTML5 placeholder attr in all browsers */
-
-(function(a){a.extend(a,{n:{e:function(){return this.a!==undefined?this.a:(this.a=!!("placeholder"in a('<input type="text">')[0]))},p:function(c){var d={color:"#888",f:"",c:4};a.extend(d,c);!this.e()&&a("input[placeholder]").d(d)}}});a.extend(a.k,{d:function(c){function d(b){var e=a(b).offsetParent().g(),f=a(b).g();return{top:f.top-e.top+(a(b).outerHeight()-a(b).height())/2+a(b).height()*0.07,left:f.left-e.left+c.c,width:a(b).width()-c.c}}return this.j(function(){if(a(this).data("placeholder"))return true;
-var b=a("<label />").text(a(this).i("placeholder")).h(c.f).b({position:"absolute",display:"inline","float":"none",overflow:"hidden",whiteSpace:"nowrap",textAlign:"left",color:c.color,cursor:"text",fontSize:parseInt(a(this).height()*0.85)}).b(d(this)).data("target",a(this)).click(function(){a(this).data("target").focus()}).m(this);a(this).data("placeholder",b).focus(function(){b.l()}).blur(function(){b[a(this).r().length?"hide":"show"]()}).q("blur");a(window).o(function(){var e=b.data("target");b.b(d(e))})})}})})(jQuery);
-
 /*
   Needs:
     - AJAX error handling
-    - Data caching
     - Loading messages
+    - Zone restriction handling
 */
 
 Array.prototype.removeValue = function (value) {
