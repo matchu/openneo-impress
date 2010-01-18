@@ -2,9 +2,6 @@
   Needs:
     - AJAX error handling
     - Loading messages
-    - Zone restriction handling
-    
-    FIXME: object asset cache unstable
 */
 
 Array.prototype.removeValue = function (value) {
