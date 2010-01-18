@@ -107,7 +107,8 @@ class PwnageCore_Controller {
     $this->prepareToRenderOrRedirect();
     if($this->isResource() && $this->isCached()) {
       header('Content-type: application/json');
-      $this->getResourceCache()->output();
+      $cache = $this->getResourceCache();
+      $cache->output();
     } else {
       if(isset($_SESSION['flash'])) {
         $this->getSmarty()->assign('flash', $_SESSION['flash']);
@@ -136,7 +137,8 @@ class PwnageCore_Controller {
     ob_start();
     $this->respondWith($objects, $attributes);
     $output = ob_get_flush();
-    $this->getResourceCache()->save($output);
+    $cache = $this->getResourceCache();
+    $cache->save($output);
   }
   
   protected function requireParam($collection, $name_or_names) {
@@ -164,6 +166,18 @@ class PwnageCore_Controller {
   
   protected function setCacheId($id) {
     $this->cache_id = $id;
+    if($this->isResource()) {
+      $this->getResourceCache()->setId($this->getCacheId());
+    }
+  }
+  
+  protected function setCacheIdWithParams($params, $desired_keys) {
+    $this->setCacheId(
+      http_build_query(
+        PwnageCore_ObjectHelper::sanitize($params, $desired_keys,
+          PwnageCore_ObjectHelper::SanitizeAssoc)
+      )
+    );
   }
   
   protected function setName($name) {

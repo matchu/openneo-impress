@@ -1,14 +1,23 @@
 <?php
 class PwnageCore_ResourceCache {
   const PWNAGE_RELATIVE_CACHE_ROOT = '/tmp/resource_cache';
-  private $cache_path;
+  private $path;
+  private $id;
   
-  public function __construct($cache_path) {
-    $this->cache_path = $cache_path;
+  public function __construct($path) {
+    $this->path = $path;
   }
   
   private function fullCachePath() {
-    return PWNAGE_ROOT.self::PWNAGE_RELATIVE_CACHE_ROOT.'/'.$this->cache_path;
+    $cache_root = PWNAGE_ROOT.self::PWNAGE_RELATIVE_CACHE_ROOT;
+    if($this->id) {
+      $split_path = explode('.', $this->path);
+      $extension = array_pop($split_path);
+      $path_with_id = implode('.', $split_path).'-'.$this->id.'.'.$extension;
+    } else {
+      $path_with_id = $this->path;
+    }
+    return $cache_root.'/'.$path_with_id;
   }
   
   public function isSaved() {
@@ -25,6 +34,10 @@ class PwnageCore_ResourceCache {
       mkdir($dir, 0777, true);
     }
     file_put_contents($this->fullCachePath(), $content);
+  }
+  
+  public function setId($id) {
+    $this->id = $id;
   }
 }
 ?>
