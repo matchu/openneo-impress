@@ -3,12 +3,14 @@ require_once 'smarty/Smarty.class.php';
 
 class PwnageCore_Controller {
   private $cache_id;
+  private $current_action;
   private $name;
   protected $format;
   private $formats = array('html');
   protected $get = array();
   private $has_rendered_or_redirected = false;
   protected $post = array();
+  private $resource_cache;
   private $smarty;
   private $view_data = array();
   
@@ -27,7 +29,9 @@ class PwnageCore_Controller {
   
   public function doAction($action_name) {
     try {
+      $this->current_action = $action_name;
       $this->$action_name();
+      unset($this->current_action);
     } catch(Pwnage_BadRequestException $e) {
       header('HTTP/1.0 400 Bad Request');
       die(htmlentities($e->getMessage()));
@@ -48,6 +52,14 @@ class PwnageCore_Controller {
     return $this->cache_id;
   }
   
+  private function getResourceCache() {
+    if(!isset($this->resource_cache)) {
+      $path = $this->name.'/'.$this->current_action.'.'.$this->format;
+      $this->resource_cache = new PwnageCore_ResourceCache($path);
+    }
+    return $this->resource_cache;
+  }
+  
   private function getSmarty() {
     if(!isset($this->smarty)) {
       $this->smarty = new Smarty;
@@ -66,8 +78,16 @@ class PwnageCore_Controller {
     return "$this->name/$action_name";
   }
   
-  protected function isCached($action_name) {
-    return $this->getSmarty()->is_cached($this->getTemplate($action_name).'.tpl');
+  protected function isCached() {
+    if($this->isResource()) {
+      return $this->getResourceCache()->isSaved();
+    } else {
+      return $this->getSmarty()->is_cached($this->getTemplate($this->current_action).'.tpl');
+    }
+  }
+  
+  private function isResource() {
+    return $this->format == 'json';
   }
   
   private function prepareToRenderOrRedirect() {
@@ -85,11 +105,16 @@ class PwnageCore_Controller {
   
   protected function render($view) {
     $this->prepareToRenderOrRedirect();
-    if(isset($_SESSION['flash'])) {
-      $this->getSmarty()->assign('flash', $_SESSION['flash']);
+    if($this->isResource() && $this->isCached()) {
+      header('Content-type: application/json');
+      $this->getResourceCache()->output();
+    } else {
+      if(isset($_SESSION['flash'])) {
+        $this->getSmarty()->assign('flash', $_SESSION['flash']);
+      }
+      $this->getSmarty()->display($view.'.tpl', $this->getCacheId());
+      $this->clearFlash();
     }
-    $this->getSmarty()->display($view.'.tpl', $this->getCacheId());
-    $this->clearFlash();
   }
   
   protected function respondTo() {
@@ -105,6 +130,13 @@ class PwnageCore_Controller {
     $this->prepareToRenderOrRedirect();
     header('Content-type: application/json');
     echo json_encode($objects);
+  }
+  
+  protected function respondWithAndCache($objects, $attributes=null) {
+    ob_start();
+    $this->respondWith($objects, $attributes);
+    $output = ob_get_flush();
+    $this->getResourceCache()->save($output);
   }
   
   protected function requireParam($collection, $name_or_names) {

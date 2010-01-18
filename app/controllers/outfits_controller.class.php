@@ -5,7 +5,7 @@ class Pwnage_OutfitsController extends PwnageCore_Controller {
       $this->set('destination', $_SESSION['destination']);
     }
     
-    if(!$this->isCached('start')) {
+    if(!$this->isCached()) {
       $fields = array(
         'color' => Pwnage_Color::all(),
         'species' => Pwnage_Species::all()
