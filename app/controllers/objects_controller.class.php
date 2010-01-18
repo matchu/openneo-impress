@@ -16,6 +16,11 @@ class Pwnage_ObjectsController extends PwnageCore_Controller {
       $where = 'id IN ('.$ids.')';
     } elseif(isset($this->get['search'])) {
       $search = $this->get['search'];
+      if(strlen($search) < 3) {
+        throw new Pwnage_BadRequestException(
+          'Search queries must be longer than 3 characters, silly!'
+        );
+      }
       $db = PwnageCore_Db::getInstance();
       if(preg_match('/^"(.+)"$/', $search, $matches)) {
         $search = $matches[1];
@@ -27,11 +32,13 @@ class Pwnage_ObjectsController extends PwnageCore_Controller {
     } else {
       throw new Pwnage_BadRequestException('$id or $search required');
     }
-    $objects = Pwnage_Object::all(array(
-      'select' => implode(', ', $attributes),
-      'where' => $where
-    ));
-    $this->respondWith($objects, $attributes);
+    if($where) {
+      $objects = Pwnage_Object::all(array(
+        'select' => implode(', ', $attributes),
+        'where' => $where
+      ));
+      $this->respondWith($objects, $attributes);
+    }
   }
 }
 ?>
