@@ -1,6 +1,6 @@
 <?php
-require_once dirname(__FILE__).'/../../lib/db.class.php';
+require_once dirname(__FILE__).'/../../pwnage/environment.php';
 
-$ruckusing_db_config = Wearables_DB::getConfig();
+$ruckusing_db_config = PwnageCore_Db::getConfig();
 
 ?>

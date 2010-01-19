@@ -10,25 +10,6 @@ set_error_handler('exception_error_handler', E_ERROR);
 // Start session, with saving to tmp folders
 session_start();
 
-// Load string helper manually, since autoloading depends on it
-require_once PWNAGE_ROOT.'/pwnage/lib/string_helper.class.php';
-
-// Allow the autoloading of Pwnage and PwnageCore classes
-function __autoload($class_name) {
-  list($prefix, $name) = explode('_', $class_name, 2);
-  $filename = PwnageCore_StringHelper::fromCamelCase($name).'.class.php';
-  if($prefix == 'PwnageCore') {
-    $directory = '/pwnage/lib/';
-  } elseif($prefix == 'Pwnage') {
-    if(preg_match('/Controller$/', $class_name)) {
-      $directory = '/app/controllers/';
-    } else {
-      $directory = '/app/models/';
-    }
-  }
-  if($directory) require_once PWNAGE_ROOT.$directory.$filename;
-}
-
 // Establish, search routes
 require PWNAGE_ROOT.'/config/routes.php';
 $split_request = explode('?', $_SERVER['REQUEST_URI'], 2);
