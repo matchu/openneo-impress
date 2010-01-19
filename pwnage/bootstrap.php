@@ -1,24 +1,14 @@
 <?php
+require_once dirname(__FILE__).'/environment.php';
+
 // Turn errors into ErrorExceptions so we can catch them
 function exception_error_handler($errno, $errstr, $errfile, $errline ) {
   throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
 }
 set_error_handler('exception_error_handler', E_ERROR);
 
-// Set PWNAGE_ROOT to the directory above this one
-$current_path = explode('/', dirname(__FILE__));
-array_pop($current_path);
-define('PWNAGE_ROOT', implode('/', $current_path));
-unset($current_path);
-
 // Start session, with saving to tmp folders
 session_start();
-
-// Set PWNAGE_ENVIRONMENT to whatever is set by Apache
-$environment = apache_getenv('WearablesEnv');
-if(!$environment) $environment = 'development';
-define('PWNAGE_ENVIRONMENT', $environment);
-unset($environment);
 
 // Load string helper manually, since autoloading depends on it
 require_once PWNAGE_ROOT.'/pwnage/lib/string_helper.class.php';
