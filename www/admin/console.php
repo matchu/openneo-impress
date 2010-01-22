@@ -1,6 +1,6 @@
 <?php
-require '../../lib/amf.class.php';
-require '../../lib/spyc.php';
+require '../../app/models/amf.class.php';
+require '../../pwnage/lib/spyc.php';
 
 $config = Spyc::YAMLLoad('console.yaml');
 $methods = $config['methods'];
