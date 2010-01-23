@@ -91,8 +91,12 @@ class Pwnage_PetState extends Pwnage_SwfAssetParent {
     }
   }
   
+  static function all($options) {
+    return parent::all($options, self::$table, __CLASS__);
+  }
+  
   static function first($options) {
-    return parent::first($options, self::$table, 'Pwnage_PetState');
+    return parent::first($options, self::$table, __CLASS__);
   }
 }
 ?>

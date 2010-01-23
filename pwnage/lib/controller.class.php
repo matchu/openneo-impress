@@ -151,6 +151,7 @@ class PwnageCore_Controller {
       if(!isset($collection[$name_or_names])) {
         throw new Pwnage_BadRequestException("\$$name_or_names required");
       }
+      return $collection[$name_or_names];
     }
   }
   
@@ -159,6 +160,7 @@ class PwnageCore_Controller {
     if(!is_array($collection[$name])) {
       throw new Pwnage_BadRequestException("\$$name must be array");
     }
+    return $collection[$name];
   }
   
   protected function set($key, $value) {

@@ -13,6 +13,7 @@ $map->connect('/pets/load', array(
   'name' => 'load_pet'
 ));
 
+$map->resources('biology_assets', 'index');
 $map->resources('object_assets', 'index');
 $map->resources('objects', 'index');
 $map->resources('pet_attributes', 'index');
