@@ -2,6 +2,8 @@
 class PwnageCore_DbObject {
   protected function beforeSave() {}
   
+  protected function isSaved() { return false; }
+  
   public function getValueSet($db, $columns) {
     $this->beforeSave();
     $values = array();
@@ -13,7 +15,7 @@ class PwnageCore_DbObject {
   
   public function save($table, $columns) {
     $db = PwnageCore_Db::getInstance();
-    if(!$this->isSaved()) { // to be determined by subclass
+    if(!$this->isSaved()) {
       self::saveCollection(array($this), $table, $columns);
       return $db->lastInsertId();
     }
@@ -41,8 +43,12 @@ class PwnageCore_DbObject {
   }
   
   static function find($id, $options=array(), $table, $subclass) {
-    $options['limit'] = 1;
     $options['where'] = 'id = '.intval($id);
+    return self::first($options, $table, $subclass);
+  }
+  
+  static function first($options=array(), $table, $subclass) {
+    $options['limit'] = 1;
     $results = self::all($options, $table, $subclass);
     return $results[0];
   }

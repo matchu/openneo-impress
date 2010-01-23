@@ -1,15 +1,10 @@
 <?php
-class Pwnage_PetType extends Pwnage_SwfAssetParent {
+class Pwnage_PetType extends PwnageCore_DbObject {
   const IMAGE_CPN_FORMAT = 'http://pets.neopets.com/cpn/%s/1/1.png';
   const IMAGE_CP_HEADER_REGEX = '%^Location: /cp/(.+?)/1/1\.png$%';
   protected $asset_type = 'biology';
   static $table = 'pet_types';
   static $columns = array('species_id', 'color_id', 'body_id', 'image_hash');
-  
-  public function __construct($species_id=null, $color_id=null) {
-    if($species_id) $this->species_id = $species_id;
-    if($color_id) $this->color_id = $color_id;
-  }
   
   public function beforeSave() {
     // get image_hash value
@@ -28,24 +23,6 @@ class Pwnage_PetType extends Pwnage_SwfAssetParent {
         }
       }
     }
-  }
-  
-  public function createOutfit() {
-    if(!$this->getId()) throw new Pwnage_BiologyAssetsNotFoundException();
-    $outfit = new Pwnage_Outfit();
-    $outfit->pet_type = &$this;
-    return $outfit;
-  }
-  
-  public function getAssets() {
-    if(!$this->preloaded_assets && !$this->assets) {
-      $this->assets = Pwnage_BiologyAsset::all(
-        array(
-          'where' => 'parent_id = '.intval($this->getId())
-        )
-      );
-    }
-    return $this->assets;
   }
   
   public function getBodyId() {
@@ -95,18 +72,10 @@ class Pwnage_PetType extends Pwnage_SwfAssetParent {
     }
   }
   
-  public function needsToLoadAssets() {
-    return !$this->preloaded_assets && empty($this->assets);
-  }
-  
   public function setOriginPet($pet) {
     $this->origin_pet = $pet;
-    $this->assets = array();
-    foreach($pet->getBiology() as $asset_typed_obj) {
-      $asset = new Pwnage_BiologyAsset($asset_typed_obj->getAMFData());
-      $asset->setOriginPetType($this);
-      $this->assets[] = $asset;
-    }
+    $this->color_id = $pet->getPetData()->color_id;
+    $this->species_id = $pet->getPetData()->species_id;
   }
   
   public function save() {
@@ -119,6 +88,4 @@ class Pwnage_PetType extends Pwnage_SwfAssetParent {
       'Pwnage_PetType');
   }
 }
-
-class Pwnage_BiologyAssetsNotFoundException extends Exception {}
 ?>

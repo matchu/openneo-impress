@@ -11,6 +11,10 @@ class Pwnage_SwfAsset extends PwnageCore_DbObject {
     }
   }
   
+  public function getId() {
+    return $this->id;
+  }
+  
   public function getParentId() {
     if(!$this->parent_id) {
       $this->parent_id = $this->parent->getId();
@@ -78,6 +82,7 @@ class Pwnage_SwfAsset extends PwnageCore_DbObject {
       Pwnage_ParentSwfAssetRelationship::saveCollection($relationships);
     } catch(PDOException $e) {
       $db->rollBack();
+      throw $e;
     }
     $db->commit();
   }

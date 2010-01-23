@@ -9,14 +9,14 @@ class Pwnage_Outfit {
   
   protected function getAssets() {
     if(!$this->assets) {
-      Pwnage_SwfAssetParent::preloadAssetsForCollection($this->getPetType(), $this->getObjects());
+      Pwnage_SwfAssetParent::preloadAssetsForCollection($this->getPetState(), $this->getObjects());
       $this->assets = array_merge($this->getBiologyAssets(), $this->getObjectAssets());
     }
     return $this->assets;
   }
 
   protected function getBiologyAssets() {
-    return $this->getPetType()->getAssets();
+    return $this->getPetState()->getAssets();
   }
   
   public function getColor() {

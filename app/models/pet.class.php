@@ -33,12 +33,22 @@ class Pwnage_Pet extends Pwnage_Outfit {
     return $this->name;
   }
   
+  public function getPetData() {
+    $viewer_data = $this->getViewerData();
+    return $viewer_data->custom_pet->getAMFData();
+  }
+  
+  protected function getPetState() {
+    if(!isset($this->pet_state)) {
+      $this->pet_state = new Pwnage_PetState();
+      $this->pet_state->setOriginPet($this);
+    }
+    return $this->pet_state;
+  }
+  
   protected function getPetType() {
     if(!isset($this->pet_type)) {
-      $this->pet_type = new Pwnage_PetType($this->getPetData()->species_id,
-        $this->getPetData()->color_id);
-      $this->pet_type->body_id = $this->getPetData()->body_id;
-      $this->pet_type->setOriginPet($this);
+      $this->pet_type = $this->getPetState()->getPetType();
     }
     return $this->pet_type;
   }
@@ -48,11 +58,6 @@ class Pwnage_Pet extends Pwnage_Outfit {
       $this->loadViewerData();
     }
     return $this->viewer_data;
-  }
-  
-  private function getPetData() {
-    $viewer_data = $this->getViewerData();
-    return $viewer_data->custom_pet->getAMFData();
   }
   
   private function loadViewerData() {
@@ -68,7 +73,7 @@ class Pwnage_Pet extends Pwnage_Outfit {
   
   public function saveData() {
     // Save pet type
-    $this->getPetType()->save();
+    $this->getPetState()->save();
     
     // Save objects
     Pwnage_Object::saveCollection($this->getObjects());

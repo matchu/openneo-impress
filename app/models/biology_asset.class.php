@@ -11,9 +11,9 @@ class Pwnage_BiologyAsset extends Pwnage_SwfAsset {
     $this->parent_id = $this->parent->getId();
   }
   
-  public function setOriginPetType($pet_type) {
-    $this->parent = &$pet_type;
-    parent::setOriginPetType($pet_type);
+  public function setOriginPetState($pet_state) {
+    $this->parent = &$pet_state;
+    $this->setOriginPetType($pet_state->getPetType());
   }
   
   static function all($options) {

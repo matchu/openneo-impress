@@ -2,9 +2,9 @@
 class Pwnage_SwfAssetParent extends PwnageCore_DbObject {
   public $assets = array();
   
-  static function preloadAssetsForCollection($pet_type, $objects) {
+  static function preloadAssetsForCollection($biology_parent, $objects) {
     $parents = $objects;
-    $parents[] = $pet_type;
+    $parents[] = $biology_parent;
     $parents_by_type_and_id = array();
     $parents_needing_assets = 0;
     foreach($parents as &$parent) {
@@ -18,7 +18,7 @@ class Pwnage_SwfAssetParent extends PwnageCore_DbObject {
       foreach($parents_by_type_and_id as $type => $parents_by_id) {
         $where[] = '(type = "'.$type.'" AND parent_id IN ('.implode(', ', array_keys($parents_by_id)).'))';
       }
-      $where = '('.implode(' OR ', $where).') AND (body_id = '.intval($pet_type->getBodyId()).' OR body_id = 0)';
+      $where = '('.implode(' OR ', $where).') AND (body_id = '.intval($biology_parent->getBodyId()).' OR body_id = 0)';
       $assets = Pwnage_SwfAsset::all(
         array(
           'select' => 'zone_id, url, type, parent_id',
