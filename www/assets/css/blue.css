@@ -222,6 +222,23 @@ body.wardrobe #toolbar-right {
   z-index: 102;
 }
 
+body.wardrobe #toolbar-float {
+  background: rgba(63, 146, 210, 0.5);
+  color: #fff;
+  position: absolute;
+  right: -1000px;
+  top: 0;
+  z-index: 100;
+}
+
+body.wardrobe #pet-state-list {
+  padding-left: 3em; /* for bullets */
+}
+
+body.wardrobe #pet-state-list a {
+  color: #fff;
+}
+
 body.wardrobe #outfit-preview {
   height: 75%;
   left: 0;
