@@ -76,6 +76,7 @@ class Pwnage_PetType extends PwnageCore_DbObject {
     $this->origin_pet = $pet;
     $this->color_id = $pet->getPetData()->color_id;
     $this->species_id = $pet->getPetData()->species_id;
+    $this->body_id = $pet->getPetData()->body_id;
   }
   
   public function save() {
