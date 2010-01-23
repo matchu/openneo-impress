@@ -300,7 +300,7 @@ var MainWardrobe = new function Wardrobe() {
   }
   
   var Outfit = new function WardrobeOutfit() {
-    var Outfit = this, conflict_check_queue = [];
+    var Outfit = this, conflict_check_queue = [], biology_assets;
     
     this.restricted_zones = [];
     
@@ -313,7 +313,7 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     this.getAssets = function () {
-      var assets = this.pet_type.assets;
+      var assets = biology_assets;
       $.each(this.getObjectIds(), function () { 
         var object = WardrobeObject.find(this);
         assets = assets.concat(object.getAssetsByBodyId(Outfit.pet_type.body_id));
@@ -400,6 +400,16 @@ var MainWardrobe = new function Wardrobe() {
       }
     }
     
+    function updateBiologyAssets() {
+      WardrobeRequest('/biology_assets.json', {
+        'parent_id': Outfit.pet_type.pet_state_ids[0]
+      }, function (assets) {
+        biology_assets = assets;
+        addAssets(assets, WardrobeBiologyAsset);
+        View.Outfit.update();
+      });
+    }
+    
     function updatePetType() {
       var species = HashDaemon.get('species'), color = HashDaemon.get('color');
       if(
@@ -419,9 +429,8 @@ var MainWardrobe = new function Wardrobe() {
             pet_type.species_id = species;
             pet_type.color_id = color;
             Outfit.pet_type = pet_type;
-            addAssets(pet_type.assets, WardrobeBiologyAsset);
+            updateBiologyAssets();
             Outfit.updateObjects();
-            View.Outfit.update();
           } else {
             View.error('Pet type not found!');
             View.Outfit.showBiologyAssets();
