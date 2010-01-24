@@ -14,6 +14,9 @@ development process.
 Impress is run by a very small, very new, in-house MVC framework named Pwnage,
 whose contents are in the /pwnage/ directory. Feel free to take a look.
 
+This project distributed under a variant of the MIT License - see the LICENSE
+file.
+
 Dependencies:
 -------------
   - PHP5
