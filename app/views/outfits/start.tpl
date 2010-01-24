@@ -29,6 +29,9 @@
     <img id="pet-preview" src="/assets/images/blank.gif"
       height="50" width="50" />
     <div id="preview-response"></div>
+    <footer>
+      <a href="/terms.html">Terms of Use</a>
+    </footer>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
     <script type="text/javascript" src="/assets/js/index.js"></script>
   </body>

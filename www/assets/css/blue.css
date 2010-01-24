@@ -19,6 +19,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 }
 
 body {
+  color: #fff;
 	line-height: 1;
 }
 
@@ -30,7 +31,7 @@ body {
 }
 
 a {
-  color: #033E6B;
+  color: #fff;
 }
 
 p {
@@ -82,6 +83,19 @@ input[type=submit] {
   background: #F8DA4E;
   border: 1px solid #FCD113;
   color: #915608;
+}
+
+/* Standard */
+
+body.standard {
+  width: 50%;
+  margin: 0 auto;
+  padding: 1em;
+}
+
+body.standard h1 {
+  font-size: 3em;
+  margin-bottom: .5em;
 }
 
 /* Index */
@@ -172,10 +186,21 @@ body.index .floated-icon {
   margin-right: .3em;
 }
 
+body.index footer {
+  bottom: 1em;
+  font-size: .75em;
+  position: absolute;
+  right: 1em;
+}
+
 /* Wardrobe */
 
 body.wardrobe {
   color: #0B61A4;
+}
+
+body.wardrobe a {
+  color: #033E6B;
 }
 
 body.wardrobe div.toolbar h1 {
