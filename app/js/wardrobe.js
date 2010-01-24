@@ -426,8 +426,8 @@ var MainWardrobe = new function Wardrobe() {
     function updatePetType() {
       var species = HashDaemon.get('species'), color = HashDaemon.get('color');
       if(
-        !this.pet_type || species != this.pet_type.species_id ||
-        color != this.pet_type.color_id
+        !Outfit.pet_type || species != Outfit.pet_type.species_id ||
+        color != Outfit.pet_type.color_id
       ) {
         View.Outfit.hideBiologyAssets();
         WardrobeRequest('/pet_types.json', {
@@ -435,6 +435,7 @@ var MainWardrobe = new function Wardrobe() {
           'species_id': species,
           'color_id': color
         }, function (pet_type) {
+          var hash_state = HashDaemon.get('state'), should_set_hash_state;
           if(pet_type) {
             if(Outfit.pet_type && pet_type.body_id != Outfit.pet_type.body_id) {
               View.Outfit.removeBodySpecificAssets();
@@ -442,8 +443,10 @@ var MainWardrobe = new function Wardrobe() {
             pet_type.species_id = species;
             pet_type.color_id = color;
             Outfit.pet_type = pet_type;
-            if(!HashDaemon.get('state')) {
-              HashDaemon.set('state', Outfit.pet_type.pet_state_ids[0]);
+            should_set_hash_state = !hash_state ||
+              $.inArray(parseInt(hash_state), pet_type.pet_state_ids) == -1;
+            if(should_set_hash_state) {
+              HashDaemon.set('state', pet_type.pet_state_ids[0]);
             }
             updateBiologyAssets();
             View.modules.pet_state.update();
@@ -463,7 +466,10 @@ var MainWardrobe = new function Wardrobe() {
     // *chain*, and isn't really the whole function, so I feel weird about
     // just plain calling it the update function.
     
-    this.update = updatePetType;
+    this.update = function () {
+      updatePetType();
+      updateBiologyAssets();
+    }
     
     this.initialize = this.update;
   }
