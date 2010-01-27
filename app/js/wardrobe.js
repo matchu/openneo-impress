@@ -362,10 +362,12 @@ var MainWardrobe = new function Wardrobe() {
       this.restricted_zones = [];
       $.each(this.getObjects(), function () {
         var i, offset = 0;
-        while((i = this.zones_restrict.indexOf('1', offset)) != -1) {
-          var zone = i + 1;
-          Outfit.restricted_zones.push(zone);
-          offset = zone;
+        if(this.zones_restrict) {
+          while((i = this.zones_restrict.indexOf('1', offset)) != -1) {
+            var zone = i + 1;
+            Outfit.restricted_zones.push(zone);
+            offset = zone;
+          }
         }
       });
     }
@@ -401,6 +403,7 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     function updateBiologyAssets() {
+      if(!Outfit.pet_type) return false;
       var body_assets = WardrobeBiologyAsset.cache_by_body_and_parent_id[Outfit.pet_type.body_id],
         parent_assets, pet_state_id = HashDaemon.get('state');
       if(body_assets) parent_assets = body_assets[pet_state_id];
