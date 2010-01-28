@@ -1,5 +1,6 @@
 <?php
 class Pwnage_SwfAsset extends PwnageCore_DbObject {
+  const RemoteUrlRegex = '%^http://images.neopets.com/cp/(items|bio|audio)/(swf|data)/([0-9]{3}/[0-9]{3}/[0-9]{3})/([0-9]+_[0-9a-f]+\.(swf|mp3))$%';
   static $table = 'swf_assets';
   static $columns = array('type', 'id', 'url', 'zone_id', 'zones_restrict',
     'body_id');
@@ -8,6 +9,21 @@ class Pwnage_SwfAsset extends PwnageCore_DbObject {
     if($data) {
       $this->zone_id = $data->zone_id;
       $this->url = $data->asset_url;
+    }
+  }
+  
+  public function getLocalPath() {
+    $components = $this->getLocalPathComponents();
+    return $components[1];
+  }
+  
+  public function getLocalPathComponents() {
+    if(preg_match(self::RemoteUrlRegex, $this->url, $url_matches)) {
+      $dir = '/assets/swf/outfit/'.$url_matches[1].'/'.$url_matches[3];
+      $file = $dir.'/'.$url_matches[4];
+      return array($dir, $file);
+    } else {
+      return false;
     }
   }
   
@@ -34,11 +50,39 @@ class Pwnage_SwfAsset extends PwnageCore_DbObject {
       ."</li>";
   }
   
+  public function saveFile() {
+    if(list($dir, $file) = $this->getLocalPathComponents()) {
+      $local_dir = PWNAGE_ROOT.'/www'.$dir;
+      $local_file = PWNAGE_ROOT.'/www'.$file;
+      if(!file_exists($local_file)) {
+        if(!file_exists($local_dir)) {
+          mkdir($local_dir, 0777, true);
+        }
+        $ch = curl_init($this->url);
+        
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $data = curl_exec($ch);
+        
+        if($data === false) {
+          throw new Pwnage_SwfAssetRemoteFileNotFoundException(
+            curl_error($ch)
+          );
+        } else {
+          file_put_contents($local_file, $data);
+        }
+        curl_close($ch);
+      }
+    } else {
+      throw new Pwnage_SwfAssetRemoteFileNotFoundException('Bad URL format: '.$this->url);
+    }
+  }
+  
   public function setOriginPetType($pet_type) {
     $this->body_id = $pet_type->getBodyId();
   }
   
-  static function all($options, $table=null, $subclass=__CLASS__) {
+  static function all($options=array(), $table=null, $subclass=__CLASS__) {
     if(!$table) $table = self::$table;
     if(!$options['select']) $options['select'] = 'zone_id, url';
     return parent::all($options, $table, $subclass);
@@ -74,6 +118,7 @@ class Pwnage_SwfAsset extends PwnageCore_DbObject {
     foreach($assets as $asset) {
       $relationships[] =
         new Pwnage_ParentSwfAssetRelationship($asset);
+      $asset->saveFile();
     }
     $db = PwnageCore_Db::getInstance();
     $db->beginTransaction();
@@ -101,5 +146,13 @@ class Pwnage_SwfAsset extends PwnageCore_DbObject {
       'where' => $where
     ));
   }
+  
+  static function setLocalPathForCollection(&$assets) {
+    foreach($assets as $asset) {
+      $asset->local_path = $asset->getLocalPath();
+    }
+  }
 }
+
+class Pwnage_SwfAssetRemoteFileNotFoundException extends Exception {}
 ?>
