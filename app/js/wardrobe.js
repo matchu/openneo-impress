@@ -505,12 +505,14 @@ var MainWardrobe = new function Wardrobe() {
     });
   }
   
-  var View = new function WardrobeView() {
+  var View = this.View = new function WardrobeView() {
     var View = this;
     
     this.Outfit = new function WardrobeViewOutfit() {
+      var updatePendingFlash = false;
+      
       this.hideBiologyAssets = function () {
-        $('.biology-asset').hide();
+        //$('.biology-asset').hide();
       }
       
       this.removeBodySpecificAssets = function () {
@@ -521,52 +523,45 @@ var MainWardrobe = new function Wardrobe() {
         $('.biology-asset').show();
       }
       
-      this.update = function () {
-        $('.outfit-asset').each(function () {
-          var el = $(this), object,
-            biology_asset_ids = $.map(Outfit.biology_assets, function (asset) {
-              return asset.id;
-            });
-          if(el.hasClass('object-asset')) {
-            object = WardrobeObject.find(el.attr('data-parent-id'));
-            if(!object.isWorn()) el.remove();
-          } else {
-            if($.inArray(parseInt(el.attr('data-id')), biology_asset_ids) == -1) {
-              el.remove();
-            }
-          }
-        });
-        
-        $.each(Outfit.getAssets(), function() {
-          var is_object_asset = this.constructor == WardrobeObjectAsset;
-          if(
-            (is_object_asset && this.getObject().isWorn())
-            || (!is_object_asset)
-          ) {
-            var id = 'outfit-asset-' + this.id + '-'
-              + (is_object_asset ? 'object' : 'biology'),
-              klass = 'outfit-asset ' +
-                (is_object_asset ? 'object-asset' : 'biology-asset'),
-              el = $('#' + id);
-            if(!el.length) {
-              $('<div id="' + id + '"></div>')
-                .appendTo('#outfit-preview');
-              if(this.is_body_specific) klass += ' body-specific-asset';
-              attrs = {
-                'class': klass,
-                'style': 'z-index: ' + this.depth,
-                'data-id': this.id,
-                'data-parent-id': this.parent_id
-              }
-              swfobject.embedSWF(this.url, id, '100%', '100%', '9',
-                '/assets/js/swfobject/expressInstall.swf', null,
-                {wmode: 'transparent'},
-                attrs);
-            }
-            el.toggle($.inArray(parseInt(this.zone_id), Outfit.restricted_zones) == -1);
-          }
-        });
-        
+      this.initialize = function () {
+        swfobject.embedSWF(
+          '/assets/swf/preview.swf',
+          'outfit-preview-swf',
+          '100%',
+          '100%',
+          '9',
+          '/assets/js/swfobject/expressInstall.swf',
+          {'swf_assets_path': '/assets'},
+          {'wmode': 'transparent'}
+        );
+      }
+      
+      this.setFlashIsReady = function () {
+        log('received flash ready notice');
+        if(updatePendingFlash) {
+          updatePendingFlash = false;
+          View.Outfit.update();
+        }
+      }
+      
+      this.update = function update() {
+        log('update called');
+        var jEl, el;
+        if(updatePendingFlash) return false;
+        log('no update pending');
+        jEl = $('#outfit-preview-swf');
+        el = jEl.get(0);
+        if(el.setAssets) {
+          var visible_assets = $.grep(Outfit.getAssets(), function(asset) {
+            return $.inArray(parseInt(asset.zone_id), Outfit.restricted_zones) == -1;
+          });
+          console.dir(visible_assets);
+          el.setAssets(visible_assets);
+        } else {
+          updatePendingFlash = true;
+          log('update now pending');
+        }
+
         this.Watermark.update();
       }
       
@@ -895,6 +890,15 @@ var MainWardrobe = new function Wardrobe() {
     });
   }
   
+  View.Outfit.initialize();
   Outfit.initialize();
   Closet.initialize();
+}
+
+var ef = function () {};
+
+if(!console) console = {log: ef, dir: ef};
+
+function log(str) {
+  console.log(str);
 }
