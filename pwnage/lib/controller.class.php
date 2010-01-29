@@ -2,8 +2,9 @@
 require_once 'smarty/Smarty.class.php';
 
 class PwnageCore_Controller {
+  private $before_filters;
   private $cache_id;
-  private $cache_lifetime = 60;
+  private $cache_lifetime = 0;
   private $current_action;
   private $name;
   protected $format;
@@ -24,15 +25,29 @@ class PwnageCore_Controller {
     }
   }
   
+  protected function addBeforeFilter($actions, $callback) {
+    foreach($actions as $action) {
+      $this->before_filters[$action][] = $callback;
+    }
+  }
+  
   private function clearFlash() {
     unset($_SESSION['flash']);
   }
   
   public function doAction($action_name) {
     try {
-      $this->current_action = $action_name;
-      $this->$action_name();
-      unset($this->current_action);
+      if(isset($this->before_filters[$action_name])) {
+        foreach($this->before_filters[$action_name] as $before_filter) {
+          $this->$before_filter();
+          if($this->has_rendered_or_redirected) break;
+        }
+      }
+      if(!$this->has_rendered_or_redirected) {
+        $this->current_action = $action_name;
+        $this->$action_name();
+        unset($this->current_action);
+      }
     } catch(Pwnage_BadRequestException $e) {
       header('HTTP/1.0 400 Bad Request');
       die(htmlentities($e->getMessage()));
@@ -64,7 +79,6 @@ class PwnageCore_Controller {
   private function getSmarty() {
     if(!isset($this->smarty)) {
       $this->smarty = new Smarty;
-      $this->smarty->caching = 1;
       $this->smarty->compile_check = (PWNAGE_ENVIRONMENT == 'development');
       $this->smarty->template_dir = PWNAGE_ROOT.'/app/views/';
       $this->smarty->compile_dir = PWNAGE_ROOT.'/smarty/compiled/';
@@ -91,6 +105,11 @@ class PwnageCore_Controller {
     return $this->format == 'json';
   }
   
+  protected function routeTo($route_name) {
+    return PwnageCore_RouteManager::getInstance()->
+      find_by_name($route_name)->getPath();
+  }
+  
   private function prepareToRenderOrRedirect() {
     if($this->has_rendered_or_redirected) {
       throw new Pwnage_TooManyRendersException();
@@ -104,6 +123,10 @@ class PwnageCore_Controller {
     header("Location: $destination");
   }
   
+  protected function redirectToRoute($route_name) {
+    $this->redirect($this->routeTo($route_name));
+  }
+  
   protected function render($view) {
     $this->prepareToRenderOrRedirect();
     if($this->isResource() && $this->isCached()) {
@@ -114,7 +137,11 @@ class PwnageCore_Controller {
       if(isset($_SESSION['flash'])) {
         $this->getSmarty()->assign('flash', $_SESSION['flash']);
       }
-      $this->getSmarty()->display($view.'.tpl', $this->getCacheId());
+      if($this->getCacheId()) {
+        $this->getSmarty()->display($view.'.tpl', $this->getCacheId());
+      } else {
+        $this->getSmarty()->display($view.'.tpl');
+      }
       $this->clearFlash();
     }
   }
@@ -169,6 +196,7 @@ class PwnageCore_Controller {
   
   protected function setCacheId($id) {
     $this->cache_id = $id;
+    $this->getSmarty()->caching = 1;
     if($this->isResource()) {
       $this->getResourceCache()->setId($this->getCacheId());
     }

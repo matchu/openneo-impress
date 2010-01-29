@@ -8,6 +8,10 @@ class PwnageCore_StringHelper {
     return preg_replace_callback('/([A-Z])/', $func, $str);
   }
   
+  static function humanize($str) {
+    return ucfirst(strtolower(str_replace('_', ' ', $str)));
+  }
+  
   static function toCamelCase($str, $capitalise_first_char = false) {
     if($capitalise_first_char) {
       $str[0] = strtoupper($str[0]);

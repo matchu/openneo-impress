@@ -11,7 +11,6 @@ require_once PWNAGE_ROOT.'/pwnage/lib/string_helper.class.php';
 // Allow the autoloading of Pwnage and PwnageCore classes
 function __autoload($class_name) {
   list($prefix, $name) = explode('_', $class_name, 2);
-  $filename = PwnageCore_StringHelper::fromCamelCase($name).'.class.php';
   if($prefix == 'PwnageCore') {
     $directory = '/pwnage/lib/';
   } elseif($prefix == 'Pwnage') {
@@ -20,13 +19,20 @@ function __autoload($class_name) {
     } else {
       $directory = '/app/models/';
     }
+  } else {
+    $directory = '/lib/';
+    $name = $class_name;
   }
-  if($directory) require_once PWNAGE_ROOT.$directory.$filename;
+  $full_path = PWNAGE_ROOT.$directory.
+    PwnageCore_StringHelper::fromCamelCase($name).'.class.php';
+  if(file_exists($full_path)) {
+    require_once $full_path;
+  }
 }
 
 // Set PWNAGE_ENVIRONMENT to whatever is set by Apache
 if(function_exists('apache_getenv')) {
-  $environment = apache_getenv('WearablesEnv');
+  $environment = apache_getenv('PwnageEnv');
 }
 if(!$environment) $environment = 'development';
 define('PWNAGE_ENVIRONMENT', $environment);

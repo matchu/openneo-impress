@@ -62,9 +62,19 @@ class PwnageCore_Db {
     }
   }
   
-  public function query($str) {
+  public function prepare($str) {
+    return $this->pdo->prepare($str);
+  }
+  
+  public function query($str, $params=array()) {
     $this->logQuery($str);
-    return $this->pdo->query($str);
+    if($params) {
+      $statement = $this->pdo->prepare($str);
+      $statement->execute($params);
+      return $statement;
+    } else {
+      return $this->pdo->query($str);
+    }
   }
   
   public function quote($str) {
