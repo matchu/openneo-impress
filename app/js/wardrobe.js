@@ -555,7 +555,6 @@ var MainWardrobe = new function Wardrobe() {
           var visible_assets = $.grep(Outfit.getAssets(), function(asset) {
             return $.inArray(parseInt(asset.zone_id), Outfit.restricted_zones) == -1;
           });
-          console.dir(visible_assets);
           el.setAssets(visible_assets);
         } else {
           updatePendingFlash = true;
@@ -897,8 +896,8 @@ var MainWardrobe = new function Wardrobe() {
 
 var ef = function () {};
 
-if(!console) console = {log: ef, dir: ef};
-
 function log(str) {
-  console.log(str);
+  if(typeof console != 'undefined' && typeof console.log != 'undefined') {
+    console.log(str);
+  }
 }
