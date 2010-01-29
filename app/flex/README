@@ -1,0 +1,9 @@
+These are source files for the Dress to Impress outfit viewer Flex app.
+
+To compile in a Linux environment, run ./compile_preview.sh
+
+If you open the script, you'll see that all it does is save you the effort
+of typing in the output file destination. In a Windows environment, you'd do
+something like this:
+
+mxmlc.exe preview.mxml -o ../../www/assets/swf/preview.swf

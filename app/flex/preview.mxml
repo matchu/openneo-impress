@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+  layout="absolute"
+  creationComplete="init()">
+  <mx:Script>
+    <![CDATA[
+      import Asset;
+      import flash.external.ExternalInterface;
+      import mx.controls.SWFLoader;
+      
+      private var assets:Object = new Object();
+      private var occupiedZones:Array = [];
+        
+      private function setAssets(freshAssets:Array):void {
+        var freshAssetIds:Array = [];
+        var asset:Asset;
+        var assetData:Object;
+        
+        for each(assetData in freshAssets) {
+          freshAssetIds.push(assetData.id);
+        }
+        
+        for(var key:String in assets) {
+          var assetId:int = int(key);
+          asset = assets[assetId];
+          if(freshAssetIds.indexOf(asset.id) == -1) {
+            log('remove '+asset.id);
+            removeAssetAt(assetId);
+          }
+        }
+        
+        for each(assetData in freshAssets) {
+          if(assets[assetData.id] == undefined) {
+            asset = new Asset(assetData);
+            log('add '+asset.id);
+            addAsset(asset);
+          }
+        }
+      }
+      
+      private function addAsset(asset:Asset):void {
+        var loader:SWFLoader = new SWFLoader();
+        loader.source = Application.application.parameters.swf_assets_path + '/' +
+          asset.path;
+        loader.percentWidth = 100;
+        loader.percentHeight = 100;
+        assets[asset.id] = asset;
+        
+        // Since Flex has no concept of z-index, we have to be sneaky here.
+        // Assets have to be in a consecutive, (0,1,2,3)-type list.
+        
+        // We've been maintaining a list of occupied zones, so add the new zone,
+        // sort them, and see where in the 0,1,2,3 order our new zone is - that
+        // will be the final destination of our new asset.
+        occupiedZones.push(asset.zone);
+        occupiedZones = occupiedZones.sort(Array.NUMERIC);
+        var destination:int = occupiedZones.indexOf(asset.zone);
+        log(occupiedZones.join());
+        log("putting in "+asset.id+" at "+asset.zone);
+        
+        // Now, insert the asset at that location. The ones above it will each
+        // shift up by one to make room. Thanks, guys!
+        assetWrapper.addChildAt(loader, destination);
+      }
+      
+      private function removeAssetAt(assetId:int):void {
+        var asset:Asset = assets[assetId];
+        var zoneIndex:int = occupiedZones.indexOf(asset.zone);
+        log("removing "+assetId+" at zone "+asset.zone+
+          " by removing item #"+zoneIndex);
+        occupiedZones.splice(zoneIndex, 1);
+        delete assets[assetId];
+        assetWrapper.removeChildAt(zoneIndex);
+      }
+      
+      private function init():void {
+        ExternalInterface.addCallback('setAssets', setAssets);
+      }
+      
+      private function log(str:String):void {
+        ExternalInterface.call('if(log) log("'+str+'")'); //note: does not escape!
+      }
+    ]]>
+  </mx:Script>
+  
+  <mx:Canvas id="assetWrapper" x="0" y="0" height="100%" width="100%" />
+
+</mx:Application>
