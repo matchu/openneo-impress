@@ -146,6 +146,11 @@ class PwnageCore_Controller {
     }
   }
   
+  protected function renderText($text) {
+    $this->prepareToRenderOrRedirect();
+    echo $text;
+  }
+  
   protected function respondTo() {
     $formats = func_get_args();
     $this->formats = $formats;

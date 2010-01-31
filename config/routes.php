@@ -13,6 +13,30 @@ $map->connect('/pets/load', array(
   'name' => 'load_pet'
 ));
 
+$map->connect('/users/authorize', array(
+  'controller' => 'users',
+  'action' => 'authorize',
+  'name' => 'authorize_user'
+));
+
+//FIXME: remove once integrated
+$map->connect('/users/login', array(
+  'controller' => 'users',
+  'action' => 'login',
+  'name' => 'login'
+));
+$map->connect('/users/current', array(
+  'controller' => 'users',
+  'action' => 'current',
+  'name' => 'current_user'
+));
+
+$map->connect('/users/logout', array(
+  'controller' => 'users',
+  'action' => 'logout',
+  'name' => 'logout'
+));
+
 $map->resources('biology_assets', 'index');
 $map->resources('object_assets', 'index');
 $map->resources('objects', 'index');

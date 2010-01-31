@@ -81,6 +81,20 @@ class PwnageCore_DbObject {
     return $this->is_valid;
   }
   
+  public function update($table, $columns) {
+    $update_clause_fragments = array();
+    $bindings = array();
+    foreach($columns as $column) {
+      $update_clause_fragments[] = "$column = ?";
+      $bindings[] = $this->$column;
+    }
+    $update_clause = implode(', ', $update_clause_fragments);
+    $bindings[] = $this->id;
+    $db = PwnageCore_Db::getInstance();
+    $stmt = $db->prepare("UPDATE $table SET $update_clause WHERE id = ?");
+    return $stmt->execute($bindings);
+  }
+  
   static function all($options=array(), $table, $subclass) {
     $options = array_merge(array(
       'select' => '*'
