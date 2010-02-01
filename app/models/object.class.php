@@ -3,6 +3,10 @@
 // We're not talking about, like, stdClass-type objects.
 
 class Pwnage_Object extends Pwnage_SwfAssetParent {
+  const mallCatUrl = 'http://ncmall.neopets.com/mall/ajax/load_page.phtml?type=browse&cat=%s&lang=en';
+  const mallIndex = 'http://ncmall.neopets.com/mall/shop.phtml';
+  const mallItemUrl = 'http://images.neopets.com/items/%s.gif';
+  const mallLinkRegex = '%^load_items_pane\([\'"]browse[\'"], ([0-9]+)\); swap_preview\([\'"]pet[\'"]\);$%';
   protected $asset_type = 'object';
   static $table = 'objects';
   static $columns = array('id', 'zones_restrict', 'thumbnail_url', 'name',
@@ -19,7 +23,9 @@ class Pwnage_Object extends Pwnage_SwfAssetParent {
   }
   
   protected function beforeSave() {
-    $this->species_support_ids = implode(',', $this->species_support);
+    if($this->species_support) {
+      $this->species_support_ids = implode(',', $this->species_support);
+    }
   }
   
   public function getAssets($query_options=array()) {
@@ -84,6 +90,50 @@ class Pwnage_Object extends Pwnage_SwfAssetParent {
   
   static function saveCollection($objects) {
     parent::saveCollection($objects, self::$table, self::$columns);
+  }
+  
+  static function spiderMall() {
+    require_once 'phpQuery.php';
+    echo 'Loading '.self::mallIndex."\n";
+    $shop_html = HttpRequest::get(self::mallIndex);
+    $shop = phpQuery::newDocumentHTML($shop_html);
+    unset($shop_html);
+    $cats = array();
+    foreach(pq('#nc_cat_nav a', $shop) as $link) {
+      $onclick = $link->getAttribute('onclick');
+      if(preg_match(self::mallLinkRegex, $onclick, $matches)) {
+        $cats[] = $matches[1];
+      }
+    }
+    unset($shop);
+    echo 'Found '.count($cats)." categories to check\n";
+    $objects = array();
+    foreach($cats as $cat) { // meow
+      $url = sprintf(self::mallCatUrl, $cat);
+      echo "Loading $url\n";
+      $object_datas = HttpRequest::getJson($url)->object_data;
+      foreach($object_datas as $object_data) {
+        if($object_data->isWearable) {
+          // FIXME: this find could be compressed into one on save time...
+          $existing_object = self::find($object_data->id);
+          if($existing_object) {
+            $verb = 'Skipped';
+          } else {
+            $object = new Pwnage_Object();
+            $object->id = $object_data->id;
+            $object->name = $object_data->name;
+            $object->description = $object_data->description;
+            $object->thumbnail_url = sprintf(self::mallItemUrl,
+              $object_data->imageFile);
+            $objects[] = $object;
+            $verb = 'Will save';
+          }
+          echo "$verb object #$object_data->id: $object_data->name\n";
+        }
+      }
+    }
+    self::saveCollection($objects);
+    echo "Saved objects\n";
   }
 }
 ?>

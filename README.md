@@ -23,6 +23,7 @@ Dependencies:
   - MySQL
   - Curl
   - PEAR modules:
-    - SabreAMF
+    - SabreAMF (http://osflash.org/sabreamf)
+    - phpQuery (http://code.google.com/p/phpquery/)
   - Smarty
   - ...probably something else. Let me know if you see errors.
