@@ -1,5 +1,8 @@
 <?php
-class Pwnage_Outfit {
+class Pwnage_Outfit extends PwnageCore_DbObject {
+// Currently, this is not a database object; this is just to ensure that Pet has
+// access to saving functions. However, the ability to save outfits on a per-user
+// basis is planned.
   private $objects = array();
   
   public function addObjectById($object_id) {

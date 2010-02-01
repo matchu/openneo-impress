@@ -1,6 +1,12 @@
 <?php
 class Pwnage_Pet extends Pwnage_Outfit {
   private $viewer_data;
+  static $table = 'pets';
+  static $columns = array('name', 'pet_type_id');
+  
+  protected function beforeSave() {
+    $this->pet_type_id = $this->getPetType()->getId();
+  }
   
   public function exists() {
     try {
@@ -73,13 +79,28 @@ class Pwnage_Pet extends Pwnage_Outfit {
   
   public function saveData() {
     // Save pet type
-    $this->getPetState()->save();
+    if($pet_state = $this->getPetState()) {
+      $pet_state->save();
+    }
     
     // Save objects
-    Pwnage_Object::saveCollection($this->getObjects());
+    if($objects = $this->getObjects()) {
+      Pwnage_Object::saveCollection($objects);
+    }
     
     // Save assets
-    Pwnage_SwfAsset::saveCollection($this->getAssets());
+    if($assets = $this->getAssets()) {
+      Pwnage_SwfAsset::saveCollection($assets);
+    }
+  }
+  
+  public function save() {
+    $this->saveData();
+    parent::save(self::$table, self::$columns);
+  }
+  
+  static function saveCollection($pets) {
+    parent::saveCollection($pets, self::$table, self::$columns);
   }
 }
 

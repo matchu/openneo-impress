@@ -12,7 +12,7 @@ class Pwnage_PetsController extends PwnageCore_Controller {
       try {
         if($pet->exists()) {
           try {
-            $pet->saveData();
+            $pet->save();
           } catch(Exception $e) {
             $this->setFlash('pets/save_error', 'warning');
             $warning = true;

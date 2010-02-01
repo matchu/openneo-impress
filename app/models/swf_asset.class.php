@@ -55,6 +55,8 @@ class Pwnage_SwfAsset extends PwnageCore_DbObject {
       $local_dir = PWNAGE_ROOT.'/www'.$dir;
       $local_file = PWNAGE_ROOT.'/www'.$file;
       if(!file_exists($local_file)) {
+        $old_umask = umask();
+        umask(0);
         if(!file_exists($local_dir)) {
           mkdir($local_dir, 0777, true);
         }
@@ -63,6 +65,7 @@ class Pwnage_SwfAsset extends PwnageCore_DbObject {
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $data = curl_exec($ch);
+        curl_close($ch);
         
         if($data === false) {
           throw new Pwnage_SwfAssetRemoteFileNotFoundException(
@@ -71,7 +74,7 @@ class Pwnage_SwfAsset extends PwnageCore_DbObject {
         } else {
           file_put_contents($local_file, $data);
         }
-        curl_close($ch);
+        umask($old_umask);
       }
     } else {
       throw new Pwnage_SwfAssetRemoteFileNotFoundException('Bad URL format: '.$this->url);
