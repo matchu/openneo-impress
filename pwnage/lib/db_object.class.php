@@ -131,13 +131,13 @@ class PwnageCore_DbObject {
     if(is_array($where1)) {
       $conditions[] = array_shift($where1);
       $bindings = $where1;
-    } else {
+    } elseif($where1) {
       $conditions[] = $where1;
     }
     if(is_array($where2)) {
       $conditions[] = array_shift($where2);
       $bindings = array_merge($bindings, $where2);
-    } else {
+    } elseif($where2) {
       $conditions[] = $where2;
     }
     $str = implode(' AND ', $conditions);
