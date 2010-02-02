@@ -125,11 +125,33 @@ class PwnageCore_DbObject {
   }
   
   static function mergeConditions($where1, $where2) {
-    return implode(' AND ', array_filter(array($where1, $where2)));
+    $bindings = array();
+    $conditions = array();
+    // FIXME: make this a loop, rather than dupe code
+    if(is_array($where1)) {
+      $conditions[] = array_shift($where1);
+      $bindings = $where1;
+    } else {
+      $conditions[] = $where1;
+    }
+    if(is_array($where2)) {
+      $conditions[] = array_shift($where2);
+      $bindings = array_merge($bindings, $where2);
+    } else {
+      $conditions[] = $where2;
+    }
+    $str = implode(' AND ', $conditions);
+    if(empty($bindings)) {
+      return $str;
+    } else {
+      array_unshift($bindings, $str);
+      return $bindings;
+    }
   }
   
   static function find($id, $options=array(), $table, $subclass) {
-    $options['where'] = 'id = '.intval($id);
+    $options['where'] = self::mergeConditions('id = '.intval($id),
+      $options['where']);
     return self::first($options, $table, $subclass);
   }
   

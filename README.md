@@ -19,11 +19,26 @@ file.
 
 Dependencies:
 -------------
-  - PHP5
-  - MySQL
-  - Curl
+  - PHP5, for obvious reasons
+  - MySQL, for data storage
+  - Curl, for HTTP requests
+  - libtidy, for Tidy PEAR module (http://tidy.sourceforge.net/)
   - PEAR modules:
-    - SabreAMF (http://osflash.org/sabreamf)
-    - phpQuery (http://code.google.com/p/phpquery/)
-  - Smarty
+    - SabreAMF, to load wearables AMF data (http://osflash.org/sabreamf)
+    - phpQuery, to parse NC Mall HTML(http://code.google.com/p/phpquery/)
+    - Tidy, to fix TNT's malformed Mall HTML (http://php.net/manual/en/book.tidy.php)
+  - Smarty, for templating
   - ...probably something else. Let me know if you see errors.
+  
+If you're installing on Ubuntu, note that the following packages will save you
+some time:
+
+  - php5
+  - mysql
+  - php5-mysql
+  - php5-curl
+  - php5-tidy
+  - php-pear
+  - smarty
+
+SabreAMF and phpQuery must be installed PEAR modules, so see their homepages.

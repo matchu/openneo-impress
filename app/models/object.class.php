@@ -11,7 +11,7 @@ class Pwnage_Object extends Pwnage_SwfAssetParent {
   static $table = 'objects';
   static $columns = array('id', 'zones_restrict', 'thumbnail_url', 'name',
     'description', 'category', 'type', 'rarity', 'rarity_index', 'price',
-    'weight_lbs', 'species_support_ids');
+    'weight_lbs', 'species_support_ids', 'sold_in_mall');
   
   public function __construct($data=null) {
     if($data) {
@@ -96,6 +96,10 @@ class Pwnage_Object extends Pwnage_SwfAssetParent {
     require_once 'phpQuery.php';
     echo 'Loading '.self::mallIndex."\n";
     $shop_html = HttpRequest::get(self::mallIndex);
+    // When php5 is compiled correctly, tidy is available by default.
+    // We need to clean up the mall's HTML here, or else we can't parse it.
+    $tidy = new tidy();
+    $shop_html = $tidy->repairString($shop_html);
     $shop = phpQuery::newDocumentHTML($shop_html);
     unset($shop_html);
     $cats = array();
@@ -111,29 +115,39 @@ class Pwnage_Object extends Pwnage_SwfAssetParent {
     foreach($cats as $cat) { // meow
       $url = sprintf(self::mallCatUrl, $cat);
       echo "Loading $url\n";
-      $object_datas = HttpRequest::getJson($url)->object_data;
-      foreach($object_datas as $object_data) {
-        if($object_data->isWearable) {
-          // FIXME: this find could be compressed into one on save time...
-          $existing_object = self::find($object_data->id);
-          if($existing_object) {
-            $verb = 'Skipped';
-          } else {
-            $object = new Pwnage_Object();
-            $object->id = $object_data->id;
-            $object->name = $object_data->name;
-            $object->description = $object_data->description;
-            $object->thumbnail_url = sprintf(self::mallItemUrl,
-              $object_data->imageFile);
-            $objects[] = $object;
-            $verb = 'Will save';
-          }
-          echo "$verb object #$object_data->id: $object_data->name\n";
-        }
-      }
+      $data = HttpRequest::get($url);
+      $objects = array_merge($objects, self::spiderMallCat($data));
     }
     self::saveCollection($objects);
     echo "Saved objects\n";
+  }
+  
+  static function spiderMallCat($data) {
+    $objects = array();
+    $object_datas = json_decode($data)->object_data;
+    foreach($object_datas as $object_data) {
+      if($object_data->isWearable) {
+        // FIXME: this find could be compressed into one on save time...
+        $existing_object = self::find($object_data->id, array(
+          'where' => array('sold_in_mall = ?', 1)
+        ));
+        if($existing_object) {
+          $verb = 'Skipped';
+        } else {
+          $object = new Pwnage_Object();
+          $object->id = $object_data->id;
+          $object->name = $object_data->name;
+          $object->description = $object_data->description;
+          $object->thumbnail_url = sprintf(self::mallItemUrl,
+            $object_data->imageFile);
+          $object->sold_in_mall = 1;
+          $objects[] = $object;
+          $verb = 'Will save';
+        }
+        echo "$verb object #$object_data->id: $object_data->name\n";
+      }
+    }
+    return $objects;
   }
 }
 ?>
