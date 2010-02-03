@@ -7,44 +7,51 @@ function exception_error_handler($errno, $errstr, $errfile, $errline ) {
 }
 set_error_handler("exception_error_handler", error_reporting());
 
-define('spiderMall', 1);
-define('spiderCatFile', 2);
+define('spiderObjects', 1);
+define('spiderAssets', 2);
+define('spiderCatFile', 3);
 
 function setMode($new_mode) {
   global $mode;
-  static $explicitly_set = false;
-  if($explicitly_set) {
+  static $explicitly_set_to;
+  if(isset($explicitly_set_to) && $explicitly_set_to != $new_mode) {
     throw new Exception(
       'Your arguments implied two different spidering modes. Pick one.'
     );
   } else {
-    $explicitly_set = true;
+    $explicitly_set_to = $new_mode;
     $mode = $new_mode;
   }
 }
 
 // Defaults:
-$mode = spiderMall;
-$class_name = 'Pwnage_ObjectAsset';
+$mode = spiderObjects;
 $trace = false;
+$limit = 100;
 
 try {
-  foreach($argv as $arg) {
-    if($arg == '--objects') {
-      $class_name = 'Pwnage_Object';
-      setMode(spiderMall);
+  $arguments = $argv;
+  array_shift($arguments);
+  foreach($arguments as $arg) {
+    if($arg == '--objects-only') {
+      setMode(spiderObjects);
     } elseif(preg_match('/^--cat-file=(.+)$/', $arg, $matches)) {
       setMode(spiderCatFile);
       $cat_file = $matches[1];
+    } elseif(preg_match('/^--limit=([0-9]+)$/', $arg, $matches)) {
+      setMode(spiderAssets);
+      $limit = (int) $matches[1];
     } elseif($arg == '--trace') {
       $trace = true;
+    } else {
+      throw new Exception("Argument '$arg' unrecognized");
     }
   }
 
-  if($mode == spiderMall) {
-    $class_name = in_array('--objects', $argv) ?
-      'Pwnage_Object' : 'Pwnage_ObjectAsset';
-    call_user_func(array($class_name, 'spiderMall'));
+  if($mode == spiderObjects) {
+    Pwnage_Object::spiderMall();
+  } elseif($mode == spiderAssets) {
+    Pwnage_ObjectAsset::spiderMall($limit);
   } elseif($mode == spiderCatFile) {
     if(file_exists($cat_file)) {
       if($data = file_get_contents($cat_file)) {
@@ -58,7 +65,7 @@ try {
     }
   }
 } catch(Exception $e) {
-  echo 'Error: "'.$e->getMessage()."\"\n\n";
+  echo get_class($e).': "'.$e->getMessage()."\"\n\n";
   if($trace) {
     echo $e->getTraceAsString();
   } else {

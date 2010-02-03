@@ -14,7 +14,7 @@ function saveIfExists($pet_name) {
 }
 
 $all_species = Pwnage_Species::all();
-$standard_colors = array('blue', 'green', 'red', 'yellow');
+$standard_colors = Pwnage_Color::getStandardNames();
 $pets = array();
 foreach($all_species as $species) {
   $species_name = $species->getName();

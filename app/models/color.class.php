@@ -1,6 +1,8 @@
 <?php
 class Pwnage_Color extends Pwnage_PetAttribute {
   protected $type = 'color';
+  static $standard_names = array('blue', 'green', 'red', 'yellow');
+  static $standard_ids = array(8, 34, 61, 84);
   
   static function all() {
     $all = array();
@@ -11,6 +13,14 @@ class Pwnage_Color extends Pwnage_PetAttribute {
       $all[] = $color;
     }
     return $all;
+  }
+  
+  static function getStandardIds() {
+    return self::$standard_ids;
+  }
+  
+  static function getStandardNames() {
+    return self::$standard_names;
   }
 }
 ?>

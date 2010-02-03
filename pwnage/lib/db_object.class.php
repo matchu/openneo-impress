@@ -82,6 +82,7 @@ class PwnageCore_DbObject {
   }
   
   public function update($table, $columns) {
+    $this->beforeSave();
     $update_clause_fragments = array();
     $bindings = array();
     foreach($columns as $column) {

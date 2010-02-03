@@ -99,6 +99,18 @@ class Pwnage_Pet extends Pwnage_Outfit {
     parent::save(self::$table, self::$columns);
   }
   
+  public function unsetPetState() {
+    unset($this->pet_state);
+  }
+  
+  public function update() {
+    return parent::update(self::$table, self::$columns);
+  }
+  
+  static function first($options) {
+    return parent::first($options, self::$table, __CLASS__);
+  }
+  
   static function saveCollection($pets) {
     parent::saveCollection($pets, self::$table, self::$columns);
   }
