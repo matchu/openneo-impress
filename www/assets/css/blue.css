@@ -107,16 +107,17 @@ body.index {
 
 body.index h1 {
   border-bottom: #033E6B 1px solid;
-  font-size: 500%;
+  font-size: 300%;
   line-height: 1;
-  margin-top: -1em;
+  margin-top: -1.5em;
   padding-left: 1%;
+  position: absolute;
+  top: 50%;
   width: 99%;
 }
 
-body.index h1 {
-  position: absolute;
-  top: 50%;
+body.index h1 span {
+  font-size: 150%;
 }
 
 body.index form, body.index #preview-response {
@@ -186,11 +187,19 @@ body.index .floated-icon {
   margin-right: .3em;
 }
 
-body.index footer {
+body.index #footer {
   bottom: 1em;
+  display: block;
   font-size: .75em;
+  list-style: none;
   position: absolute;
   right: 1em;
+}
+
+body.index #footer li {
+  display: block;
+  float: left;
+  margin-right: 1em;
 }
 
 /* Wardrobe */

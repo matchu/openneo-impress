@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>The Wardrobe</title>
+    <title>Dress to Impress</title>
     <link type="text/css" rel="stylesheet" href="/assets/css/start/jquery_ui.css" />
     <link type="text/css" rel="stylesheet" href="/assets/css/blue.css" />
   </head>
   <body class="index">
-    <h1>The Wardrobe</h1>
+    <h1>Dress to <span>Impress</span></h1>
     {insert name=flashes}
     <form id="form-1" action="{path to=load_pet}" method="POST">
       <fieldset>
@@ -29,9 +29,10 @@
     <img id="pet-preview" src="/assets/images/blank.gif"
       height="50" width="50" />
     <div id="preview-response"></div>
-    <footer>
-      <a href="/terms.html">Terms of Use</a>
-    </footer>
+    <ul id="footer">
+      <li><a href="http://openneo.net/">OpenNeo</a></li>
+      <li><a href="/terms.html">Terms of Use</a></li>
+    </ul>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
     <script type="text/javascript" src="/assets/js/index.js"></script>
   </body>
