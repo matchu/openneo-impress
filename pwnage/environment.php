@@ -33,6 +33,12 @@ function __autoload($class_name) {
 // Set PWNAGE_ENVIRONMENT to whatever is set by Apache
 if(function_exists('apache_getenv')) {
   $environment = apache_getenv('PwnageEnv');
+} elseif(isset($argv)) {
+  foreach($argv as $arg) {
+    if(preg_match('/PWNAGE_ENV=(.+)/', $arg, $matches)) {
+      $environment = $matches[1];
+    }
+  }
 }
 if(!$environment) $environment = 'development';
 define('PWNAGE_ENVIRONMENT', $environment);
