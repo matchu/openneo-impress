@@ -1,7 +1,5 @@
 <?php
-
-require_once dirname(__FILE__).'/../../../lib/amf.class.php';
-require_once dirname(__FILE__).'/../../../lib/db.class.php';
+require_once dirname(__FILE__).'/../../../pwnage/environment.php';
 
 class CreateZonesTable extends Ruckusing_BaseMigration {
 
@@ -14,8 +12,7 @@ class CreateZonesTable extends Ruckusing_BaseMigration {
       .'label VARCHAR(40) NOT NULL, '
       .'PRIMARY KEY (id)'
     .')');
-    $db = new Wearables_DB();
-    $zones = Wearables_AMF::getApplicationData()->zones;
+    $zones = Pwnage_Amf::getApplicationData()->zones;
     $zone_columns = array('id', 'depth', 'type_id', 'type', 'label');
     $keyset = implode(', ', $zone_columns);
     $valuesets = array();

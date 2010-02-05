@@ -53,7 +53,7 @@ class PwnageCore_Db {
   }
   
   public function outputQueryLog() {
-    if($_GET['show_query_log']) {
+    if(isset($_GET) && $_GET['show_query_log']) {
       echo '<h6>Query Log:</h6><ol style="font-size: 80%">';
       foreach($this->query_log as $query) {
         echo "<li>$query</li>";
