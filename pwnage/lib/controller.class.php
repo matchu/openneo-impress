@@ -159,7 +159,7 @@ class PwnageCore_Controller {
   protected function respondWith($objects, $attributes=null) {
     if($this->format != 'json') throw new Pwnage_InvalidFormatException($this->format);
     if($attributes) {
-      $objects = PwnageCore_ObjectHelper::sanitize($objects, &$attributes);
+      $objects = PwnageCore_ObjectHelper::sanitize($objects, $attributes);
     }
     $this->prepareToRenderOrRedirect();
     header('Content-type: application/json');
@@ -177,7 +177,7 @@ class PwnageCore_Controller {
   protected function requireParam($collection, $name_or_names) {
     if(is_array($name_or_names)) {
       foreach($name_or_names as $name) {
-        $this->requireParam(&$collection, $name);
+        $this->requireParam($collection, $name);
       }
     } else {
       if(!isset($collection[$name_or_names])) {
