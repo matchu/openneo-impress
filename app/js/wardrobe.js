@@ -883,6 +883,9 @@ var MainWardrobe = new function Wardrobe() {
       var el = $(this).parent(),
         object = WardrobeObject.find(el.data('object_id'));
       e.preventDefault();
+      if(el.parents('#closet-module').length) {
+        $('#object-description').hide();
+      }
       object.removeFromCloset();
       View.Outfit.update();
       View.modules.closet.update();
