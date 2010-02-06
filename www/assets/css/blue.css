@@ -97,10 +97,11 @@ body.standard {
 body.standard #home-link {
   font-size: 1.25em;
   font-weight: bold;
-  left: 1em;
+  left: .5em;
+  padding: .5em;
   position: absolute;
   text-decoration: none;
-  top: 1em;
+  top: .5em;
 }
 
 body.standard #home-link span {
@@ -109,6 +110,10 @@ body.standard #home-link span {
 
 body.standard #home-link:before {
   content: "<< ";
+}
+
+body.standard #home-link:hover {
+  background: #66A3D2;
 }
 
 body.standard h1 {
@@ -520,9 +525,10 @@ body.wardrobe #search-module-error {
 }
 
 body.index #footer, body.standard #footer {
-  bottom: 1em;
+  bottom: .5em;
   font-size: .75em;
   position: absolute;
+  position: fixed;
   right: 1em;
 }
 
