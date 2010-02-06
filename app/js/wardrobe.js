@@ -457,6 +457,13 @@ var MainWardrobe = new function Wardrobe() {
           } else {
             View.error('Pet type not found!');
             View.Outfit.showBiologyAssets();
+            if(Outfit.pet_type) {
+              HashDaemon.set({
+                'color': Outfit.pet_type.color_id,
+                'species': Outfit.pet_type.species_id
+              });
+              View.modules.pet_type.update();
+            }
           }
         });
       } else {
@@ -695,19 +702,32 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     this.modules.pet_type = new function WardrobePetTypeModule() {
+      this.update = function () {
+        $.each(['color', 'species'], function () {
+          var selected_value = HashDaemon.get(this);
+          findSelectFor(this).children('option').each(function () {
+            var el = $(this);
+            if(el.val() == selected_value) {
+              el.attr('selected', 'selected');
+            }
+          });
+        });
+      }
+      
+      function findSelectFor(type) {
+        return $('#pet-type-form-' + type);
+      }
+      
       WardrobeRequest('/pet_attributes.json', null, function (data) {
         $.each(data, function (type, values) {
-          var select = $('#pet-type-form-' + type),
-            selected_value = HashDaemon.get(type);
+          var select = findSelectFor(type);
           $.each(values, function () {
             var option = $('<option value="' + this.id + '">'
               + this.name + '</option>');
-            if(this.id == selected_value) {
-              option.attr('selected', 'selected');
-            }
             option.appendTo(select);
           });
         });
+        View.modules.pet_type.update();
         $('#pet-type-form').css('visibility', 'visible');
       });
       
