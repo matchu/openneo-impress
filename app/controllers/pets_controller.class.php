@@ -14,8 +14,12 @@ class Pwnage_PetsController extends PwnageCore_Controller {
           try {
             $pet->save();
           } catch(Exception $e) {
-            $this->setFlash('pets/save_error', 'warning');
-            $warning = true;
+            if(PWNAGE_ENV == 'development') {
+              throw $e;
+            } else {
+              $this->setFlash('pets/save_error', 'warning');
+              $warning = true;
+            }
           }
         } else {
           $this->setFlash('pets/not_found', 'error');
