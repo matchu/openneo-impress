@@ -399,6 +399,10 @@ body.wardrobe #object-description .ui-state-error {
   padding: .25em;
 }
 
+body.wardrobe #footer-module {
+  font-size: .75em;
+}
+
 body.wardrobe #pet-type-form {
   visibility: hidden;
 }
