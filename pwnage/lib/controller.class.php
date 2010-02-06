@@ -20,7 +20,7 @@ class PwnageCore_Controller {
     foreach(array('get' => $_GET, 'post' => $_POST) as $var_name => $data) {
       $this->$var_name = $data;
       if(get_magic_quotes_gpc()) {
-        array_walk_recursive($this->$instance_var, 'stripslashes');
+        array_walk_recursive($this->$var_name, 'stripslashes');
       }
     }
   }
