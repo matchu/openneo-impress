@@ -1,22 +1,14 @@
 <?php
-class Pwnage_OutfitsController extends PwnageCore_Controller {
+class Pwnage_OutfitsController extends Pwnage_ApplicationController {
   public function start() {
+    $this->setCacheLifetime(60);
+
     if(isset($_SESSION['destination'])) {
       $this->set('destination', $_SESSION['destination']);
     }
     
     if(!$this->isCached()) {
-      $fields = array(
-        'color' => Pwnage_Color::all(),
-        'species' => Pwnage_Species::all()
-      );
-      foreach($fields as $key => $objects) {
-        $fields[$key] = array();
-        foreach($objects as $object) {
-          $fields[$key][$object->getId()] = $object->getName();
-        }
-      }
-      $this->set('fields', $fields);
+      $this->preparePetTypeFields(array('color', 'species'));
     }
   }
 }

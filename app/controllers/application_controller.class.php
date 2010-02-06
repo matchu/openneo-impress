@@ -58,6 +58,22 @@ class Pwnage_ApplicationController extends PwnageCore_Controller {
     return $user ? $user : false;
   }
   
+  protected function preparePetTypeFields($types, $selected_id=array()) {
+    $fields = array();
+    foreach($types as $type) {
+      $class_name = 'Pwnage_'.ucfirst($type);
+      $objects = call_user_func(array($class_name, 'all'));
+      $fields[$type] = array();
+      foreach($objects as $object) {
+        $fields[$type][$object->getId()] = $object->getName();
+      }
+      if(isset($selected_id[$type])) {
+        $fields[$type]['selected'] = $selected_id[$type];
+      }
+    }
+    $this->set('fields', $fields);
+  }
+  
   protected function remotelyAuthorizeUser($user) {
     $_SESSION[self::remoteAuthorizationSessionKey] = array(
       'user_id' => $user->id,

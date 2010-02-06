@@ -217,6 +217,7 @@ class PwnageCore_Controller {
   }
   
   protected function setCacheLifetime($minutes) {
+    $this->getSmarty()->caching = 1;
     $seconds = $minutes*60;
     $this->cache_lifetime = $seconds;
     if($this->isResource()) {

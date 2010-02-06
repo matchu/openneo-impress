@@ -1,7 +1,27 @@
 <?php
 class Pwnage_PetAttribute {
+  private $exists;
+  private $id;
+  private $name;
+  
   public function __construct($id) {
     $this->id = $id;
+  }
+  
+  private function determineName() {
+    $all_names = $this->allNames();
+    $this->name = $all_names[$this->getId()-1];
+    if($this->name) {
+      $this->exists = true;
+    } else {
+      $this->exists = false;
+      $this->name = "#$this->id";
+    }
+  }
+  
+  public function exists() {
+    if(!isset($this->exists)) $this->determineName();
+    return $this->exists;
   }
   
   public function getId() {
@@ -13,9 +33,7 @@ class Pwnage_PetAttribute {
   
   public function getName() {
     if(!$this->name) {
-      $all_names = $this->allNames();
-      $this->name = $all_names[$this->getId()-1];
-      if(!$this->name) $this->name = "#$this->id";
+      $this->determineName();
     }
     return $this->name;
   }

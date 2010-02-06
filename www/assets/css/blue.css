@@ -88,14 +88,46 @@ input[type=submit] {
 /* Standard */
 
 body.standard {
-  width: 50%;
   margin: 0 auto;
   padding: 1em;
+  text-align: center;
+  width: 50%;
 }
 
 body.standard h1 {
   font-size: 3em;
   margin-bottom: .5em;
+}
+
+body.standard fieldset {
+  padding: .5em 0;
+}
+
+body.standard legend {
+  font-weight: bold;
+}
+
+body.standard legend:after {
+  content: ":";
+}
+
+body.standard h2 {
+  font-size: 1.5em;
+  margin-bottom: .5em;
+}
+
+body.standard li {
+  margin-bottom: .5em;
+}
+
+body.standard ol.columns {
+  list-style: none;
+  text-align: left;
+}
+
+body.standard ol.columns > li {
+  float: left;
+  width: 50%;
 }
 
 /* Index */
@@ -429,6 +461,16 @@ body.wardrobe #search-module-objects, body.wardrobe #search-module-error {
 
 body.wardrobe #search-module-error {
   display: none;
+}
+
+/* Special items */
+
+.mascot-dialogue {
+  background: #66A3D2 url(/assets/images/mascot.png) no-repeat 15px center;
+  border: 1px solid #033E6B;
+  margin-bottom: 1em;
+  min-height: 150px;
+  padding: 15px 15px 15px 180px;
 }
 
 /* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */

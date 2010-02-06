@@ -13,6 +13,12 @@ $map->connect('/pets/load', array(
   'name' => 'load_pet'
 ));
 
+$map->connect('/pet_types/needed', array(
+  'controller' => 'pet_types',
+  'action' => 'needed',
+  'name' => 'needed_pet_types'
+));
+
 $map->connect('/users/authorize', array(
   'controller' => 'users',
   'action' => 'authorize',

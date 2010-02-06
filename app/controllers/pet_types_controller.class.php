@@ -1,5 +1,5 @@
 <?php
-class Pwnage_PetTypesController extends PwnageCore_Controller {
+class Pwnage_PetTypesController extends Pwnage_ApplicationController {
   protected function __construct() {
     $this->respondTo('json');
     parent::__construct();
@@ -38,6 +38,40 @@ class Pwnage_PetTypesController extends PwnageCore_Controller {
       $this->respondWith($pet_type, $attributes);
     } else {
       $this->respondWith(null);
+    }
+  }
+  
+  public function needed() {
+    if(isset($this->get['species'])) {
+      $species = new Pwnage_Species($this->get['species']);
+      if($species->exists()) {
+        $pet_types = Pwnage_PetType::all(array(
+          'select' => 'color_id',
+          'where' => array('species_id = ?', $this->get['species'])
+        ));
+        $color_ids = array();
+        foreach($pet_types as $pet_type) {
+          $color_ids[] = (int) $pet_type->color_id;
+        }
+        $colors = array(
+          'had' => array(),
+          'needed' => array()
+        );
+        foreach(Pwnage_Color::all() as $color) {
+          $collection = in_array($color->getId(), $color_ids) ?
+            'had' : 'needed';
+          $colors[$collection][] = $color;
+        }
+        $this->set('species', $species);
+        $this->set('colors_had', $colors['had']);
+        $this->set('colors_needed', $colors['needed']);
+      }
+    }
+    if(isset($species) && $species->exists()) {
+      $this->preparePetTypeFields(array('species'),
+        array('species' => intval($species->getId())));
+    } else {
+      $this->preparePetTypeFields(array('species'));
     }
   }
 }

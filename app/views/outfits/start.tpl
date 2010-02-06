@@ -20,9 +20,7 @@
     <form id="form-2" action="wardrobe.html" method="GET">
       <fieldset>
         <legend>Or choose a pet to start with</legend>
-{foreach from=$fields key=field_name item=field}{strip}
-{html_options name=$field_name options=$field id=$field_name}
-{/strip}{/foreach}
+{include file='pet_attributes/_select.tpl' fields=$fields}
         <input type="submit" value="Go" />
       </fieldset>
     </form>
