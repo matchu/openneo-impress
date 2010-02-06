@@ -3,7 +3,7 @@ class Pwnage_PetsController extends PwnageCore_Controller {
   public function load() {
     $pet = new Pwnage_Pet();
 
-    $destination = '/';
+    $destination = $this->post['origin'];
     $query = array();
     $error = false;
 
@@ -33,7 +33,14 @@ class Pwnage_PetsController extends PwnageCore_Controller {
       if($error) {
         $query['name'] = $pet_name;
       } else {
-        $destination = '/'.$this->post['destination'];
+        if(isset($this->post['destination'])) {
+          $destination = $this->post['destination'];
+        } else {
+          $destination = $this->post['origin'];
+        }
+        if(substr($destination, 0, 1) != '/') {
+          $destination = '/'.$destination;
+        }
         $object_ids = array();
         foreach($pet->getObjects() as $object) {
           $object_ids[] = $object->getId();
@@ -46,7 +53,7 @@ class Pwnage_PetsController extends PwnageCore_Controller {
           $query = array();
           $query['name'] = $pet_name;
           $_SESSION['destination'] = $would_be_destination;
-          $destination = '/';
+          $destination = $this->post['origin'];
         }
       }
     }

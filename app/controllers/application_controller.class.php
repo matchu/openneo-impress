@@ -4,6 +4,11 @@ class Pwnage_ApplicationController extends PwnageCore_Controller {
   const remoteAuthorizationSessionKey = 'remote_authorization';
   const currentUserSessionKey = 'current_user';
   
+  protected function __construct() {
+    $this->setLayout('standard');
+    parent::__construct();
+  }
+  
   protected function clearSession() {
     $login_cookie = $this->getCurrentLoginCookie();
     if($login_cookie) $login_cookie->delete();

@@ -62,7 +62,7 @@ class Pwnage_PetTypesController extends Pwnage_ApplicationController {
             'had' : 'needed';
           $colors[$collection][] = $color;
         }
-        $this->set('species', $species);
+        $this->set('species_name', $species->getName());
         $this->set('colors_had', $colors['had']);
         $this->set('colors_needed', $colors['needed']);
       }

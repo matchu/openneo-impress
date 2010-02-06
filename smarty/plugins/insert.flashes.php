@@ -2,8 +2,8 @@
 function smarty_insert_flashes($params, &$smarty) {
   $vars = $smarty->get_template_vars();
   $output = '';
-  if(isset($vars['flash'])) {
-    $flash = $vars['flash'];
+  if(isset($vars['_flash'])) {
+    $flash = $vars['_flash'];
     if($flash) {
       $old_caching = $smarty->caching;
       $smarty->caching = 0;

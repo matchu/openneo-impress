@@ -6,11 +6,12 @@ class PwnageCore_Controller {
   private $cache_id;
   private $cache_lifetime = 0;
   private $current_action;
-  private $name;
   protected $format;
   private $formats = array('html');
   protected $get = array();
   private $has_rendered_or_redirected = false;
+  private $layout;
+  private $name;
   protected $post = array();
   private $resource_cache;
   private $smarty;
@@ -135,13 +136,23 @@ class PwnageCore_Controller {
       $cache->output();
     } else {
       if(isset($_SESSION['flash'])) {
-        $this->getSmarty()->assign('flash', $_SESSION['flash']);
+        $this->getSmarty()->assign('_flash', $_SESSION['flash']);
       }
       if($this->getCacheId()) {
-        $this->getSmarty()->display($view.'.tpl', $this->getCacheId());
+        $content = $this->getSmarty()->fetch("$view.tpl", $this->getCacheId());
       } else {
-        $this->getSmarty()->display($view.'.tpl');
+        $content = $this->getSmarty()->fetch("$view.tpl");
       }
+      if($this->layout) {
+        $title = $this->getSmarty()->_tpl_vars['_title'];
+        $flash = $this->getSmarty()->_tpl_vars['_flash'];
+        $this->getSmarty()->clear_all_assign();
+        $this->getSmarty()->assign('_title', $title);
+        $this->getSmarty()->assign('_flash', $flash);
+        $this->getSmarty()->assign('_content_for_layout', $content);
+        $content = $this->getSmarty()->fetch("layouts/$this->layout.tpl");
+      }
+      echo $content;
       $this->clearFlash();
     }
   }
@@ -242,6 +253,10 @@ class PwnageCore_Controller {
   
   public function setFormat($format) {
     $this->format = $format;
+  }
+  
+  protected function setLayout($name) {
+    $this->layout = $name;
   }
   
   static function getByName($name) {

@@ -10,6 +10,7 @@
     {insert name=flashes}
     <form id="form-1" action="{path to=load_pet}" method="POST">
       <input type="hidden" name="destination" value="wardrobe.html" />
+      <input type="hidden" name="origin" value="{path to=root}" />
       <fieldset>
         <legend>Enter your pet's name</legend>
         <input id="name" type="text" name="name"
@@ -28,10 +29,13 @@
     <img id="pet-preview" src="/assets/images/blank.gif"
       height="50" width="50" />
     <div id="preview-response"></div>
-    <ul id="footer">
-      <li><a href="http://openneo.net/">OpenNeo</a></li>
-      <li><a href="/terms.html">Terms of Use</a></li>
-    </ul>
+    <a id="we-need-you" href="/pet_types/needed">
+      <h2>We need your help!</h2>
+      Dress to Impress is community-driven. We've got a lot of data here
+      already, but could you help us fill in the blanks?
+      <span>Please help us out!</span>
+    </a>
+    {include file='shared/footer.tpl'}
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
     <script type="text/javascript" src="/assets/js/index.js"></script>
   </body>

@@ -94,6 +94,23 @@ body.standard {
   width: 50%;
 }
 
+body.standard #home-link {
+  font-size: 1.25em;
+  font-weight: bold;
+  left: 1em;
+  position: absolute;
+  text-decoration: none;
+  top: 1em;
+}
+
+body.standard #home-link span {
+  text-decoration: underline;
+}
+
+body.standard #home-link:before {
+  content: "<< ";
+}
+
 body.standard h1 {
   font-size: 3em;
   margin-bottom: .5em;
@@ -109,10 +126,6 @@ body.standard legend {
 
 body.standard legend:after {
   content: ":";
-}
-
-body.standard legend.punctuated:after {
-  content: "";
 }
 
 body.standard h2 {
@@ -139,18 +152,22 @@ body.standard ol.columns > li {
   /* Clearfix */
 
   body.standard ol.columns {
-   display:inline-block;
+    display:inline-block;
   }
 
   body.standard ol.columns:after {
-   display:block; 
-   visibility:hidden; 
-   clear:both; 
-   height:0; 
-   content: "."; 
+    display:block; 
+    visibility:hidden; 
+    clear:both; 
+    height:0; 
+    content: "."; 
   }
   
   /* /Clearfix */
+  
+body.standard .error, body.standard .warning {
+  margin-bottom: 1em;
+}
 
 /* Index */
 
@@ -241,19 +258,26 @@ body.index .floated-icon {
   margin-right: .3em;
 }
 
-body.index #footer {
-  bottom: 1em;
+body.index #we-need-you {
+  background: #66A3D2 url(/assets/images/mascot_80.png) no-repeat 5px center;
+  border: 1px solid #033E6B;
+  bottom: 10%;
   display: block;
-  font-size: .75em;
-  list-style: none;
+  left: 1%;
+  min-height: 80px;
+  opacity: .9;
+  padding: 5px 5px 5px 90px;
   position: absolute;
-  right: 1em;
+  text-decoration: none;
+  width: 300px;
 }
 
-body.index #footer li {
-  display: block;
-  float: left;
-  margin-right: 1em;
+body.index #we-need-you h2, body.index #we-need-you span {
+  text-decoration: underline;
+}
+
+body.index #we-need-you:hover {
+  opacity: 1;
 }
 
 /* Wardrobe */
@@ -493,6 +517,31 @@ body.wardrobe #search-module-error {
   margin-bottom: 1em;
   min-height: 150px;
   padding: 15px 15px 15px 180px;
+}
+
+body.index #footer, body.standard #footer {
+  bottom: 1em;
+  font-size: .75em;
+  position: absolute;
+  right: 1em;
+}
+
+body.index #footer ul, body.standard #footer ul {
+  display: block;
+  float: right;
+  list-style: none;
+  margin-bottom: .5em;
+}
+
+body.index #footer li, body.standard #footer li {
+  display: block;
+  float: left;
+  margin: 0 0 0 1em;
+}
+
+body.index #footer p, body.standard #footer p {
+  clear: right;
+  float: right;
 }
 
 /* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */
