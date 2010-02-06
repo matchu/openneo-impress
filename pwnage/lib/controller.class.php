@@ -20,7 +20,7 @@ class PwnageCore_Controller {
     foreach(array('get' => $_GET, 'post' => $_POST) as $var_name => $data) {
       $this->$var_name = $data;
       if(get_magic_quotes_gpc()) {
-        array_walk_recursive($this->$var_name, 'stripslashes');
+        array_walk_recursive($this->$var_name, 'stripslashes_walk');
       }
     }
   }
@@ -266,4 +266,8 @@ class Pwnage_TooManyRendersException extends Exception {
 }
 
 class Pwnage_BadRequestException extends Exception {}
+
+function stripslashes_walk($key, &$value) {  
+  $value = stripslashes($value);  
+}  
 ?>
