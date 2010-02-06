@@ -111,6 +111,10 @@ body.standard legend:after {
   content: ":";
 }
 
+body.standard legend.punctuated:after {
+  content: "";
+}
+
 body.standard h2 {
   font-size: 1.5em;
   margin-bottom: .5em;
@@ -121,14 +125,32 @@ body.standard li {
 }
 
 body.standard ol.columns {
-  list-style: none;
+  margin-bottom: 1em;
   text-align: left;
+  width: 100%;
 }
 
 body.standard ol.columns > li {
   float: left;
-  width: 50%;
+  list-style: none;
+  width: 49%;
 }
+
+  /* Clearfix */
+
+  body.standard ol.columns {
+   display:inline-block;
+  }
+
+  body.standard ol.columns:after {
+   display:block; 
+   visibility:hidden; 
+   clear:both; 
+   height:0; 
+   content: "."; 
+  }
+  
+  /* /Clearfix */
 
 /* Index */
 

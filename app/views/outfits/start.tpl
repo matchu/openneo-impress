@@ -9,6 +9,7 @@
     <h1>Dress to <span>Impress</span></h1>
     {insert name=flashes}
     <form id="form-1" action="{path to=load_pet}" method="POST">
+      <input type="hidden" name="destination" value="wardrobe.html" />
       <fieldset>
         <legend>Enter your pet's name</legend>
         <input id="name" type="text" name="name"
@@ -20,7 +21,7 @@
     <form id="form-2" action="wardrobe.html" method="GET">
       <fieldset>
         <legend>Or choose a pet to start with</legend>
-{include file='pet_attributes/_select.tpl' fields=$fields}
+{include file='pet_attributes/_select.tpl'}
         <input type="submit" value="Go" />
       </fieldset>
     </form>

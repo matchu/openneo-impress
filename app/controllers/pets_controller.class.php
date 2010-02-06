@@ -33,7 +33,7 @@ class Pwnage_PetsController extends PwnageCore_Controller {
       if($error) {
         $query['name'] = $pet_name;
       } else {
-        $destination = '/wardrobe.html';
+        $destination = '/'.$this->post['destination'];
         $object_ids = array();
         foreach($pet->getObjects() as $object) {
           $object_ids[] = $object->getId();

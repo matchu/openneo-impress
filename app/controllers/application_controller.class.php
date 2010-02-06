@@ -67,11 +67,9 @@ class Pwnage_ApplicationController extends PwnageCore_Controller {
       foreach($objects as $object) {
         $fields[$type][$object->getId()] = $object->getName();
       }
-      if(isset($selected_id[$type])) {
-        $fields[$type]['selected'] = $selected_id[$type];
-      }
     }
-    $this->set('fields', $fields);
+    $this->set('pet_type_fields', $fields);
+    $this->set('pet_type_fields_selected', $selected_id);
   }
   
   protected function remotelyAuthorizeUser($user) {
