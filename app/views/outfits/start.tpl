@@ -6,6 +6,7 @@
     <link type="text/css" rel="stylesheet" href="/assets/css/blue.css" />
   </head>
   <body class="index">
+    {include file='shared/analytics.tpl'}
     <h1>Dress to <span>Impress</span></h1>
     {insert name=flashes}
     <form id="form-1" action="{path to=load_pet}" method="POST">
