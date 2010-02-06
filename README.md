@@ -23,11 +23,12 @@ Dependencies:
   - MySQL, for data storage
   - Curl, for HTTP requests
   - libtidy, for Tidy PEAR module (http://tidy.sourceforge.net/)
+  - PDO support (in compile options - may already be installed)
   - PEAR modules:
     - SabreAMF, to load wearables AMF data (http://osflash.org/sabreamf)
     - phpQuery, to parse NC Mall HTML(http://code.google.com/p/phpquery/)
     - Tidy, to fix TNT's malformed Mall HTML (http://php.net/manual/en/book.tidy.php)
-  - Smarty, for templating
+  - Smarty, for templating (http://www.smarty.net/)
   - ...probably something else. Let me know if you see errors.
   
 If you're installing on Ubuntu, note that the following packages will save you
