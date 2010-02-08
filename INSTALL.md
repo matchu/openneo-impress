@@ -43,3 +43,16 @@ Once ready, run "migrations/main.php db:migrate" to create all the necessary
 tables. This process should run automatically. If you need to specify an
 environment other than development, add "ENV=production" (or whatever
 environment name).
+
+
+
+Apache Setup
+------------
+
+When setting up the site in Apache, make sure of two things:
+
+1. Set the webroot to the /www/ folder
+2. If you want to be in production, add `SetEnv PwnageEnv production`
+
+Load up the site, and you should be good to go! If there's a step missing, by
+all means point it out. Thanks!
