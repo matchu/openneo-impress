@@ -10,8 +10,11 @@ class Pwnage_BiologyAssetsController extends PwnageCore_Controller {
     $this->setCacheLifetime(24*60);
     $this->setCacheId($parent_id);
     if(!$this->isCached()) {
-      $assets_select = array('id', 'zone_id', 'depth', 'parent_id', 'local_path');
-      $assets_select_str = 'swf_assets.id, swf_assets.url, swf_assets.zone_id, zones.depth, parents_swf_assets.parent_id';
+      $assets_select = array('id', 'zone_id', 'zones_restrict', 'depth',
+        'parent_id', 'local_path');
+      $assets_select_str = 'swf_assets.id, swf_assets.zone_id, '.
+        'swf_assets.zones_restrict, zones.depth, parents_swf_assets.parent_id, '.
+        'swf_assets.url';
       $assets = Pwnage_BiologyAsset::getAssetsByParents(
         array($parent_id), array(
           'select' => $assets_select_str,
