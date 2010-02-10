@@ -1,0 +1,3 @@
+root=`dirname "$0"`
+root="$root/.."
+rm -rf $root/smarty/cache/* $root/tmp/resource_cache/*
