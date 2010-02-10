@@ -3,7 +3,10 @@ class Pwnage_BiologyAsset extends Pwnage_SwfAsset {
   public $type = 'biology';
   
   public function __construct($data=null) {
-    if($data) $this->id = $data->part_id;
+    if($data) {
+      $this->id = $data->part_id;
+      $this->zones_restrict = $data->zones_restrict;
+    }
     parent::__construct($data);
   }
   
