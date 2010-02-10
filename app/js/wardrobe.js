@@ -359,8 +359,9 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     this.setRestrictedZones = function () {
+      var restrictors = this.getObjects().concat(Outfit.biology_assets);
       this.restricted_zones = [];
-      $.each(this.getObjects(), function () {
+      $.each(restrictors, function () {
         var i, offset = 0;
         if(this.zones_restrict) {
           while((i = this.zones_restrict.indexOf('1', offset)) != -1) {
@@ -409,6 +410,7 @@ var MainWardrobe = new function Wardrobe() {
       if(body_assets) parent_assets = body_assets[pet_state_id];
       if(parent_assets) {
         Outfit.biology_assets = parent_assets;
+        Outfit.setRestrictedZones();
         View.Outfit.update();
       } else {
         WardrobeRequest('/biology_assets.json', {
@@ -416,6 +418,7 @@ var MainWardrobe = new function Wardrobe() {
         }, function (assets) {
           Outfit.biology_assets = assets;
           addAssets(assets, WardrobeBiologyAsset);
+          Outfit.setRestrictedZones();
           View.Outfit.update();
         });
       }
@@ -544,7 +547,6 @@ var MainWardrobe = new function Wardrobe() {
       }
       
       this.setFlashIsReady = function () {
-        log('received flash ready notice');
         if(updatePendingFlash) {
           updatePendingFlash = false;
           View.Outfit.update();
@@ -552,10 +554,8 @@ var MainWardrobe = new function Wardrobe() {
       }
       
       this.update = function update() {
-        log('update called');
         var jEl, el;
         if(updatePendingFlash) return false;
-        log('no update pending');
         jEl = $('#outfit-preview-swf');
         el = jEl.get(0);
         if(el.setAssets) {
@@ -565,7 +565,6 @@ var MainWardrobe = new function Wardrobe() {
           el.setAssets(visible_assets);
         } else {
           updatePendingFlash = true;
-          log('update now pending');
         }
 
         this.Watermark.update();
@@ -922,5 +921,11 @@ var ef = function () {};
 function log(str) {
   if(typeof console != 'undefined' && typeof console.log != 'undefined') {
     console.log(str);
+  }
+}
+
+function dir(obj) {
+  if(typeof console != 'undefined' && typeof console.dir != 'undefined') {
+    console.dir(obj);
   }
 }
