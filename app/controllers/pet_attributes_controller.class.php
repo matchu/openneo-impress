@@ -8,13 +8,18 @@ class Pwnage_PetAttributesController extends PwnageCore_Controller {
   public function index() {
     $this->setCacheLifetime(48*60);
     if(!$this->isCached()) {
-      $options = array(
-        'select' => 'id, name'
-      );
       $attributes_by_type = array(
         'color' => Pwnage_Color::all(), 
         'species' => Pwnage_Species::all()
       );
+      foreach($attributes_by_type as &$set) {
+        foreach($set as &$object) {
+          $object = array(
+            'id' => $object->getId(),
+            'name' => $object->getName()
+          );
+        }
+      }
       $this->respondWithAndCache($attributes_by_type);
     }
   }
