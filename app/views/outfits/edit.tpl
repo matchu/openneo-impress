@@ -9,7 +9,7 @@
     <![endif]-->
   </head>
   <body class="wardrobe">
-    <script type="text/javascript" src="/assets/js/analytics.js"></script>
+    {include file='shared/analytics.tpl'}
     <div id="toolbar-right" class="toolbar">
       <div class="toolbar-modules">
         <div id="header-module" class="module">
@@ -59,5 +59,6 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
     <script type="text/javascript" src="/assets/js/swfobject/swfobject.js"></script>
     <script type="text/javascript" src="/assets/js/wardrobe.js"></script>
+    {include file='shared/feedback.tpl'}
   </body>
 </html>

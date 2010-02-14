@@ -7,6 +7,12 @@ $map->connect('/', array(
   'name' => 'root'
 ));
 
+$map->connect('/wardrobe', array(
+  'controller' => 'outfits',
+  'action' => 'edit',
+  'name' => 'edit_outfit'
+));
+
 $map->connect('/pets/load', array(
   'controller' => 'pets',
   'action' => 'load',

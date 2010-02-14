@@ -1,7 +1,13 @@
 <?php
 class Pwnage_OutfitsController extends Pwnage_ApplicationController {
-  public function start() {
+  public function __construct() {
     $this->setLayout(false);
+    parent::__construct();
+  }
+  
+  public function edit() {}
+  
+  public function start() {
     $this->setCacheLifetime(60);
 
     if(isset($_SESSION['destination'])) {

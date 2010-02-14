@@ -11,5 +11,6 @@
     <a id="home-link" href="/"><span>Dress to Impress</span></a>
 {$_content_for_layout|indent:4}
     {include file='shared/footer.tpl'}
+    {include file='shared/feedback.tpl'}
   </body>
 </html>

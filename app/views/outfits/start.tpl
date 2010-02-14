@@ -10,7 +10,7 @@
     <h1>Dress to <span>Impress</span></h1>
     {insert name=flashes}
     <form id="form-1" action="{path to=load_pet}" method="POST">
-      <input type="hidden" name="destination" value="wardrobe.html" />
+      <input type="hidden" name="destination" value="{path to=edit_outfit}" />
       <input type="hidden" name="origin" value="{path to=root}" />
       <fieldset>
         <legend>Enter your pet's name</legend>
@@ -39,5 +39,6 @@
     {include file='shared/footer.tpl'}
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
     <script type="text/javascript" src="/assets/js/index.js"></script>
+    {include file='shared/feedback.tpl'}
   </body>
 </html>

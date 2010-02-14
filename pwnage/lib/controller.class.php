@@ -238,6 +238,10 @@ class PwnageCore_Controller {
     }
   }
   
+  protected function setDefaultLayout($name) {
+    if(!isset($this->layout)) $this->layout = $name;
+  }
+  
   protected function setName($name) {
     $this->name = $name;
   }

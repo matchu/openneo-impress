@@ -5,7 +5,7 @@ class Pwnage_ApplicationController extends PwnageCore_Controller {
   const currentUserSessionKey = 'current_user';
   
   protected function __construct() {
-    $this->setLayout('standard');
+    $this->setDefaultLayout('standard');
     parent::__construct();
   }
   
