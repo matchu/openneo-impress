@@ -22,12 +22,11 @@ foreach(Pwnage_Species::all() as $species) {
       $response = HttpRequest::getJson(
         'http://boss.yahooapis.com/ysearch/web/v1/'.
         urlencode("site:neopets.com inurl:petlookup.phtml \"$pet_type_string\"").
-        '?appid='.BOSS_KEY.'&dups=1'
+        '?appid='.BOSS_KEY
       );
-      var_dump($response);
-      if($results = $response->responseData->results) {
+      if($results = $response->ysearchresponse->resultset_web) {
         foreach($results as $result) {
-          $parsed_url = parse_url($result->unescapedUrl);
+          $parsed_url = parse_url($result->url);
           parse_str($parsed_url['query'], $query);
           $name = $query['pet'];
           unset($parsed_url, $query);
