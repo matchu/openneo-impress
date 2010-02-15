@@ -36,6 +36,10 @@ class Pwnage_PetType extends PwnageCore_DbObject {
     return new Pwnage_Color($this->color_id);
   }
   
+  public function getColorId() {
+    return $this->color_id;
+  }
+  
   public function getId() {
     if(!$this->id) {
       $this->load('id');
@@ -50,6 +54,10 @@ class Pwnage_PetType extends PwnageCore_DbObject {
   
   public function getSpecies() {
     return new Pwnage_Species($this->species_id);
+  }
+  
+  public function getSpeciesId() {
+    return $this->species_id;
   }
   
   protected function isSaved() {

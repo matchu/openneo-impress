@@ -52,7 +52,7 @@ class Pwnage_Pet extends Pwnage_Outfit {
     return $this->pet_state;
   }
   
-  protected function getPetType() {
+  public function getPetType() {
     if(!isset($this->pet_type)) {
       $this->pet_type = $this->getPetState()->getPetType();
     }
@@ -97,6 +97,10 @@ class Pwnage_Pet extends Pwnage_Outfit {
   public function save() {
     $this->saveData();
     parent::save(self::$table, self::$columns);
+  }
+  
+  public function setName($name) {
+    $this->name = $name;
   }
   
   public function unsetPetState() {
