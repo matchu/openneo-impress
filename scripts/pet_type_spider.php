@@ -1,5 +1,7 @@
 #!/usr/bin/php
 <?php
+define('BOSS_KEY', 'R3Aw2ebV34FB9JcxeExd9PoEeLhrre42guz8mEnQo9tTmVQgqrqBP1T36E6iuCzRQQ--');
+
 require_once dirname(__FILE__).'/../pwnage/environment.php';
 echo "Loading existing pet types...\n";
 $pet_types = Pwnage_PetType::all(array(
@@ -18,11 +20,13 @@ foreach(Pwnage_Species::all() as $species) {
       $pet_type_string = $color->getName().' '.$species->getName();
       echo "Searching for a $pet_type_string\n";
       $response = HttpRequest::getJson(
-        'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q='
-        .urlencode("site:neopets.com inurl:petlookup.phtml \"the $pet_type_string\"")
+        'http://boss.yahooapis.com/ysearch/web/v1/'.
+        urlencode("site:neopets.com inurl:petlookup.phtml \"$pet_type_string\"").
+        '?appid='.BOSS_KEY.'&dups=1'
       );
-      if($response->responseData->results) {
-        foreach($response->responseData->results as $result) {
+      var_dump($response);
+      if($results = $response->responseData->results) {
+        foreach($results as $result) {
           $parsed_url = parse_url($result->unescapedUrl);
           parse_str($parsed_url['query'], $query);
           $name = $query['pet'];
