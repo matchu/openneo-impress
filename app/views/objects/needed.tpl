@@ -19,6 +19,11 @@
     </form>
   </li>
   <li>
+    <a class="button" href="http://www.neopets.com/closet.phtml" target="_blank">
+      What do I own? &raquo;
+    </a>
+  </li>
+  <li>
     <a class="button" href="{path to=needed_objects}">
       Try another pet &raquo;
     </a>
@@ -27,7 +32,7 @@
 <ul>
 {  foreach from=$objects item=object}
   <li class="object">
-    <a href="http://neoitems.net/search2.php?Name={$object->getName()|urlencode}&AndOr=and&Category=All&Special=0&Status=Active&Sort=ItemID&results=15&SearchType=8&randtest="
+    <a href="http://neoitems.net/search2.php?Name={$object->getName()|urlencode}&AndOr=exact&Category=All&Special=0&Status=Active&Sort=ItemID&results=15&SearchType=8&randtest="
       target="_blank">
       <img src="{$object->getThumbnailUrl()}" />
       {$object->getName()}

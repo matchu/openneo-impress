@@ -70,15 +70,16 @@ class Pwnage_PetType extends PwnageCore_DbObject {
       $object = (int) $object->getId();
     }
     $s = $this->getSpeciesId();
+    // Note that PDO can not bind an array for IN(), but since it's a
+    // comma-delimited list of strings, should be safe for the query itself.
     return Pwnage_Object::all(array_merge($options, array(
       'where' => array(
-        'objects.id NOT IN (?) AND '.
+        'objects.id NOT IN ('.implode(',', $objects_not_needed).') AND '.
         '('.
           'objects.species_support_ids LIKE ? '.
           'OR objects.species_support_ids LIKE ? '.
           'OR objects.species_support_ids LIKE ?'.
         ')',
-        implode(',', $objects_not_needed),
         "$s,%",
         "%,$s",
         "%,$s,%"
