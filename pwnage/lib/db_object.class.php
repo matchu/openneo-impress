@@ -111,6 +111,7 @@ class PwnageCore_DbObject {
       }
       $sql .= " WHERE $where";
     }
+    if($options['order_by']) $sql .= " ORDER BY ${options['order_by']}";
     if($options['limit']) $sql .= " LIMIT ${options['limit']}";
     $db = PwnageCore_Db::getInstance();
     if($where_params) {

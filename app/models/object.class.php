@@ -53,6 +53,14 @@ class Pwnage_Object extends Pwnage_SwfAssetParent {
     return $this->id;
   }
   
+  public function getName() {
+    return $this->name;
+  }
+  
+  public function getThumbnailUrl() {
+    return $this->thumbnail_url;
+  }
+  
   public function isBodySpecific() {
     $is_specific = true;
     foreach($this->getAssets() as $asset) {

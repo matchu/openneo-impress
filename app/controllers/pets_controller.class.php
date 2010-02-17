@@ -48,10 +48,10 @@ class Pwnage_PetsController extends PwnageCore_Controller {
         $query['color'] = $pet->getColor()->getId();
         $query['species'] = $pet->getSpecies()->getId();
         $query['objects'] = $object_ids;
+        $query['name'] = $pet_name;
         if($warning) {
           $would_be_destination = $this->buildPath($destination, $query);
           $query = array();
-          $query['name'] = $pet_name;
           $_SESSION['destination'] = $would_be_destination;
           $destination = $this->post['origin'];
         }
