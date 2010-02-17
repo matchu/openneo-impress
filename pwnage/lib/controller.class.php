@@ -206,8 +206,14 @@ class PwnageCore_Controller {
     return $collection[$name];
   }
   
-  protected function set($key, $value) {
-    $this->getSmarty()->assign($key, $value);
+  protected function set($key_or_array, $value=null) {
+    if(is_array($key_or_array)) {
+      foreach($key_or_array as $key => $value) {
+        $this->set($key, $value);
+      }
+    } else {
+      $this->getSmarty()->assign($key_or_array, $value);
+    }
   }
   
   protected function setCacheId($id) {

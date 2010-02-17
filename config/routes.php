@@ -25,6 +25,12 @@ $map->connect('/pet_types/needed', array(
   'name' => 'needed_pet_types'
 ));
 
+$map->connect('/objects/needed', array(
+  'controller' => 'objects',
+  'action' => 'needed',
+  'name' => 'needed_objects'
+));
+
 $map->connect('/users/authorize', array(
   'controller' => 'users',
   'action' => 'authorize',

@@ -1,11 +1,7 @@
 <?php
-class Pwnage_ObjectsController extends PwnageCore_Controller {
-  protected function __construct() {
-    $this->respondTo('json');
-    parent::__construct();
-  }
-  
+class Pwnage_ObjectsController extends Pwnage_ApplicationController {
   public function index() {
+    $this->respondTo('json');
     $attributes = array(
       'id', 'name', 'thumbnail_url', 'description', 'type', 'rarity',
         'rarity_index', 'price', 'weight_lbs', 'zones_restrict'
@@ -39,6 +35,30 @@ class Pwnage_ObjectsController extends PwnageCore_Controller {
       ));
       $this->respondWith($objects, $attributes);
     }
+  }
+  
+  public function needed() {
+    if(isset($this->get['species']) && isset($this->get['color'])) {
+      $pet_type = Pwnage_PetType::findBySpeciesIdAndColorId(
+        $this->get['species'],
+        $this->get['color'],
+        array(
+          'select' => 'species_id, color_id, body_id'
+        )
+      );
+      if($pet_type) {
+        $objects = $pet_type->getNeededObjects(array(
+          'select' => 'name, thumbnail_url',
+          'order_by' => 'name ASC'
+        ));
+        $this->set(array(
+          'color_name' => $pet_type->getColor()->getName(),
+          'objects' => $objects,
+          'species_name' => $pet_type->getSpecies()->getName()
+        ));
+      }
+    }
+    $this->set('pet_name', $this->get['name']);
   }
 }
 ?>

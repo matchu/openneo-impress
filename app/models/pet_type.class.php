@@ -52,6 +52,41 @@ class Pwnage_PetType extends PwnageCore_DbObject {
     return $this->image_hash;
   }
   
+  public function getNeededObjects($options) {
+    /*
+      In this case, two queries seems suboptimal, but MySQL 5.1's query
+      optimizer interprets the subquery as dependent (even though it's not).
+      This forces us, in the interest of actually reasonable performance, to
+      handle that logic procedurally. Booooo.
+    */
+    $objects_not_needed = Pwnage_Object::all(array(
+      'select' => 'objects.id',
+      'joins' => 'INNER JOIN parents_swf_assets psa '.
+        'ON objects.id = psa.parent_id AND psa.swf_asset_type = "object" '.
+        'INNER JOIN swf_assets sa ON psa.swf_asset_id = sa.id ',
+      'where' => array('sa.body_id IN (0, ?)', $this->getBodyId())
+    ));
+    foreach($objects_not_needed as &$object) {
+      $object = (int) $object->getId();
+    }
+    $s = $this->getSpeciesId();
+    // Note that PDO can not bind an array for IN(), but since it's a
+    // comma-delimited list of strings, should be safe for the query itself.
+    return Pwnage_Object::all(array_merge($options, array(
+      'where' => array(
+        'objects.id NOT IN ('.implode(',', $objects_not_needed).') AND '.
+        '('.
+          'objects.species_support_ids LIKE ? '.
+          'OR objects.species_support_ids LIKE ? '.
+          'OR objects.species_support_ids LIKE ?'.
+        ')',
+        "$s,%",
+        "%,$s",
+        "%,$s,%"
+      )
+    )));
+  }
+  
   public function getSpecies() {
     return new Pwnage_Species($this->species_id);
   }
@@ -93,8 +128,18 @@ class Pwnage_PetType extends PwnageCore_DbObject {
   }
   
   static function all($options) {
-    return parent::all($options, Pwnage_PetType::$table,
-      'Pwnage_PetType');
+    return parent::all($options, self::$table, __CLASS__);
+  }
+  
+  static function first($options) {
+    return parent::first($options, self::$table, __CLASS__);
+  }
+  
+  static function findBySpeciesIdAndColorId($species_id, $color_id, $options) {
+    return Pwnage_PetType::first(array(
+      'select' => $options['select'],
+      'where' => array('species_id = ? AND color_id = ?', $species_id, $color_id)
+    ));
   }
 }
 ?>

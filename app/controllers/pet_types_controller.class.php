@@ -1,10 +1,5 @@
 <?php
 class Pwnage_PetTypesController extends Pwnage_ApplicationController {
-  protected function __construct() {
-    $this->respondTo('json');
-    parent::__construct();
-  }
-
   public function index() {
     $params = array('for', 'color_id', 'species_id');
     $this->requireParam($this->get, $params);
@@ -18,14 +13,14 @@ class Pwnage_PetTypesController extends Pwnage_ApplicationController {
     } else {
       throw new Pwnage_BadRequestException("Value '$for' not expected for \$for");
     }
-    $pet_types = Pwnage_PetType::all(array(
-      'select' => $select,
-      'where' => 'species_id = '.intval($this->get['species_id']).' AND '
-        .'color_id = '.intval($this->get['color_id']),
-      'limit' => 1
-    ));
-    if(count($pet_types)) {
-      $pet_type = $pet_types[0];
+    $pet_type = Pwnage_PetType::findBySpeciesIdAndColorId(
+      $this->get['species_id'],
+      $this->get['color_id'],
+      array(
+        'select' => $select
+      )
+    );
+    if($pet_type) {
       if($for == 'wardrobe') {
         $pet_states = Pwnage_PetState::all(array(
           'select' => 'id',
@@ -42,6 +37,7 @@ class Pwnage_PetTypesController extends Pwnage_ApplicationController {
   }
   
   public function needed() {
+    $this->respondTo('json');
     if(isset($this->get['species'])) {
       $species = new Pwnage_Species($this->get['species']);
       if($species->exists()) {
