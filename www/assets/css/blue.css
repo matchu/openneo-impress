@@ -553,6 +553,56 @@ body.index #footer, body.standard #footer {
   right: 1em;
 }
 
+body.index #userbar, body.standard #userbar {
+  background: #66A3D2;
+  border-color: #033E6B;
+  border-style: solid;
+  border-width: 0 2px 3px;
+  border-bottom-left-radius: 8px;
+    -moz-border-bottom-left-radius: 8px;
+    -webkit-border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+    -moz-border-bottom-right-radius: 8px;
+    -webkit-border-bottom-right-radius: 8px;
+  left: 35%;
+  padding: 0 1em;
+  position: absolute;
+  top: 0;
+  width: 30%;
+}
+
+body.index #userbar > *, body.standard #userbar> * {
+  float: left;
+  margin-right: .5em;
+}
+
+body.index #userbar-auth-servers li, body.standard #userbar-auth-servers li {
+  float: left;
+  list-style: none;
+  margin-right: .25em;
+  position: relative;
+}
+
+body.index #userbar-auth-servers span, body.standard #userbar-auth-servers span {
+  display: none;
+}
+body.index #userbar-auth-servers a, body.standard #userbar-auth-servers a {
+  text-decoration: none;
+}
+
+body.index #userbar-auth-servers a:hover span, body.standard #userbar-auth-servers a:hover span {
+  background: #FFC373;
+  border: 1px solid #A65F00;
+  color: #A65F00;
+  display: block;
+  left: -1em;
+  padding: .25em;
+  position: absolute;
+  text-align: center;
+  top: 1em;
+  width: 10em;
+}
+
 body.wardrobe .object, body.standard .object {
   display: -moz-inline-stack;
   display: inline-block;

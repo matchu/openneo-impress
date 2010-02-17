@@ -135,8 +135,9 @@ class PwnageCore_Controller {
       $cache = $this->getResourceCache();
       $cache->output();
     } else {
+      $this->set('controller', &$this);
       if(isset($_SESSION['flash'])) {
-        $this->getSmarty()->assign('_flash', $_SESSION['flash']);
+        $this->set('_flash', $_SESSION['flash']);
       }
       if($this->getCacheId()) {
         $content = $this->getSmarty()->fetch("$view.tpl", $this->getCacheId());
@@ -144,12 +145,7 @@ class PwnageCore_Controller {
         $content = $this->getSmarty()->fetch("$view.tpl");
       }
       if($this->layout) {
-        $title = $this->getSmarty()->_tpl_vars['_title'];
-        $flash = $this->getSmarty()->_tpl_vars['_flash'];
-        $this->getSmarty()->clear_all_assign();
-        $this->getSmarty()->assign('_title', $title);
-        $this->getSmarty()->assign('_flash', $flash);
-        $this->getSmarty()->assign('_content_for_layout', $content);
+        $this->set('_content_for_layout', $content);
         $content = $this->getSmarty()->fetch("layouts/$this->layout.tpl");
       }
       echo $content;

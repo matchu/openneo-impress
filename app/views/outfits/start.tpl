@@ -36,6 +36,7 @@
       already, but could you help us fill in the blanks?
       <span>Model your pet!</span>
     </a>
+    {insert name='userbar'}
     {include file='shared/footer.tpl'}
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
     <script type="text/javascript" src="/assets/js/index.js"></script>

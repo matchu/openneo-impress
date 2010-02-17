@@ -1,5 +1,5 @@
 <?php
-class Pwnage_PetsController extends PwnageCore_Controller {
+class Pwnage_PetsController extends Pwnage_ApplicationController {
   public function load() {
     $pet = new Pwnage_Pet();
 

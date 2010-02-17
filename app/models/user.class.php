@@ -17,6 +17,10 @@ class Pwnage_User extends PwnageCore_DbObject {
     return $login_cookie;
   }
   
+  public function getName() {
+    return $this->name;
+  }
+  
   public function save() {
     $id = parent::save(self::$table, self::$columns);
     if($id) $this->id = $id;

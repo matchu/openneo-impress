@@ -33,11 +33,7 @@ class Pwnage_UsersController extends Pwnage_ApplicationController {
     if(!$auth_server) {
       $auth_server = Pwnage_AuthServer::first();
     }
-    $url = $auth_server->gateway.'?'.http_build_query(array(
-      'app' => 'impress',
-      'path' => '/users/current',
-      'session_id' => session_id()
-    ));
+    $url = $auth_server->getLoginUrl();
     $this->redirect($url);
   }
   

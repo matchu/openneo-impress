@@ -24,43 +24,54 @@ class Pwnage_ApplicationController extends PwnageCore_Controller {
     );
   }
   
+  public function getAuthServers() {
+    return Pwnage_AuthServer::all();
+  }
+  
   protected function getCurrentLoginCookie() {
     return Pwnage_LoginCookie::findByString($_COOKIE[self::loginCookieName]);
   }
   
-  protected function getCurrentUser() {
-    if($remote_auth = $_SESSION[self::remoteAuthorizationSessionKey]) {
-      if($remote_auth['time'] + 180 > time()) {
-        $user = Pwnage_User::find($remote_auth['user_id']);
-        if($user) {
-          $cookie = $user->getFreshLoginCookie($_COOKIE[self::loginCookieName]);
-          $this->setLoginCookie($cookie);
-          unset($_SESSION[self::remoteAuthorizationSessionKey]);
+  public function getCurrentPath() {
+    return $_SERVER['REQUEST_URI'];
+  }
+  
+  public function getCurrentUser() {
+    if(!$this->current_user) {
+      if($remote_auth = $_SESSION[self::remoteAuthorizationSessionKey]) {
+        if($remote_auth['time'] + 180 > time()) {
+          $user = Pwnage_User::find($remote_auth['user_id']);
+          if($user) {
+            $cookie = $user->getFreshLoginCookie($_COOKIE[self::loginCookieName]);
+            $this->setLoginCookie($cookie);
+            unset($_SESSION[self::remoteAuthorizationSessionKey]);
+          }
+        } else {
+          $this->setFlash('users/remote_authorization_expired', 'error');
         }
-      } else {
-        $this->setFlash('users/remote_authorization_expired', 'error');
-      }
-    } elseif(isset($_SESSION[self::currentUserSessionKey])) {
-      $current_user_session = $_SESSION[self::currentUserSessionKey];
-      if($current_user_session['time'] + 900 > time()) { // 15 minute expiry
-        $user = Pwnage_User::find($current_user_session['user_id']);
-      }
-    }
-    
-    if(!isset($user) && isset($_COOKIE[self::loginCookieName])) {
-      try {
-        $login_cookie = $this->getCurrentLoginCookie();
-        if($login_cookie) {
-          $user = Pwnage_User::find($login_cookie->getUserId());
-          $login_cookie->randomizeToken();
-          $login_cookie->update();
-          $this->setLoginCookie($login_cookie);
+      } elseif(isset($_SESSION[self::currentUserSessionKey])) {
+        $current_user_session = $_SESSION[self::currentUserSessionKey];
+        if($current_user_session['time'] + 900 > time()) { // 15 minute expiry
+          $user = Pwnage_User::find($current_user_session['user_id']);
         }
-      } catch(Pwnage_LoginCookieTokenChanged $e) {
-        $this->setFlash('users/login_cookie_token_changed', 'error');
       }
+      
+      if(!isset($user) && isset($_COOKIE[self::loginCookieName])) {
+        try {
+          $login_cookie = $this->getCurrentLoginCookie();
+          if($login_cookie) {
+            $user = Pwnage_User::find($login_cookie->getUserId());
+            $login_cookie->randomizeToken();
+            $login_cookie->update();
+            $this->setLoginCookie($login_cookie);
+          }
+        } catch(Pwnage_LoginCookieTokenChanged $e) {
+          $this->setFlash('users/login_cookie_token_changed', 'error');
+        }
+      }
+      $this->current_user = $user ? $user : false;
     }
-    return $user ? $user : false;
+    return $this->current_user;
   }
   
   protected function preparePetTypeFields($types, $selected_id=array()) {

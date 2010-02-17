@@ -1,5 +1,5 @@
 <?php
-class Pwnage_PetAttributesController extends PwnageCore_Controller {
+class Pwnage_PetAttributesController extends Pwnage_ApplicationController {
   protected function __construct() {
     $this->respondTo('json');
     parent::__construct();
