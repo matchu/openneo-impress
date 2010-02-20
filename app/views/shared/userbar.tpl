@@ -1,9 +1,12 @@
 <div id="userbar">
 {assign var='user' value=$controller->getCurrentUser()}
 {if $user}
-  Hi! {$user->getName()}
+  <div>
+    Hey, {$user->getName()}! How's it going?
+  </div>
+  <div><a href="{path to=logout}">Log out</a></div>
 {else}
-  <div>Login with:</div>
+  <div id="userbar-login-with">Login with:</div>
   <ul id="userbar-auth-servers">
 {  foreach from=$controller->getAuthServers() item=auth_server}
     <li>
