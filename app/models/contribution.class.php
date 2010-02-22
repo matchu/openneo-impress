@@ -69,5 +69,9 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
     }
     return $points;
   }
+  
+  static function saveCollection($contributions) {
+    return parent::saveCollection($contributions, self::$table, self::$columns);
+  }
 }
 ?>

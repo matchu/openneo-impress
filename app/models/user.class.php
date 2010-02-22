@@ -14,8 +14,8 @@ class Pwnage_User extends PwnageCore_DbObject {
     foreach($contributions as $contribution) {
       $contribution->setUser($this);
       $contribution->awardPointsToUser();
-      $contribution->save();
     }
+    Pwnage_Contribution::saveCollection($contributions);
     $this->update();
   }
   
