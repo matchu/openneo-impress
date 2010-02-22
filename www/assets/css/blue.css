@@ -303,19 +303,30 @@ body.index #we-need-you {
   display: block;
   left: 1%;
   min-height: 80px;
-  opacity: .9;
   padding: 5px 5px 5px 90px;
   position: absolute;
   text-decoration: none;
   width: 300px;
 }
 
-body.index #we-need-you h2, body.index #we-need-you span {
-  text-decoration: underline;
+body.index #we-need-you ul {
+  margin-top: 1em;
 }
 
-body.index #we-need-you:hover {
-  opacity: 1;
+body.index #we-need-you li {
+  float: left;
+  list-style: none;
+  text-align: center;
+  width: 50%;
+}
+
+body.index #we-need-you a {
+  display: block;
+  width: 100%;
+}
+
+body.index #we-need-you a:hover {
+  font-weight: bold;
 }
 
 /* Wardrobe */

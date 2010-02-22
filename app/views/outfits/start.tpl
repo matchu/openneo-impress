@@ -30,12 +30,19 @@
     <img id="pet-preview" src="/assets/images/blank.gif"
       height="50" width="50" />
     <div id="preview-response"></div>
-    <a id="we-need-you" href="{path to=needed_objects}">
+    <div id="we-need-you">
       <h2>We need you to be a star!</h2>
       Dress to Impress is community-driven. We've got a lot of data here
       already, but could you help us fill in the blanks?
-      <span>Model your pet!</span>
-    </a>
+      <ul>
+        <li>
+          <a href="{path to=needed_objects}">Model your pet</a>
+        </li>
+        <li>
+          <a href="{path to=needed_pet_types}">Find new pet types</a>
+        </li>
+      </ul>
+    </div>
     {insert name='userbar'}
     {include file='shared/footer.tpl'}
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
