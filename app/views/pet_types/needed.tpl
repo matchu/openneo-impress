@@ -3,6 +3,14 @@
 {else}
   {title is='Pet Types Needed'}
 {/if}
+{if isset($pet_name, $species_name, $color_name)}
+<p class="notice">
+  <img src="http://pets.neopets.com/cpn/{$pet_name|urlencode}/1/1.png" class="inline-image" />
+  Thanks for adding <strong>{$pet_name|escape}</strong>
+  the <strong>{$color_name} {$species_name}</strong>!
+  Keep up the good work!
+</p>
+{/if}
 <div class="mascot-dialogue">
   <p>
     Hey, you! Are you here to help us out? Well, aren't you precious!

@@ -21,6 +21,10 @@ class Pwnage_Pet extends Pwnage_Outfit {
     return $this->getPetData()->biology_by_zone;
   }
   
+  public function getContributions() {
+    return $this->getPetState()->getContributions();
+  }
+  
   public function getObjects() {
     if(!isset($this->objects)) {
       $object_info_registry = $this->getViewerData()->object_info_registry;

@@ -12,7 +12,11 @@ class Pwnage_PetsController extends Pwnage_ApplicationController {
       try {
         if($pet->exists()) {
           try {
-            $pet->save();
+            if($this->userIsLoggedIn()) {
+              $this->getCurrentUser()->contributePet($pet);
+            } else {
+              $pet->save();
+            }
           } catch(Exception $e) {
             if(PWNAGE_ENVIRONMENT == 'development') {
               throw $e;

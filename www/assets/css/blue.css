@@ -85,7 +85,7 @@ input[type=submit], a.button {
   padding-right: .5em;
 }
 
-.error, .warning {
+.error, .warning, .notice {
   padding: .5em 1em;
 }
 
@@ -99,6 +99,12 @@ input[type=submit], a.button {
   background: #F8DA4E;
   border: 1px solid #FCD113;
   color: #915608;
+}
+
+.notice {
+  background: #E6EFC2;
+  border: 2px solid #C6D880;
+  color: #264409;
 }
 
 .note {

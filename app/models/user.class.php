@@ -1,7 +1,23 @@
 <?php
 class Pwnage_User extends PwnageCore_DbObject {
+  protected $points;
   static $table = 'users';
-  static $columns = array('id', 'name', 'auth_server_id', 'remote_id');
+  static $columns = array('id', 'name', 'auth_server_id', 'remote_id', 'points');
+  
+  public function awardPoints($points) {
+    $this->points += $points;
+  }
+  
+  public function contributePet($pet) {
+    $contributions = $pet->getContributions();
+    $pet->save();
+    foreach($contributions as $contribution) {
+      $contribution->setUser($this);
+      $contribution->awardPointsToUser();
+      $contribution->save();
+    }
+    $this->update();
+  }
   
   public function getFreshLoginCookie($existing_string) {
     $existing_login_cookie = Pwnage_LoginCookie::findByString($existing_string);
@@ -17,8 +33,16 @@ class Pwnage_User extends PwnageCore_DbObject {
     return $login_cookie;
   }
   
+  public function getId() {
+    return $this->id;
+  }
+  
   public function getName() {
     return $this->name;
+  }
+  
+  public function getPoints() {
+    return $this->points;
   }
   
   public function save() {
@@ -29,6 +53,10 @@ class Pwnage_User extends PwnageCore_DbObject {
   protected function setRemoteData($data) {
     $this->name = $data['name'];
     $this->remote_id = $data['id'];
+  }
+  
+  public function update() {
+    return parent::update(self::$table, self::$columns);
   }
   
   static function findOrCreateFromAuthClientAndServer($auth_client, $auth_server) {

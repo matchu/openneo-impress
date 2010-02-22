@@ -110,5 +110,9 @@ class Pwnage_ApplicationController extends PwnageCore_Controller {
       true // httponly
     );
   }
+  
+  protected function userIsLoggedIn() {
+    return $this->getCurrentUser() ? true : false;
+  }
 }
 ?>

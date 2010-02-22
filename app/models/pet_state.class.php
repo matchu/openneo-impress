@@ -22,6 +22,18 @@ class Pwnage_PetState extends Pwnage_SwfAssetParent {
     return $this->assets;
   }
   
+  public function getContributions() {
+    $contributions = array();
+    $pet_type =& $this->getPetType();
+    if(!$pet_type->isSaved()) {
+      $contributions[] = new Pwnage_Contribution($pet_type);
+    }
+    if(!$this->isSaved()) {
+      $contributions[] = new Pwnage_Contribution($this);
+    }
+    return $contributions;
+  }
+  
   public function getExistingRow($select) {
     return self::first(array(
       'select' => $select,

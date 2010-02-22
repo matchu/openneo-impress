@@ -2,7 +2,8 @@
 {assign var='user' value=$controller->getCurrentUser()}
 {if $user}
   <div>
-    Hey, {$user->getName()}! How's it going?
+    Hey, {$user->getName()}!
+    You have {$user->getPoints()} points.
   </div>
   <div><a href="{path to=logout}">Log out</a></div>
 {else}

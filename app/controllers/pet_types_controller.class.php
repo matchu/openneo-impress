@@ -69,6 +69,15 @@ class Pwnage_PetTypesController extends Pwnage_ApplicationController {
     } else {
       $this->preparePetTypeFields(array('species'));
     }
+    if(isset($this->get['name'], $this->get['color'])) {
+      $color = new Pwnage_Color($this->get['color']);
+      if($color->exists()) {
+        $this->set(array(
+          'color_name' => $color->getName(),
+          'pet_name' => $this->get['name']
+        ));
+      }
+    }
   }
 }
 ?>
