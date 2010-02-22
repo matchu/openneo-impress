@@ -21,11 +21,11 @@ class PwnageCore_Db {
   protected function __clone() {}
   
   public function beginTransaction() {
-    $this->pdo->beginTransaction();
+    return $this->pdo->beginTransaction();
   }
   
   public function commit() {
-    $this->pdo->commit();
+    return $this->pdo->commit();
   }
   
   protected function getDSN() {
@@ -82,7 +82,7 @@ class PwnageCore_Db {
   }
   
   public function rollBack() {
-    $this->pdo->rollBack();
+    return $this->pdo->rollBack();
   }
   
   static function getConfig() {
