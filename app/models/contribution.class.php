@@ -9,9 +9,10 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
   static $table = 'contributions';
   static $columns = array('contributed_class', 'contributed_id', 'user_id');
   static $point_values_by_contributed_class = array(
-    'Pwnage_Object' => 5,
+    'Pwnage_Object' => 3,
+    'Pwnage_ObjectAsset' => 2,
     'Pwnage_PetType' => 15,
-    'Pwnage_PetState' => 5
+    'Pwnage_PetState' => 10
   );
   
   protected function beforeSave() {

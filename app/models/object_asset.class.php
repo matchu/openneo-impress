@@ -56,6 +56,10 @@ class Pwnage_ObjectAsset extends Pwnage_SwfAsset {
     return parent::getAssetsByParents('object', $parent_ids, $options);
   }
   
+  static function rejectExistingInCollection($objects) {
+    return parent::rejectExistingInCollection($objects, self::$table);
+  }
+  
   static function spiderMall($limit=100) {
     // FIXME: optimize ridiculously slow query below - can it be done?
     // Below we find all mall-object/body-type combinations where there are no

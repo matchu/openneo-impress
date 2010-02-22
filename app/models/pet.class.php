@@ -24,7 +24,8 @@ class Pwnage_Pet extends Pwnage_Outfit {
   public function getContributions() {
     return array_merge(
       $this->getPetState()->getContributions(),
-      Pwnage_Contribution::getContributionsFromCollection($this->getObjects(), 'Pwnage_Object')
+      Pwnage_Contribution::getContributionsFromCollection($this->getObjects(), 'Pwnage_Object'),
+      Pwnage_Contribution::getContributionsFromCollection($this->getObjectAssets(), 'Pwnage_ObjectAsset')
     );
   }
   
