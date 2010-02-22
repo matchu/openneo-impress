@@ -96,6 +96,10 @@ class Pwnage_Object extends Pwnage_SwfAssetParent {
     return parent::find($id, $options, self::$table, __CLASS__);
   }
   
+  static function rejectExistingInCollection($objects) {
+    return parent::rejectExistingInCollection($objects, self::$table);
+  }
+  
   static function saveCollection($objects) {
     parent::saveCollection($objects, self::$table, self::$columns);
   }

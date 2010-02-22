@@ -9,6 +9,7 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
   static $table = 'contributions';
   static $columns = array('contributed_class', 'contributed_id', 'user_id');
   static $point_values_by_contributed_class = array(
+    'Pwnage_Object' => 5,
     'Pwnage_PetType' => 15,
     'Pwnage_PetState' => 5
   );
@@ -18,7 +19,7 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
   }
   
   public function __construct(&$contributed_obj) {
-    $this->contributed_obj =& $contributed_obj;
+    $this->contributed_obj = $contributed_obj;
   }
   
   public function awardPointsToUser() {
@@ -47,6 +48,15 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
   public function setUser($user) {
     $this->user =& $user;
     $this->user_id = $user->getId();
+  }
+  
+  static function getContributionsFromCollection($objects, $class) {
+    $objects = call_user_func_array(array($class, 'rejectExistingInCollection'), array($objects));
+    $contributions = array();
+    foreach($objects as $object) {
+      $contributions[] = new Pwnage_Contribution($object);
+    }
+    return $contributions;
   }
   
   static function getPointsFromContributionSet($contribution_set) {

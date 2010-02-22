@@ -167,6 +167,21 @@ class PwnageCore_DbObject {
     return '('.implode(', ', $columns).')';
   }
   
+  static function rejectExistingInCollection($objects, $table) {
+    if(empty($objects)) return $objects;
+    $objects_by_id = array();
+    foreach($objects as $object) {
+      $objects_by_id[intval($object->getId())] = $object;
+    }
+    $db = PwnageCore_Db::getInstance();
+    $id_set = implode(',', array_keys($objects_by_id));
+    $stmt = $db->query("SELECT id FROM $table WHERE id IN ($id_set)");
+    while($existing_id = $stmt->fetchColumn()) {
+      unset($objects_by_id[$existing_id]);
+    }
+    return array_values($objects_by_id);
+  }
+  
   static function saveCollection($objects, $table, $columns) {
     $db = PwnageCore_Db::getInstance();
     if($objects) {
