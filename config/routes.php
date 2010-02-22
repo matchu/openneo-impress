@@ -55,6 +55,12 @@ $map->connect('/users/logout', array(
   'name' => 'logout'
 ));
 
+$map->connect('/users/{user_id}/contributions', array(
+  'controller' => 'contributions',
+  'action' => 'index',
+  'name' => 'user_contributions'
+));
+
 $map->resources('biology_assets', 'index');
 $map->resources('object_assets', 'index');
 $map->resources('objects', 'index');

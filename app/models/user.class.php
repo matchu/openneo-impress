@@ -55,6 +55,15 @@ class Pwnage_User extends PwnageCore_DbObject {
     $this->remote_id = $data['id'];
   }
   
+  public function toParam() {
+    // Interesting note: since these param start with integers, we can just
+    // use interchangably with IDs, since on conversion to integer the part
+    // after the dash is dropped. We don't even need to convert to ID ourselves.
+    $param = $this->getId();
+    if($this->getName()) $param .= '-'.$this->getName();
+    return $param;
+  }
+  
   public function update() {
     return parent::update(self::$table, self::$columns);
   }

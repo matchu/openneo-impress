@@ -12,6 +12,7 @@ class PwnageCore_Controller {
   private $has_rendered_or_redirected = false;
   private $layout;
   private $name;
+  protected $path = array();
   protected $post = array();
   private $resource_cache;
   private $smarty;
@@ -155,6 +156,7 @@ class PwnageCore_Controller {
   
   protected function renderText($text) {
     $this->prepareToRenderOrRedirect();
+    header("Content-type: text/plain");
     echo $text;
   }
   
@@ -263,6 +265,10 @@ class PwnageCore_Controller {
   
   protected function setLayout($name) {
     $this->layout = $name;
+  }
+  
+  public function setPathData($data) {
+    $this->path = $data;
   }
   
   static function getByName($name) {

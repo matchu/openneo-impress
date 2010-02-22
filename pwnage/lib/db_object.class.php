@@ -81,6 +81,10 @@ class PwnageCore_DbObject {
     return $this->is_valid;
   }
   
+  public function toParam() {
+    return $this->getId();
+  }
+  
   public function update($table, $columns) {
     $this->beforeSave();
     $update_clause_fragments = array();

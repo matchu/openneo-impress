@@ -21,7 +21,7 @@ if(count($split_path) > 1) {
 }
 $base_path = implode('.', $split_path);
 if($base_path != '/') $base_path = preg_replace('%/+$%', '', $base_path);
-$route = PwnageCore_RouteManager::getInstance()->find_by_path($base_path);
+$route = PwnageCore_RouteManager::getInstance()->findByPath($base_path);
 
 function output404() {
   header('HTTP/1.0 404 Not Found');
@@ -32,6 +32,7 @@ if($route) {
   try {
     $controller = PwnageCore_Controller::getByName($route->getController());
     $controller->setFormat($format);
+    $controller->setPathData($route->getParams());
     $controller->doAction($route->getAction());
   } catch(Pwnage_InvalidFormatException $e) {
     output404();

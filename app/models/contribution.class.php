@@ -19,8 +19,8 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
     $this->contributed_id = $this->getContributedId();
   }
   
-  public function __construct(&$contributed_obj) {
-    $this->contributed_obj = $contributed_obj;
+  public function __construct($contributed_obj=null) {
+    if($contributed_obj) $this->contributed_obj = $contributed_obj;
   }
   
   public function awardPointsToUser() {
@@ -49,6 +49,10 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
   public function setUser($user) {
     $this->user =& $user;
     $this->user_id = $user->getId();
+  }
+  
+  static function all($options=array()) {
+    return parent::all($options, self::$table, __CLASS__);
   }
   
   static function getContributionsFromCollection($objects, $class) {

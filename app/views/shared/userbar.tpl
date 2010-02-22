@@ -3,7 +3,10 @@
 {if $user}
   <div>
     Hey, {$user->getName()}!
-    You have {$user->getPoints()} points.
+    You have
+    <a href="{path for=$user to=contributions}">
+      {$user->getPoints()} points</a
+    >.
   </div>
   <div><a href="{path to=logout}">Log out</a></div>
 {else}
