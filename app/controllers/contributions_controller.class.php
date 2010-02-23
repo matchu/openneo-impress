@@ -14,7 +14,7 @@ class Pwnage_ContributionsController extends Pwnage_ApplicationController {
         'Pwnage_PetState' => 'id',
         'Pwnage_PetType' => 'id'
       ));
-      Pwnage_Contribution::preloadParentsOfContributedObjsForCollection($contributions);
+      //Pwnage_Contribution::preloadParentsOfContributedObjsForCollection($contributions);
       $this->renderText(
         'User '.$user->getName().' has made '.count($contributions).' contributions:'.
         print_r($contributions, 1)
