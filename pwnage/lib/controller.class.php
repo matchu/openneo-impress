@@ -109,7 +109,7 @@ class PwnageCore_Controller {
   
   protected function routeTo($route_name) {
     return PwnageCore_RouteManager::getInstance()->
-      find_by_name($route_name)->getPath();
+      findByName($route_name)->getPath();
   }
   
   private function prepareToRenderOrRedirect() {
