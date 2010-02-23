@@ -35,7 +35,10 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
   }
   
   public function getContributedId() {
-    return $this->contributed_obj->getId();
+    if(!isset($this->contributed_id)) {
+      $this->contributed_id = $this->contributed_obj->getId();
+    }
+    return $this->contributed_id;
   }
   
   protected function getPointValue() {
@@ -53,6 +56,33 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
   
   static function all($options=array()) {
     return parent::all($options, self::$table, __CLASS__);
+  }
+  
+  static function allWithContributed($options, $select_by_class) {
+    $contributions = self::all($options);
+    $contributed_ids_by_class = array();
+    $contribution_ids_by_contributed_id = array();
+    foreach($contributions as $contribution) {
+      $contributed_ids_by_class[$contribution->getContributedClass()][] =
+        intval($contribution->getContributedId());
+      $contributions_by_contributed_id[$contribution->getContributedId()] = $contribution;
+    }
+    unset($contributions);
+    foreach($contributed_ids_by_class as $contributed_class => $contributed_ids) {
+      $contributed_ids_str = implode(',', $contributed_ids);
+      $contributed_objs = call_user_func_array(
+        array($contributed_class, 'all'),
+        array(array(
+          'select' => $select_by_class[$contributed_class],
+          'where' => "id IN ($contributed_ids_str)"
+        ))
+      );
+      foreach($contributed_objs as $contributed_obj) {
+        $contributions_by_contributed_id[$contributed_obj->getId()]->
+          contributed_obj = $contributed_obj;
+      }
+    }
+    return array_values($contributions_by_contributed_id);
   }
   
   static function getContributionsFromCollection($objects, $class) {
