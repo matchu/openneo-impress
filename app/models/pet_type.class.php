@@ -131,6 +131,27 @@ class Pwnage_PetType extends PwnageCore_DbObject {
     return parent::all($options, self::$table, __CLASS__);
   }
   
+  static function allByIdsOrChildren($ids, &$children, $options) {
+    $children_by_parent_id = array();
+    foreach($children as &$child) {
+      $parent_id = $child->getPetTypeId();
+      if(!in_array($id, $ids)) $ids[] = $parent_id;
+      $children_by_parent_id[$parent_id] =& $child;
+    }
+    $parents = self::find($ids, $options);
+    foreach($parents as $parent) {
+      $parent_id = $parent->getId();
+      if(isset($children_by_parent_id[$parent_id])) {
+        $children_by_parent_id[$parent_id]->setPetType($parent);
+      }
+    }
+    return $parents;
+  }
+  
+  static function find($id, $options) {
+    return parent::find($id, $options, self::$table, __CLASS__);
+  }
+  
   static function first($options) {
     return parent::first($options, self::$table, __CLASS__);
   }

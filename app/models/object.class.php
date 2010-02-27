@@ -92,6 +92,42 @@ class Pwnage_Object extends Pwnage_SwfAssetParent {
     return parent::all($options, self::$table, __CLASS__);
   }
   
+  static function allByIdsOrChildren($ids, &$children, $options) {
+    if(!empty($children)) {
+      $children_by_id = array();
+      foreach($children as &$child) {
+        $children_by_id[$child->getId()] =& $child;
+      }
+      $child_ids_str = implode(', ', array_keys($children_by_id));
+      $relationships = Pwnage_ParentSwfAssetRelationship::all(array(
+        'select' => 'parent_id, swf_asset_id',
+        'where' => "swf_asset_type = 'object' AND swf_asset_id IN ($child_ids_str)"
+      ));
+      $children_by_parent_id = array();
+      foreach($relationships as $relationship) {
+        $parent_id = (int) $relationship->getParentId();
+        if(!in_array($parent_id, $ids)) $ids[] = $parent_id;
+        $swf_asset_id = $relationship->getSwfAssetId();
+        if(isset($children_by_id[$swf_asset_id])) {
+          $children_by_parent_id[$parent_id][] =& $children_by_id[$swf_asset_id];
+        }
+      }
+      unset($children_by_id, $relationships);
+    }
+    if(!empty($ids)) {
+      $parents = self::find($ids, $options);
+      foreach($parents as $parent) {
+        $children = $children_by_parent_id[$parent->getId()];
+        if($children) {
+          foreach($children as &$child) {
+            $child->setParent($parent);
+          }
+        }
+      }
+    }
+    return $parents;
+  }
+  
   static function find($id, $options=array()) {
     return parent::find($id, $options, self::$table, __CLASS__);
   }

@@ -61,6 +61,10 @@ class Pwnage_PetState extends Pwnage_SwfAssetParent {
     return $this->pet_type;
   }
   
+  public function getPetTypeId() {
+    return $this->pet_type_id;
+  }
+  
   protected function getSwfAssetIds() {
     if(!$this->swf_asset_ids) {
       $assets = $this->getAssets();
@@ -103,8 +107,16 @@ class Pwnage_PetState extends Pwnage_SwfAssetParent {
     }
   }
   
+  public function setPetType($pet_type) {
+    $this->pet_type = $pet_type;
+  }
+  
   static function all($options) {
     return parent::all($options, self::$table, __CLASS__);
+  }
+  
+  static function find($id, $options) {
+    return parent::find($id, $options, self::$table, __CLASS__);
   }
   
   static function first($options) {
