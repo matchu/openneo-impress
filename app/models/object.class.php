@@ -6,7 +6,7 @@ class Pwnage_Object extends Pwnage_SwfAssetParent {
   const mallCatUrl = 'http://ncmall.neopets.com/mall/ajax/load_page.phtml?type=browse&cat=%s&lang=en';
   const mallIndex = 'http://ncmall.neopets.com/mall/shop.phtml';
   const mallItemUrl = 'http://images.neopets.com/items/%s.gif';
-  const mallLinkRegex = '%^load_items_pane\([\'"]browse[\'"], ([0-9]+)\); swap_preview\([\'"]pet[\'"]\);$%';
+  const mallLinkRegex = '%load_items_pane\([\'"]browse[\'"], ([0-9]+)\); swap_preview\([\'"]pet[\'"]\);%';
   protected $asset_type = 'object';
   static $table = 'objects';
   static $columns = array('id', 'zones_restrict', 'thumbnail_url', 'name',
@@ -141,23 +141,13 @@ class Pwnage_Object extends Pwnage_SwfAssetParent {
   }
   
   static function spiderMall() {
-    require_once 'phpQuery.php';
     echo 'Loading '.self::mallIndex."\n";
     $shop_html = HttpRequest::get(self::mallIndex);
-    // When php5 is compiled correctly, tidy is available by default.
-    // We need to clean up the mall's HTML here, or else we can't parse it.
-    $tidy = new tidy();
-    $shop_html = $tidy->repairString($shop_html);
-    $shop = phpQuery::newDocumentHTML($shop_html);
-    unset($shop_html);
+    preg_match_all(self::mallLinkRegex, $shop_html, $onclicks);
     $cats = array();
-    foreach(pq('#nc_cat_nav a', $shop) as $link) {
-      $onclick = $link->getAttribute('onclick');
-      if(preg_match(self::mallLinkRegex, $onclick, $matches)) {
-        $cats[] = $matches[1];
-      }
+    foreach($onclicks[1] as $cat) {
+      $cats[] = $cat;
     }
-    unset($shop);
     echo 'Found '.count($cats)." categories to check\n";
     $objects = array();
     foreach($cats as $cat) { // meow

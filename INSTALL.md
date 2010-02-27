@@ -12,11 +12,7 @@ Install Other Dependencies
 Follow the instructions in the links provided in the Readme for help installing
 extensions. They are generally self-explanatory.
 
-Tidy support may involve a custom PHP installation, depending on
-where you installed from. (The Ubuntu installation came with Tidy support by
-default).
-
-PDO support may also require a custom installation, though, again, in Ubuntu it
+PDO support may require a custom PHP installation, though in Ubuntu it
 comes by default.
 
 
