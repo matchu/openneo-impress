@@ -1,5 +1,8 @@
 #!/usr/bin/php
 <?php
+$start_time = time();
+echo "Started at $start_time\n";
+
 require_once dirname(__FILE__).'/../pwnage/environment.php';
 
 function exception_error_handler($errno, $errstr, $errfile, $errline ) {
@@ -74,4 +77,8 @@ try {
   }
   echo "\n";
 }
+
+$end_time = time();
+$time_taken = $end_time - $start_time;
+echo "Done at $end_time\nExecution took $time_taken seconds\n";
 ?>

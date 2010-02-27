@@ -65,19 +65,24 @@ class Pwnage_ObjectAsset extends Pwnage_SwfAsset {
     // but since MySQL's query optimizer is broken, we managed to speed it up
     // very, very, very much by pulling out the subquery into a separate query.
     $standard_color_string = implode(', ', Pwnage_Color::getStandardIds());
+    echo "Finding combinations to search for...\n";
     $relationships = Pwnage_ParentSwfAssetRelationship::all(array(
       'select' => 'DISTINCT parent_id, body_id',
       'joins' => 'INNER JOIN swf_assets ON swf_assets.id = parents_swf_assets.swf_asset_id',
       'where' => array('swf_asset_type = ?', 'object')
     ));
+    $objects_with_assets = array();
     $combinations_with_assets = array();
     foreach($relationships as $relationship) {
-      $combinations_with_assets[] =
-        "($relationship->parent_id, $relationship->body_id), ".
-        "($relationship->parent_id, 0)";
+      if($relationship->body_id == 0) {
+        $objects_with_assets[] = $relationship->parent_id;
+      } else {
+        $combinations_with_assets[] = "($relationship->parent_id, $relationship->body_id)";
+      }
     }
     unset($relationships);
-    $object_ids_with_assets_str = implode(', ', $combinations_with_assets);
+    $objects_with_assets_str = implode(', ', $objects_with_assets);
+    $combinations_with_assets_str = implode(', ', $combinations_with_assets);
     unset($combinations_with_assets);
     $db = PwnageCore_Db::getInstance();
     $combination_stmt = $db->prepare(<<<SQL
@@ -87,15 +92,14 @@ class Pwnage_ObjectAsset extends Pwnage_SwfAsset {
       INNER JOIN pets p ON p.pet_type_id = pt.id
       WHERE
       pt.color_id IN ($standard_color_string) AND
-      (o.id, pt.body_id) NOT IN ($object_ids_with_assets_str)
-      AND
+      o.id NOT IN ($objects_with_assets_str) AND
+      (o.id, pt.body_id) NOT IN ($combinations_with_assets_str) AND
       o.sold_in_mall = 1
       GROUP BY o.id, pt.body_id
       ORDER BY o.last_spidered DESC
       LIMIT $limit
 SQL
     );
-    echo "Finding combinations to search for...\n";
     $combination_stmt->execute();
     for($round=0;$round<$limit;$round+=self::mallSpiderSaveLimit) {
       $object_ids = array();
