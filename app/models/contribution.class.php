@@ -45,7 +45,11 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
     return $this->contributed_id;
   }
   
-  protected function getPointValue() {
+  public function getContributedObj() {
+    return $this->contributed_obj;
+  }
+  
+  public function getPointValue() {
     return self::$point_values_by_contributed_class[$this->getContributedClass()];
   }
   
@@ -63,6 +67,7 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
   }
   
   static function preloadContributedAndParents(&$contributions, $select_by_class) {
+    if(empty($contributions)) return false;
     $needed_ids_by_class = array();
     $contributions_by_contributed_class_and_id = array();
     foreach($contributions as &$contribution) {
@@ -73,25 +78,29 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
         [$contribution->getContributedId()] =& $contribution;
     }
     foreach(self::$contributed_class_relationships as $parent_class => $child_class) {
-      // load children first, so we can know parent IDs needed
-      $children = call_user_func(array($child_class, 'find'), $needed_ids_by_class[$child_class], array(
-        'select' => $select_by_class[$child_class]
-      ));
-      // assign children to contributions
-      foreach($children as &$child) {
-        $contributions_by_contributed_class_and_id[$child_class]
-          [$child->getId()]->contributed_obj =& $child;
-      }
-      // load parents (pass child array to polymorphic method)
-      $parents = call_user_func(array($parent_class, 'allByIdsOrChildren'),
-        $needed_ids_by_class[$parent_class], $children, array(
-          'select' => $select_by_class[$parent_class]
+      if(!empty($needed_ids_by_class[$child_class])) {
+        // load children first, so we can know parent IDs needed
+        $children = call_user_func(array($child_class, 'find'), $needed_ids_by_class[$child_class], array(
+          'select' => $select_by_class[$child_class]
         ));
-      unset($children);
-      // assign parents to contributions
-      foreach($parents as $parent) {
-        $contributions_by_contributed_class_and_id[$parent_class]
-          [$parent->getId()]->contributed_obj =& $parent;
+        // assign children to contributions
+        foreach($children as &$child) {
+          $contributions_by_contributed_class_and_id[$child_class]
+            [$child->getId()]->contributed_obj =& $child;
+        }
+      }
+      if(!empty($needed_ids_by_class[$parent_class]) || !empty($children)) {
+        // load parents (pass child array to polymorphic method)
+        $parents = call_user_func(array($parent_class, 'allByIdsOrChildren'),
+          $needed_ids_by_class[$parent_class], $children, array(
+            'select' => $select_by_class[$parent_class]
+          ));
+        unset($children);
+        // assign parents to contributions
+        foreach($parents as &$parent) {
+          $contributions_by_contributed_class_and_id[$parent_class]
+            [$parent->getId()]->contributed_obj =& $parent;
+        }
       }
     }
   }
@@ -113,6 +122,10 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
       $points += $value;
     }
     return $points;
+  }
+  
+  static function paginate($options) {
+    return parent::paginate($options, self::$table, __CLASS__);
   }
   
   static function saveCollection($contributions) {

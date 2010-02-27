@@ -207,6 +207,48 @@ body.standard .error, body.standard .warning {
   margin-bottom: 1em;
 }
 
+body.standard .contributions li {
+  list-style: none;
+  height: 80px;
+  overflow: hidden;
+  padding: 1em 0 0 100px;
+  position: relative;
+  text-align: left;
+}
+
+body.standard .contributions .point-value {
+  font-size: 80px;
+  left: 0;
+  position: absolute;
+  text-align: center;
+  text-shadow: 2px 2px 0 #000;
+  top: 0;
+  width: 80px;
+  z-index: 3;
+}
+
+body.standard .contributions .point-value:hover {
+  opacity: .5; -moz-opacity: .5; -webkit-opactity: .5;
+}
+
+body.standard .contributions img {
+  height: 80px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 80px;
+  z-index: 2;
+}
+
+body.standard .contributions span.username, body.standard .contributions span.contributed-name {
+  font-weight: bold;
+}
+
+body.standard .contributions span.time-ago {
+  display: block;
+  font-size: 75%;
+}
+
 /* Index */
 
 body.index {
@@ -678,6 +720,24 @@ ul.buttons li {
 
 ul.buttons li form {
   display: inline;
+}
+
+.pagination span, .pagination a {
+  padding: .25em .5em;
+}
+
+.pagination span.current {
+  background: #FFAD40;
+  color: #A65F00;
+  font-weight: bold;
+}
+
+.pagination span.disabled {
+  color: #66A3D2;
+}
+
+.pagination a:hover {
+  background: #66A3D2;
 }
 
 /* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */

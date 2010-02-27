@@ -101,28 +101,7 @@ class PwnageCore_DbObject {
   }
   
   static function all($options=array(), $table, $subclass) {
-    $options = array_merge(array(
-      'select' => '*'
-    ), $options);
-    $sql = "SELECT ${options['select']} FROM $table";
-    if($options['joins']) $sql .= " ${options['joins']}";
-    if($options['where']) {
-      if(is_array($options['where'])) {
-        $where = array_shift($options['where']);
-        $where_params = $options['where'];
-      } else {
-        $where = $options['where'];
-      }
-      $sql .= " WHERE $where";
-    }
-    if($options['order_by']) $sql .= " ORDER BY ${options['order_by']}";
-    if($options['limit']) $sql .= " LIMIT ${options['limit']}";
-    $db = PwnageCore_Db::getInstance();
-    if($where_params) {
-      $query = $db->query($sql, $where_params);
-    } else {
-      $query = $db->query($sql);
-    }
+    $query = self::queryByOptions($options, $table);
     $objects = array();
     while($object = $query->fetchObject($subclass)) {
       $objects[] = $object;
@@ -155,12 +134,18 @@ class PwnageCore_DbObject {
     }
   }
   
+  static function count($options, $table) {
+    $options['select'] = 'count(*)';
+    $query = self::queryByOptions($options, $table);
+    return (int) $query->fetchColumn();
+  }
+  
   static function find($id_or_ids, $options=array(), $table, $subclass) {
     if(is_array($id_or_ids)) {
       $condition = 'id IN ('.implode(', ', $id_or_ids).')';
       $method = 'all';
     } else {
-      $condition = 'id = '.intval($id_or_ids);
+      $condition = array('id = ?', $id_or_ids);
       $method = 'first';
     }
     $options['where'] = self::mergeConditions($condition, $options['where']);
@@ -175,6 +160,48 @@ class PwnageCore_DbObject {
   
   static function getColumnSet($columns) {
     return '('.implode(', ', $columns).')';
+  }
+  
+  static function paginate($options, $table, $class) {
+    $page = (int) $options['page'];
+    $per_page = (int) $options['per_page'];
+    unset($options['page'], $options['per_page']);
+    if($page < 1) $page = 1;
+    $offset = ($page - 1) * $per_page;
+    $limit = "$offset, $per_page";
+    $result_options = $options;
+    $result_options['limit'] = $limit;
+    return (object) array(
+      'page' => $page,
+      'per_page' => $per_page,
+      'results' => self::all($result_options, $table, $class),
+      'total' => self::count($options, $table)
+    );
+  }
+  
+  static function queryByOptions($options, $table) {
+    $options = array_merge(array(
+      'select' => '*'
+    ), $options);
+    $sql = "SELECT ${options['select']} FROM $table";
+    if($options['joins']) $sql .= " ${options['joins']}";
+    if($options['where']) {
+      if(is_array($options['where'])) {
+        $where = array_shift($options['where']);
+        $where_params = $options['where'];
+      } else {
+        $where = $options['where'];
+      }
+      $sql .= " WHERE $where";
+    }
+    if($options['order_by']) $sql .= " ORDER BY ${options['order_by']}";
+    if($options['limit']) $sql .= " LIMIT ${options['limit']}";
+    $db = PwnageCore_Db::getInstance();
+    if($where_params) {
+      return $db->query($sql, $where_params);
+    } else {
+      return $db->query($sql);
+    }
   }
   
   static function rejectExistingInCollection($objects, $table) {

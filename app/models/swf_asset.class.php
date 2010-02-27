@@ -31,6 +31,10 @@ class Pwnage_SwfAsset extends PwnageCore_DbObject {
     return $this->id;
   }
   
+  public function getParent() {
+    return $this->parent;
+  }
+  
   public function getParentId() {
     if(!$this->parent_id) {
       $this->parent_id = $this->parent->getId();
