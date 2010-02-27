@@ -53,6 +53,10 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
     return self::$point_values_by_contributed_class[$this->getContributedClass()];
   }
   
+  public function getUser() {
+    return $this->user;
+  }
+  
   public function save() {
     return parent::save(self::$table, self::$columns);
   }
@@ -126,6 +130,19 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
   
   static function paginate($options) {
     return parent::paginate($options, self::$table, __CLASS__);
+  }
+  
+  static function preloadUsers(&$contributions) {
+    $contributions_by_user_id = array();
+    foreach($contributions as &$contribution) {
+      $contributions_by_user_id[$contribution->user_id][] =& $contribution;
+    }
+    $users = Pwnage_User::find(array_keys($contributions_by_user_id));
+    foreach($users as $user) {
+      foreach($contributions_by_user_id[$user->getId()] as &$contribution) {
+        $contribution->setUser($user);
+      }
+    }
   }
   
   static function saveCollection($contributions) {

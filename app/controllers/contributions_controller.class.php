@@ -7,25 +7,36 @@ class Pwnage_ContributionsController extends Pwnage_ApplicationController {
       ));
       if($user) {
         $this->set('user', $user);
-        $pagination = Pwnage_Contribution::paginate(array(
-          'select' => 'id, contributed_class, contributed_id, created_at',
-          'where' => array('user_id = ?', $user_id),
-          'order_by' => 'id DESC',
-          'page' => $this->get['page'],
-          'per_page' => 30
-        ));
-        $contributions =& $pagination->results;
-        Pwnage_Contribution::preloadContributedAndParents($contributions, array(
-          'Pwnage_Object' => 'id, name, thumbnail_url',
-          'Pwnage_ObjectAsset' => 'id',
-          'Pwnage_PetState' => 'id, pet_type_id',
-          'Pwnage_PetType' => 'id, species_id, color_id, image_hash'
+        $this->preparePagination(array(
+          'where' => array('user_id = ?', $user_id)
         ));
       } else {
         throw new PwnageCore_NotFoundException;
       }
-    } // TODO: else?
+    } else {
+      $pagination = $this->preparePagination();
+      Pwnage_Contribution::preloadUsers($pagination->results, array(
+        'select' => 'name'
+      ));
+    }
+  }
+  
+  private function preparePagination($options=array()) {
+    $pagination = Pwnage_Contribution::paginate(array_merge(array(
+      'select' => 'id, contributed_class, contributed_id, created_at, user_id',
+      'order_by' => 'id DESC',
+      'page' => $this->get['page'],
+      'per_page' => 30
+    ), $options));
+    $contributions =& $pagination->results;
+    Pwnage_Contribution::preloadContributedAndParents($contributions, array(
+      'Pwnage_Object' => 'id, name, thumbnail_url',
+      'Pwnage_ObjectAsset' => 'id',
+      'Pwnage_PetState' => 'id, pet_type_id',
+      'Pwnage_PetType' => 'id, species_id, color_id, image_hash'
+    ));
     $this->set('pagination', $pagination);
+    return $pagination;
   }
 }
 ?>

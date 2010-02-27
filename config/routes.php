@@ -62,6 +62,7 @@ $map->connect('/users/{user_id}/contributions', array(
 ));
 
 $map->resources('biology_assets', 'index');
+$map->resources('contributions', 'index');
 $map->resources('object_assets', 'index');
 $map->resources('objects', 'index');
 $map->resources('pet_attributes', 'index');
