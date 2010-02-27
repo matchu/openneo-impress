@@ -50,9 +50,12 @@ class PwnageCore_Controller {
         $this->$action_name();
         unset($this->current_action);
       }
-    } catch(Pwnage_BadRequestException $e) {
+    } catch(PwnageCore_BadRequestException $e) {
       header('HTTP/1.0 400 Bad Request');
       die(htmlentities($e->getMessage()));
+    } catch(PwnageCore_NotFoundException $e) {
+      header('HTTP/1.0 404 Not Found');
+      die('404 Not Found');
     } catch(Exception $e) {
       header('HTTP/1.0 500 Internal Server Error');
       if(PWNAGE_ENVIRONMENT == 'development') {
@@ -114,7 +117,7 @@ class PwnageCore_Controller {
   
   private function prepareToRenderOrRedirect() {
     if($this->has_rendered_or_redirected) {
-      throw new Pwnage_TooManyRendersException();
+      throw new PwnageCore_TooManyRendersException();
     } else {
       $this->has_rendered_or_redirected = true;
     }
@@ -166,7 +169,7 @@ class PwnageCore_Controller {
   }
   
   protected function respondWith($objects, $attributes=null) {
-    if($this->format != 'json') throw new Pwnage_InvalidFormatException($this->format);
+    if($this->format != 'json') throw new PwnageCore_InvalidFormatException($this->format);
     if($attributes) {
       $objects = PwnageCore_ObjectHelper::sanitize($objects, $attributes);
     }
@@ -190,7 +193,7 @@ class PwnageCore_Controller {
       }
     } else {
       if(!isset($collection[$name_or_names])) {
-        throw new Pwnage_BadRequestException("\$$name_or_names required");
+        throw new PwnageCore_BadRequestException("\$$name_or_names required");
       }
       return $collection[$name_or_names];
     }
@@ -199,7 +202,7 @@ class PwnageCore_Controller {
   protected function requireParamArray($collection, $name) {
     $this->requireParam($collection, $name);
     if(!is_array($collection[$name])) {
-      throw new Pwnage_BadRequestException("\$$name must be array");
+      throw new PwnageCore_BadRequestException("\$$name must be array");
     }
     return $collection[$name];
   }
@@ -280,20 +283,21 @@ class PwnageCore_Controller {
   }
 }
 
-class Pwnage_InvalidFormatException extends Exception {
+class PwnageCore_InvalidFormatException extends Exception {
   public function __construct($format) {
     // WARNING: format unescaped! Escape the error yourself before printing!
     parent::__construct("The $format format is not available for this action");
   }
 }
 
-class Pwnage_TooManyRendersException extends Exception {
+class PwnageCore_TooManyRendersException extends Exception {
   public function __construct() {
     parent::__construct('Too many renders or redirects in one action');
   }
 }
 
-class Pwnage_BadRequestException extends Exception {}
+class PwnageCore_BadRequestException extends Exception {}
+class PwnageCore_NotFoundException extends Exception {}
 
 function stripslashes_walk($key, &$value) {  
   $value = stripslashes($value);  
