@@ -28,7 +28,7 @@ class PwnageCore_Route {
   public function getPath() {
     $path = $this->path;
     foreach($this->params as $key => $value) {
-      $path = str_replace('{'.$key.'}', $value, $path);
+      $path = str_replace('{'.$key.'}', urlencode($value), $path);
     }
     return $path;
   }
