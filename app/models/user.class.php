@@ -68,6 +68,10 @@ class Pwnage_User extends PwnageCore_DbObject {
     return parent::update(self::$table, self::$columns);
   }
   
+  static function all($options) {
+    return parent::all($options, self::$table, __CLASS__);
+  }
+  
   static function findOrCreateFromAuthClientAndServer($auth_client, $auth_server) {
     $user_data = $auth_client->getUserData();
     $user = self::first(array(

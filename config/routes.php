@@ -61,6 +61,12 @@ $map->connect('/users/{user_id}/contributions', array(
   'name' => 'user_contributions'
 ));
 
+$map->connect('/users/top_contributors', array(
+  'controller' => 'users',
+  'action' => 'top_contributors',
+  'name' => 'top_contributors'
+));
+
 $map->resources('biology_assets', 'index');
 $map->resources('contributions', 'index');
 $map->resources('object_assets', 'index');

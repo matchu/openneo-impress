@@ -42,6 +42,15 @@ class Pwnage_UsersController extends Pwnage_ApplicationController {
     $this->redirectToRoute('root');
   }
   
+  public function top_contributors() {
+    $users = Pwnage_User::all(array(
+      'select' => 'id, name, points',
+      'order_by' => 'points DESC',
+      'limit' => 50
+    ));
+    $this->set('users', $users);
+  }
+  
   private function handleException($message) {
     header('HTTP/1.0 400 Bad Request');
     die(htmlentities($message));

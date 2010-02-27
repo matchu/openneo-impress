@@ -249,6 +249,25 @@ body.standard .contributions span.time-ago {
   font-size: 75%;
 }
 
+body.standard #top-contributors {
+  border-spacing: 0;
+  margin: 0 auto;
+}
+
+body.standard #top-contributors, body.standard #top-contributors td, body.standard #top-contributors th {
+  border-color: #033E6B;
+  border-style: solid;
+}
+
+body.standard #top-contributors {
+  border-width: 1px 1px 0 0;
+}
+
+body.standard #top-contributors td, body.standard #top-contributors th {
+  border-width: 0 0 1px 1px;
+  padding: .5em 1em;
+}
+
 /* Index */
 
 body.index {
