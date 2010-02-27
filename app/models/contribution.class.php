@@ -14,6 +14,10 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
     'Pwnage_PetType' => 15,
     'Pwnage_PetState' => 10
   );
+  static $contributed_class_relationships = array(
+    'Pwnage_Object' => 'Pwnage_ObjectAsset',
+    'Pwnage_PetType' => 'Pwnage_PetState'
+  );
   
   protected function beforeSave() {
     $this->contributed_id = $this->getContributedId();
@@ -58,31 +62,38 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
     return parent::all($options, self::$table, __CLASS__);
   }
   
-  static function allWithContributed($options, $select_by_class) {
-    $contributions = self::all($options);
-    $contributed_ids_by_class = array();
-    $contribution_ids_by_contributed_id = array();
-    foreach($contributions as $contribution) {
-      $contributed_ids_by_class[$contribution->getContributedClass()][] =
+  static function preloadContributedAndParents(&$contributions, $select_by_class) {
+    $needed_ids_by_class = array();
+    $contributions_by_contributed_class_and_id = array();
+    foreach($contributions as &$contribution) {
+      $needed_ids_by_class[$contribution->getContributedClass()][] =
         intval($contribution->getContributedId());
-      $contributions_by_contributed_id[$contribution->getContributedId()] = $contribution;
+      $contributions_by_contributed_class_and_id
+        [$contribution->getContributedClass()]
+        [$contribution->getContributedId()] =& $contribution;
     }
-    unset($contributions);
-    foreach($contributed_ids_by_class as $contributed_class => $contributed_ids) {
-      $contributed_ids_str = implode(',', $contributed_ids);
-      $contributed_objs = call_user_func_array(
-        array($contributed_class, 'all'),
-        array(array(
-          'select' => $select_by_class[$contributed_class],
-          'where' => "id IN ($contributed_ids_str)"
-        ))
-      );
-      foreach($contributed_objs as $contributed_obj) {
-        $contributions_by_contributed_id[$contributed_obj->getId()]->
-          contributed_obj = $contributed_obj;
+    foreach(self::$contributed_class_relationships as $parent_class => $child_class) {
+      // load children first, so we can know parent IDs needed
+      $children = call_user_func(array($child_class, 'find'), $needed_ids_by_class[$child_class], array(
+        'select' => $select_by_class[$child_class]
+      ));
+      // assign children to contributions
+      foreach($children as &$child) {
+        $contributions_by_contributed_class_and_id[$child_class]
+          [$child->getId()]->contributed_obj =& $child;
+      }
+      // load parents (pass child array to polymorphic method)
+      $parents = call_user_func(array($parent_class, 'allByIdsOrChildren'),
+        $needed_ids_by_class[$parent_class], $children, array(
+          'select' => $select_by_class[$parent_class]
+        ));
+      unset($children);
+      // assign parents to contributions
+      foreach($parents as $parent) {
+        $contributions_by_contributed_class_and_id[$parent_class]
+          [$parent->getId()]->contributed_obj =& $parent;
       }
     }
-    return array_values($contributions_by_contributed_id);
   }
   
   static function getContributionsFromCollection($objects, $class) {

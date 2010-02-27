@@ -85,10 +85,18 @@ class Pwnage_SwfAsset extends PwnageCore_DbObject {
     $this->body_id = $pet_type->getBodyId();
   }
   
+  public function setParent($parent) {
+    $this->parent = $parent;
+  }
+  
   static function all($options=array(), $table=null, $subclass=__CLASS__) {
     if(!$table) $table = self::$table;
     if(!$options['select']) $options['select'] = 'zone_id, url';
     return parent::all($options, $table, $subclass);
+  }
+  
+  static function find($id, $options) {
+    return parent::find($id, $options, self::$table, __CLASS__);
   }
   
   static function preloadZonesForCollection($assets, $options=array()) {

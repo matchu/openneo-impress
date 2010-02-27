@@ -155,10 +155,16 @@ class PwnageCore_DbObject {
     }
   }
   
-  static function find($id, $options=array(), $table, $subclass) {
-    $options['where'] = self::mergeConditions('id = '.intval($id),
-      $options['where']);
-    return self::first($options, $table, $subclass);
+  static function find($id_or_ids, $options=array(), $table, $subclass) {
+    if(is_array($id_or_ids)) {
+      $condition = 'id IN ('.implode(', ', $id_or_ids).')';
+      $method = 'all';
+    } else {
+      $condition = 'id = '.intval($id_or_ids);
+      $method = 'first';
+    }
+    $options['where'] = self::mergeConditions($condition, $options['where']);
+    return call_user_func(array(self, $method), $options, $table, $subclass);
   }
   
   static function first($options=array(), $table, $subclass) {
