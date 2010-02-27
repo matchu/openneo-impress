@@ -48,7 +48,11 @@
     <img src="{$contributed_obj->getThumbnailUrl()}" />
 {    elseif $contributed_class == 'Pwnage_ObjectAsset'}
 {    assign var=object value=$contributed_obj->getParent()}
-    showed us the {$object->getName()|escape} on a new body type
+    showed us the
+    <span class="contributed-name">
+      {$object->getName()|escape}
+    </span>
+    on a new body type
     <img src="{$object->getThumbnailUrl()}" />
 {    elseif $contributed_class == 'Pwnage_PetState'}
 {    assign var=pet_type value=$contributed_obj->getPetType()}
