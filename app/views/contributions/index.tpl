@@ -8,7 +8,7 @@
   {assign var=user_name value=$user->getName()|escape}
   {title is="$user_name's contributions"}
 {else}
-  {title is="Recent Contributions"}
+  {title is="Recent contributions"}
 {/if}
 {if empty($pagination->results)}
   <p>Nothing here!</p>
