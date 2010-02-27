@@ -61,12 +61,24 @@ class Pwnage_ObjectAsset extends Pwnage_SwfAsset {
   }
   
   static function spiderMall($limit=100) {
-    // FIXME: optimize ridiculously slow query below - can it be done?
-    // Below we find all mall-object/body-type combinations where there are no
-    // assets yet saved for that object under that body type, and also get a
-    // pet name for modeling. Yikes as far as speed goes, but good to do all
-    // at once.
+    // The combination-finding query used to be one really, really slow one,
+    // but since MySQL's query optimizer is broken, we managed to speed it up
+    // very, very, very much by pulling out the subquery into a separate query.
     $standard_color_string = implode(', ', Pwnage_Color::getStandardIds());
+    $relationships = Pwnage_ParentSwfAssetRelationship::all(array(
+      'select' => 'DISTINCT parent_id, body_id',
+      'joins' => 'INNER JOIN swf_assets ON swf_assets.id = parents_swf_assets.swf_asset_id',
+      'where' => array('swf_asset_type = ?', 'object')
+    ));
+    $combinations_with_assets = array();
+    foreach($relationships as $relationship) {
+      $combinations_with_assets[] =
+        "($relationship->parent_id, $relationship->body_id), ".
+        "($relationship->parent_id, 0)";
+    }
+    unset($relationships);
+    $object_ids_with_assets_str = implode(', ', $combinations_with_assets);
+    unset($combinations_with_assets);
     $db = PwnageCore_Db::getInstance();
     $combination_stmt = $db->prepare(<<<SQL
       SELECT o.id, o.name, p.name, p.id, pt.id, pt.color_id, pt.species_id,
@@ -75,13 +87,7 @@ class Pwnage_ObjectAsset extends Pwnage_SwfAsset {
       INNER JOIN pets p ON p.pet_type_id = pt.id
       WHERE
       pt.color_id IN ($standard_color_string) AND
-        (SELECT count(*) FROM swf_assets sa
-        INNER JOIN parents_swf_assets psa ON psa.swf_asset_id = sa.id
-        WHERE
-        sa.type = "object" AND
-        psa.parent_id = o.id AND
-        sa.body_id IN (pt.body_id, 0))
-      = 0
+      (o.id, pt.body_id) NOT IN ($object_ids_with_assets_str)
       AND
       o.sold_in_mall = 1
       GROUP BY o.id, pt.body_id
@@ -89,7 +95,7 @@ class Pwnage_ObjectAsset extends Pwnage_SwfAsset {
       LIMIT $limit
 SQL
     );
-    echo "Finding combinations to search for - will take a bit...\n";
+    echo "Finding combinations to search for...\n";
     $combination_stmt->execute();
     for($round=0;$round<$limit;$round+=self::mallSpiderSaveLimit) {
       $object_ids = array();
@@ -143,14 +149,15 @@ SQL
             echo "$pet_name failed integrity check; saving new data...\n";
             $pet->update();
             $pet = Pwnage_Pet::first(array(
-              'select' => 'name',
+              'select' => 'name, species_id, color_id',
               'where' => array('pet_type_id = ?', $pet_type_id)
             ));
           }
         } while($has_unexpected_attributes);
         echo "$pet_name passed integrity check; modeling for $object_name...\n";
         $url = sprintf(self::mallSpiderUrl, $pet_name, $object_id);
-        $data = HttpRequest::getJson($url)->$object_id->asset_data;
+        $json = HttpRequest::getJson($url);
+        $data = $json->$object_id->asset_data;
         echo "Got asset data\n";
         if($data) { // could be a bad body type
           foreach($data as $asset_id => $asset_data) {
