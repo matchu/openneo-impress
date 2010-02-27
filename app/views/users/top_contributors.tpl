@@ -1,4 +1,10 @@
 {title is="Top contributors"}
+<ul class="buttons">
+  Go to:
+  <li>
+    <a class="button" href="{path to=contributions}">Recent contributions</a>
+  </li>
+</ul>
 <table id="top-contributors">
   <tr>
     <th scope="column">Rank</th>

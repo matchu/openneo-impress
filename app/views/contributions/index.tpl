@@ -10,6 +10,17 @@
 {else}
   {title is="Recent contributions"}
 {/if}
+<ul class="buttons">
+Go to:
+{if isset($user)}
+  <li>
+    <a class="button" href="{path to=contributions}">Recent contributions</a>
+  </li>
+{/if}
+  <li>
+    <a class="button" href="{path to=top_contributors}">Top contributors</a>
+  </li>
+</ul>
 {if empty($pagination->results)}
   <p>Nothing here!</p>
 {else}

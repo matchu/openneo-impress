@@ -730,6 +730,7 @@ body.index #footer p, body.standard #footer p {
 
 ul.buttons {
   list-style: none;
+  margin-bottom: 1em;
 }
 
 ul.buttons li {
