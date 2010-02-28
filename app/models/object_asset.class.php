@@ -16,7 +16,16 @@ class Pwnage_ObjectAsset extends Pwnage_SwfAsset {
   }
   
   protected function beforeSave() {
-    if(!$this->isBodySpecific()) $this->body_id = null;
+    if($this->isBodySpecific()) {
+      $count_existing_with_other_body_id = self::count(array(
+        'where' => array('id = ? AND body_id != ?', $this->id, $this->body_id)
+      ));
+      if($count_existing_with_other_body_id) {
+        $this->body_id = null;
+      }
+    } else {
+      $this->body_id = null;
+    }
   }
   
   public function getZone() {
@@ -24,7 +33,7 @@ class Pwnage_ObjectAsset extends Pwnage_SwfAsset {
   }
   
   public function isBodySpecific() {
-    return $this->getZone()->type_id < 3;
+    return $this->body_id == null || $this->getZone()->type_id < 3;
   }
   
   public function setDataFromMall($data) {
@@ -47,9 +56,16 @@ class Pwnage_ObjectAsset extends Pwnage_SwfAsset {
   
   static function all($options) {
     $options['where'] = self::mergeConditions($options['where'],
-      self::$table.'.type = "object"'
+      array(self::$table.'.type = ?', 'object')
     );
     return parent::all($options, self::$table, __CLASS__);
+  }
+  
+  static function count($options) {
+    $options['where'] = self::mergeConditions($options['where'],
+      array(self::$table.'.type = ?', 'object')
+    );
+    return parent::count($options, self::$table);
   }
   
   static function getAssetsByParents($parent_ids, $options) {
@@ -96,7 +112,7 @@ class Pwnage_ObjectAsset extends Pwnage_SwfAsset {
       (o.id, pt.body_id) NOT IN ($combinations_with_assets_str) AND
       o.sold_in_mall = 1
       GROUP BY o.id, pt.body_id
-      ORDER BY o.last_spidered DESC
+      ORDER BY o.last_spidered ASC
       LIMIT $limit
 SQL
     );
