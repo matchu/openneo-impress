@@ -31,7 +31,8 @@ class Pwnage_ObjectsController extends Pwnage_ApplicationController {
     if($where) {
       $objects = Pwnage_Object::all(array(
         'select' => implode(', ', $attributes),
-        'where' => $where
+        'where' => $where,
+        'order_by' => 'name ASC'
       ));
       $this->respondWith($objects, $attributes);
     }
