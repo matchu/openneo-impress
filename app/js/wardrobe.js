@@ -686,11 +686,11 @@ var MainWardrobe = new function Wardrobe() {
     
     this.modules.pet_state = new function WardrobePetStateModule() {
       this.update = function () {
-        var module = $('#pet-state-list').html('');
+        var module = $('#pet-state-list').html(''), i = 0;
         $.each(Outfit.pet_type.pet_state_ids, function () {
           var id = this, a = $('<a/>', { // <3 new 1.4 constructor syntax
             href: '#',
-            text: 'State #' + id,
+            text: 'State #' + (++i),
             click: function (e) {
               e.preventDefault();
               Outfit.updatePetState(id);
