@@ -11,7 +11,7 @@ class Pwnage_PetTypesController extends Pwnage_ApplicationController {
       $select = 'id, body_id';
       $attributes = array('id', 'body_id', 'pet_state_ids');
     } else {
-      throw new Pwnage_BadRequestException("Value '$for' not expected for \$for");
+      throw new PwnageCore_BadRequestException("Value '$for' not expected for \$for");
     }
     $pet_type = Pwnage_PetType::findBySpeciesIdAndColorId(
       $this->get['species_id'],

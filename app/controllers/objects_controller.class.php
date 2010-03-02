@@ -13,7 +13,7 @@ class Pwnage_ObjectsController extends Pwnage_ApplicationController {
     } elseif(isset($this->get['search'])) {
       $search = $this->get['search'];
       if(strlen($search) < 3) {
-        throw new Pwnage_BadRequestException(
+        throw new PwnageCore_BadRequestException(
           'Search queries must be longer than 3 characters, silly!'
         );
       }
@@ -26,7 +26,7 @@ class Pwnage_ObjectsController extends Pwnage_ApplicationController {
         $where = 'name LIKE '.$db->quote($like);
       }
     } else {
-      throw new Pwnage_BadRequestException('$id or $search required');
+      throw new PwnageCore_BadRequestException('$id or $search required');
     }
     if($where) {
       $objects = Pwnage_Object::all(array(
