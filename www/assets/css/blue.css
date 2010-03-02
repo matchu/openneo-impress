@@ -498,8 +498,13 @@ body.wardrobe #closet-module-objects {
   overflow: hidden;
 }
 
-body.wardrobe .object img, body.wardrobe .object span {
+body.wardrobe .object img {
   opacity: 0.25;
+}
+
+body.wardrobe .object span {
+  display: block;
+  opacity: 0.5;
 }
 
 body.wardrobe .worn-object img, body.wardrobe .worn-object span {
