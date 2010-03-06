@@ -27,7 +27,7 @@ body {
 
 body {
   background-color: #0B61A4;
-  font-family: Delicious, Helvetica, Arial, sans-serif;
+  font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
 }
 
 a {
@@ -763,6 +763,10 @@ ul.buttons li form {
 
 .pagination a:hover {
   background: #66A3D2;
+}
+
+.ui-widget {
+  font-family: inherit;
 }
 
 /* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */

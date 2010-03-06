@@ -430,7 +430,8 @@ var MainWardrobe = new function Wardrobe() {
     }
     
     function updatePetType() {
-      var species = HashDaemon.get('species'), color = HashDaemon.get('color');
+      var species = HashDaemon.get('species'), color = HashDaemon.get('color'),
+        error_options;
       if(
         !Outfit.pet_type || species != Outfit.pet_type.species_id ||
         color != Outfit.pet_type.color_id
@@ -458,7 +459,19 @@ var MainWardrobe = new function Wardrobe() {
             View.modules.pet_state.update();
             Outfit.updateObjects();
           } else {
-            View.error('Pet type not found!');
+            error_options = {
+              title: 'Pet not found!'
+            };
+            if(!Outfit.pet_type) {
+              error_options.close = function () {
+                window.location = '/';
+              }
+              error_options.modal = true;
+            }
+            View.error("We haven't seen this pet type before. If it's out there, " +
+              "please help us out by " +
+              "<a href='http://beta.impress.openneo.net/pet_types/needed'>" +
+              "helping us find it</a>! Thanks!", error_options);
             View.Outfit.showBiologyAssets();
             if(Outfit.pet_type) {
               HashDaemon.set({
@@ -868,8 +881,17 @@ var MainWardrobe = new function Wardrobe() {
       $('#object-description').hide();
     });
 
-    this.error = function (message) {
-      alert(message);
+    this.error = function (message, options) {
+      var dialog = $('#error-dialog');
+      if(dialog.length) {
+        dialog.dialog('destroy');
+      } else {
+        dialog = $('<div/>', {id: 'error-dialog'});
+      }
+      dialog.html(message);
+      dialog.dialog($.extend({
+        title: 'Uh oh! Error!'
+      }, options));
     }
     
     $('.object-action-wear').live('click', function (e) {
