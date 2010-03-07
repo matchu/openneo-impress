@@ -70,7 +70,7 @@
     <h2>We still need...</h2>
     <ul>
       {section name=color loop=$colors_needed}
-        <li><a href="http://www.google.com/search?q=site:neopets.com+inurl:petlookup.phtml+&quot;the+{$colors_needed[color]->getName()}+{$species_name}&quot;"
+        <li><a href="http://www.google.com/search?q={species_color_query color=$colors_needed[color] species_name=$species_name}&quot;"
           target="_blank">
           {$colors_needed[color]->getName()}
         </a></li>
