@@ -95,8 +95,10 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
       }
       if(!empty($needed_ids_by_class[$parent_class]) || !empty($children)) {
         // load parents (pass child array to polymorphic method)
+        $ids = isset($needed_ids_by_class[$parent_class]) ?
+          $needed_ids_by_class[$parent_class] : array();
         $parents = call_user_func(array($parent_class, 'allByIdsOrChildren'),
-          $needed_ids_by_class[$parent_class], $children, array(
+          $ids, $children, array(
             'select' => $select_by_class[$parent_class]
           ));
         unset($children);
