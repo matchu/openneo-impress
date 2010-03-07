@@ -3,7 +3,7 @@
   <head>
     <title>Dress to Impress</title>
     <link type="text/css" rel="stylesheet" href="/assets/css/start/jquery_ui.css" />
-    <link type="text/css" rel="stylesheet" href="/assets/css/blue.css" />
+    <link type="text/css" rel="stylesheet" href="/assets/css/blue.css?03062010" />
   </head>
   <body class="index">
     {include file='shared/analytics.tpl'}
