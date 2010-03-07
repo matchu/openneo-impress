@@ -11,12 +11,22 @@ function closetItemsCallback(object_ids) {
       }
     );
     $('.object:not(.in-closet)').fadeTo(1000, .5);
+  } else {
+    closetFeedback(
+      "You don't have any of these items in your closet. Make sure they're " +
+      "there and not in your " +
+      "<a href='http://www.neopets.com/objects.phtml?type=inventory' target='_blank'>inventory</a>!",
+      {
+        'class': 'content-box'
+      }
+    );
   }
 }
 
 function closetFeedback(html, options) {
   if(!options) options = {};
   options.html = html;
+  $('#loading-closet').remove();
   $('<p/>', options).insertBefore('#needed-objects');
 }
 
@@ -65,6 +75,10 @@ $(function () {
     $('<div/>', {id: 'amf-proxy'}).appendTo('body');
     swfobject.embedSWF('/assets/swf/amf_proxy.swf', 'amf-proxy', 1, 1, '9',
       '/assets/js/swfobject/expressInstall.swf', {}, {allowscriptaccess: 'always'});
+    $('<img/>', {
+      id: 'loading-closet',
+      src: '/assets/images/loading.gif'
+    }).insertBefore('#needed-objects');
     onSWFEmbed();
   }
 });
