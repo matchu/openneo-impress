@@ -2,6 +2,9 @@
 <?php
 require_once dirname(__FILE__).'/../pwnage/environment.php';
 
+define('ScriptRoot', PWNAGE_ROOT.'/app/js');
+define('PublicScriptRoot', PWNAGE_ROOT.'/www/assets/js');
+
 class Pwnage_ClosureRequest {
   private $input;
   
@@ -40,14 +43,31 @@ class Pwnage_ClosureRequest {
   }
 }
 
-$files = glob(PWNAGE_ROOT.'/app/js/*.js');
-foreach($files as $file) {
-  $basename = basename($file);
-  echo "Processing $basename...\n";
-  $request = new Pwnage_ClosureRequest($file);
-  $output = $request->exec();
-  $output_file = PWNAGE_ROOT.'/www/assets/js/'.$basename;
-  file_put_contents($output_file, $output);
-  echo "$basename saved.\n";
+function scanDirForScripts($dir) {
+  echo "Scanning $dir...\n";
+  $files = glob("$dir/*.js");
+  foreach($files as $file) {
+    $basename = basename($file);
+    $public_path = PublicScriptRoot.'/'.str_replace(array(ScriptRoot.'/', ScriptRoot),
+      '', $file);
+    $public_dir = dirname($public_path);
+    if(!file_exists($public_dir) && !is_dir($public_dir)) {
+      echo "Making dir $public_dir...\n";
+      mkdir($public_dir, 0777, true);
+    }
+    echo "Processing $basename...\n";
+    $request = new Pwnage_ClosureRequest($file);
+    $output = $request->exec();
+    file_put_contents($public_path, $output);
+    echo "$basename saved.\n";
+  }
+  $dirs = glob("$dir/*", GLOB_ONLYDIR);
+  if($dirs) {
+    foreach($dirs as $dir) {
+      scanDirForScripts($dir);
+    }
+  }
 }
+
+scanDirForScripts(ScriptRoot);
 ?>

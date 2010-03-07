@@ -1,6 +1,4 @@
 RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-d 
-RewriteCond %{REQUEST_FILENAME} !-f 
 RewriteCond %{QUERY_STRING} debug [OR]
 RewriteCond %{HTTP_REFERER} debug
 RewriteRule ^([a-z/]+)\.js$ debug.php?file=$1 [L]

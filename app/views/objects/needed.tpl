@@ -1,7 +1,7 @@
 {if isset($objects)}
 {  title is="Needed Objects For $color_name $species_name"}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
-<script type="text/javascript" src="/assets/js/swfobject/swfobject.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
 <script type="text/javascript" src="/assets/js/objects/needed.js"></script>
 <h2>
 {if $pet_name}
