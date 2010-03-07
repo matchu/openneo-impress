@@ -2,7 +2,7 @@
 {  title is="Needed Objects For $color_name $species_name"}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
-<script type="text/javascript" src="/assets/js/objects/needed.js"></script>
+<script type="text/javascript" src="/assets/js/objects/needed.js?03072010"></script>
 <h2>
 {if $pet_name}
   <img src="http://pets.neopets.com/cpn/{$pet_name|urlencode}/1/1.png" class="inline-image" />
