@@ -50,5 +50,13 @@ class Pwnage_PetAttribute {
       )
     );
   }
+  
+  static function searchQueryFor($color, $species_name) {
+    $query = 'site:neopets.com inurl:petlookup.phtml "the '.$color->getDisplayName().' '.$species_name.'"';
+    if($gender = $color->getGender()) {
+      $query .= ' "Gender: '.$gender.'"';
+    }
+    return $query;
+  }
 }
 ?>

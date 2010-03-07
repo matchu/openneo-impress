@@ -16,12 +16,11 @@ foreach(Pwnage_Species::all() as $species) {
     $species_id = $species->getId();
     $color_id = $color->getId();
     if(!isset($existing_pet_types[$species_id][$color_id])) {
-      // TODO: handle royalboy, royalgirl, etc
       $pet_type_string = $color->getName().' '.$species->getName();
       echo "Searching for a $pet_type_string\n";
       $response = HttpRequest::getJson(
         'http://boss.yahooapis.com/ysearch/web/v1/'.
-        urlencode("site:neopets.com inurl:petlookup.phtml \"$pet_type_string\"").
+        urlencode(Pwnage_PetAttribute::searchQueryFor($color, $species->getName())).
         '?appid='.BOSS_KEY
       );
       if($results = $response->ysearchresponse->resultset_web) {
