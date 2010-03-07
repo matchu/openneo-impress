@@ -1,11 +1,14 @@
 {if isset($objects)}
 {  title is="Needed Objects For $color_name $species_name"}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/js/swfobject/swfobject.js"></script>
+<script type="text/javascript" src="/assets/js/objects/needed.js"></script>
 <h2>
 {if $pet_name}
-    <img src="http://pets.neopets.com/cpn/{$pet_name|urlencode}/1/1.png" class="inline-image" />
-    {$pet_name|escape}
+  <img src="http://pets.neopets.com/cpn/{$pet_name|urlencode}/1/1.png" class="inline-image" />
+  <span id="pet-name">{$pet_name|escape}</span>
 {else}
-    Your {$color_name} {$species_name}
+  Your {$color_name} {$species_name}
 {/if}
   can model...
 </h2>
@@ -29,9 +32,9 @@
     </a>
   </li>
 </ul>
-<ul>
+<ul id="needed-objects">
 {  foreach from=$objects item=object}
-  <li class="object">
+  <li class="object" data-object-id="{$object->getId()}">
     <a href="http://neoitems.net/search2.php?Name={$object->getName()|urlencode}&AndOr=exact&Category=All&Special=0&Status=Active&Sort=ItemID&results=15&SearchType=8&randtest="
       target="_blank">
       <img src="{$object->getThumbnailUrl()}" />

@@ -18,7 +18,7 @@ function ensureThat($condition) {
 }
 
 $file = $_GET['file'];
-ensureThat(preg_match('/^[a-z]+$/', $file));
+ensureThat(preg_match(':^[a-z/]+$:', $file));
 $path = "../../../app/js/$file.js";
 ensureThat(file_exists($path));
 header('Content-type: text/javascript');

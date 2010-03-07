@@ -38,13 +38,17 @@ p {
   margin-bottom: 1em;
 }
 
-input, select, option, a.button {
+input, select, option, a.button, .content-box {
   background: #3F92D2;
   border: 1px solid #66A3D2;
   color: #FFF;
   cursor: pointer;
   font-family: inherit;
   font-size: inherit;
+}
+
+.content-box {
+  padding: .5em 1em;
 }
 
 a.button {
@@ -268,10 +272,47 @@ body.standard #top-contributors td, body.standard #top-contributors th {
   padding: .5em 1em;
 }
 
+body.standard .object a {
+  text-decoration: none;
+}
+
+body.standard #needed-objects .object a img {
+  height: 80px;
+  opacity: .9;
+  width: 80px;
+}
+
+body.standard #needed-objects .object a:hover img, body.standard #needed-objects .in-closet a img {
+  opacity: 1;
+}
+
+body.standard #needed-objects .object:hover {
+  opacity: 1 !important;
+}
+
+body.standard .in-closet {
+  background: #FF9200;
+  border: 2px solid #FFAD40;
+  font-weight: normal;
+}
+
+body.standard .in-closet, body.standard .in-closet a {
+  color: #A65F00;
+}
+
+body.standard .in-closet a:hover {
+  font-weight: bold;
+}
+
+body.standard p.in-closet {
+  margin: 0 auto 1em;
+  padding: .5em 1em;
+  width: 75%;
+}
+
 /* Index */
 
 body.index {
-  background-position: center center;
   color: #fff;
 }
 
@@ -699,20 +740,6 @@ body.wardrobe .object, body.standard .object {
   text-align: center;
   vertical-align: top;
   width: 100px;
-}
-
-body.standard .object a {
-  text-decoration: none;
-}
-
-body.standard .object a img {
-  height: 80px;
-  opacity: .9;
-  width: 80px;
-}
-
-body.standard .object a:hover img {
-  opacity: 1;
 }
 
 body.index #footer ul, body.standard #footer ul {

@@ -49,7 +49,7 @@ class Pwnage_ObjectsController extends Pwnage_ApplicationController {
       );
       if($pet_type) {
         $objects = $pet_type->getNeededObjects(array(
-          'select' => 'name, thumbnail_url',
+          'select' => 'id, name, thumbnail_url',
           'order_by' => 'name ASC'
         ));
         $this->set(array(
