@@ -47,7 +47,7 @@
     {insert name='userbar'}
     {include file='shared/footer.tpl'}
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
-    <script type="text/javascript" src="/assets/js/index.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js?03062010"></script>
     {include file='shared/feedback.tpl'}
   </body>
 </html>
