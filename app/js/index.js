@@ -89,4 +89,32 @@ $(function () {
       }
     });
   });
+  
+  $.getJSON('http://blog.openneo.net/api/read/json?callback=?', function (data) {
+    var post = data.posts[0], el = $('#latest-blog-post'),
+      url = post['url-with-slug'], header = 'The OpenNeo Blog', body = '',
+      truncate_body_at = 100, image;
+    if(post.type == 'regular') {
+      header = post['regular-title'];
+      body = post['regular-body'];
+    } else if(post.type == 'link') {
+      header = post['link-text'];
+      body = post['link-description'];
+    } else if(post.type == 'photo') {
+      body = post['photo-caption'];
+      image = post['photo-url-75'];
+    }
+    body = body.replace(/(<\/?[\S][^>]*>)/gi, '');
+    if(body.length > truncate_body_at) {
+      body = body.substring(0, truncate_body_at);
+      body = body.replace(/\s+\w+$/, '');
+      body += '&hellip; <span>read more</span>';
+    }
+    el.html(body).attr('href', url);
+    $('<h2/>', {text: header}).prependTo(el);
+    if(image) {
+      $('<img/>', {src: image}).prependTo(el);
+    }
+    el.show();
+  });
 });

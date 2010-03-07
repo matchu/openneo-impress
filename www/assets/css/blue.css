@@ -431,6 +431,39 @@ body.index #we-need-you a:hover {
   font-weight: bold;
 }
 
+body.index #latest-blog-post {
+  background: #66A3D2;
+  border: 1px solid #033E6B;
+  display: none;
+  font-size: 90%;
+  left: 1em;
+  padding: .5em 1em;
+  position: absolute;
+  text-decoration: none;
+  top: 1em;
+  width: 25%;
+}
+
+body.index #latest-blog-post h2 {
+  font-size: 125%;
+  margin-bottom: .5em;
+}
+
+body.index #latest-blog-post:hover span {
+  text-decoration: none;
+}
+
+body.index #latest-blog-post img {
+  border: 1px solid #033E6B;
+  float: left;
+  margin-right: 1em;
+}
+
+body.index #latest-blog-post span {
+  margin-left: .5em;
+  text-decoration: underline;
+}
+
 /* Wardrobe */
 
 body.wardrobe {

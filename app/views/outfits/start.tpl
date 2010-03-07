@@ -43,6 +43,7 @@
         </li>
       </ul>
     </div>
+    <a id="latest-blog-post" href="http://blog.openneo.net" target="_blank"></a>
     {insert name='userbar'}
     {include file='shared/footer.tpl'}
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
