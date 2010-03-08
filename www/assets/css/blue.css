@@ -312,8 +312,23 @@ body.standard p.in-closet {
 
 /* Index */
 
+html, body.index, body.index #container {
+  height: 100%;
+  min-height: 600px;
+}
+
 body.index {
   color: #fff;
+}
+
+body.index #container {
+  /* never was a fan of containers, but i don't trust body to take a min-width */
+  height: 100%;
+  left: 0;
+  min-width: 800px;
+  position: relative;
+  top: 0;
+  width: 100%;
 }
 
 body.index h1 {
@@ -714,8 +729,11 @@ body.index #footer, body.standard #footer {
   bottom: .5em;
   font-size: .75em;
   position: absolute;
-  position: fixed;
   right: 1em;
+}
+
+body.standard #footer {
+  position: fixed;
 }
 
 body.index #userbar, body.standard #userbar {
