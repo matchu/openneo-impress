@@ -445,8 +445,15 @@ body.index #latest-blog-post {
 }
 
 body.index #latest-blog-post h2 {
+  background: url(/assets/images/feed.png) 0 2px no-repeat;
   font-size: 125%;
   margin-bottom: .5em;
+  padding-left: 24px;
+}
+
+body.index #latest-blog-post.has-image h2 {
+  background: transparent;
+  padding-left: 0;
 }
 
 body.index #latest-blog-post:hover span {

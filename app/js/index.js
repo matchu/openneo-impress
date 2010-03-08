@@ -114,6 +114,7 @@ $(function () {
     $('<h2/>', {text: header}).prependTo(el);
     if(image) {
       $('<img/>', {src: image}).prependTo(el);
+      el.addClass('has-image');
     }
     el.show();
   });
