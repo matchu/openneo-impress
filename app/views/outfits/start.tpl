@@ -3,7 +3,7 @@
   <head>
     <title>Dress to Impress</title>
     <link type="text/css" rel="stylesheet" href="/assets/css/start/jquery_ui.css" />
-    <link type="text/css" rel="stylesheet" href="/assets/css/blue.css?03062010" />
+    <link type="text/css" rel="stylesheet" href="/assets/css/blue.css?03072010203436" />
   </head>
   <body class="index">
     <div id="container">
@@ -49,7 +49,7 @@
       {include file='shared/footer.tpl'}
     </div>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
-    <script type="text/javascript" src="/assets/js/index.js?03062010"></script>
+    <script type="text/javascript" src="/assets/js/index.js?03072010203443"></script>
     {include file='shared/feedback.tpl'}
   </body>
 </html>
