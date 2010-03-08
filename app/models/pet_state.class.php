@@ -56,7 +56,9 @@ class Pwnage_PetState extends Pwnage_SwfAssetParent {
   public function getPetType() {
     if(!isset($this->pet_type)) {
       $this->pet_type = new Pwnage_PetType();
-      $this->pet_type->setOriginPet($this->getOriginPet());
+      if($this->getOriginPet()) {
+        $this->pet_type->setOriginPet($this->getOriginPet());
+      }
     }
     return $this->pet_type;
   }

@@ -136,13 +136,15 @@ class Pwnage_PetType extends PwnageCore_DbObject {
     foreach($children as &$child) {
       $parent_id = $child->getPetTypeId();
       if(!in_array($id, $ids)) $ids[] = $parent_id;
-      $children_by_parent_id[$parent_id] =& $child;
+      $children_by_parent_id[$parent_id][] =& $child;
     }
     $parents = self::find($ids, $options);
     foreach($parents as $parent) {
       $parent_id = $parent->getId();
       if(isset($children_by_parent_id[$parent_id])) {
-        $children_by_parent_id[$parent_id]->setPetType($parent);
+        foreach($children_by_parent_id[$parent_id] as $child) {
+          $child->setPetType($parent);
+        }
       }
     }
     return $parents;
