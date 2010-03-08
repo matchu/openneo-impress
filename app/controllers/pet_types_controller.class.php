@@ -53,7 +53,7 @@ class Pwnage_PetTypesController extends Pwnage_ApplicationController {
           'had' => array(),
           'needed' => array()
         );
-        foreach(Pwnage_Color::all() as $color) {
+        foreach($species->getPossibleColors() as $color) {
           $collection = in_array($color->getId(), $color_ids) ?
             'had' : 'needed';
           $colors[$collection][] = $color;
