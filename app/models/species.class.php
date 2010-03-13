@@ -13,7 +13,7 @@ class Pwnage_Species extends Pwnage_PetAttribute {
       $colors = Pwnage_Color::all();
       $color_ids_by_name = array();
       foreach($colors as $color) {
-        $color_ids_by_name[$color->getName()] = $color->getId();
+        $color_ids_by_name[$color->getName()] = (int) $color->getId();
       }
       $all_color_ids = array_values($color_ids_by_name);
       $exclusive_color_names_by_species =
@@ -46,7 +46,7 @@ class Pwnage_Species extends Pwnage_PetAttribute {
           as making comma strings with implode(), and json_decode seems to be - 
           no joke - 200 times faster than explode(). The choice is clear.
         */
-        file_put_contents($cache_root.'/'.$species_id.'.txt', json_encode($color_ids));
+        file_put_contents($cache_root.'/'.$species_id.'.txt', json_encode(array_values($color_ids)));
       }
     }
     $ids = (array) json_decode(file_get_contents($cache_root.'/'.$this->getId().'.txt'));
