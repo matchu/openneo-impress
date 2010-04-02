@@ -85,3 +85,4 @@ Yellow
 Zombie
 Onion
 Magma
+Relic
