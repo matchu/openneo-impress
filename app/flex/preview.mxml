@@ -76,6 +76,8 @@
       }
       
       private function init():void {
+        Security.allowDomain('items.impress.openneo.net');
+        Security.allowDomain('beta.items.impress.openneo.net');
         ExternalInterface.addCallback('setAssets', setAssets);
         log('flash ready - about to send notice');
         ExternalInterface.call('MainWardrobe.View.Outfit.setFlashIsReady');
