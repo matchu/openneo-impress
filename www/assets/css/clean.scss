@@ -283,6 +283,8 @@ ul.buttons {
     
     img {
       @include opacity(.75);
+      height: 80px;
+      width: 80px;
     }
     
     &:hover img {
@@ -295,6 +297,8 @@ ul.buttons {
 
 @import "clean/index";
 @import "clean/standard";
+@import "clean/contributions/index";
+@import "clean/users/top_contributors";
 
 /* Fonts */
 

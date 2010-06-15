@@ -1,0 +1,19 @@
+#top-contributors {
+  border: {
+    spacing: 0;
+    width: 1px 1px 0 0;
+  }
+  margin: 0 auto;
+  
+  &, td, th {
+    border: {
+      color: #033E6B;
+      style: solid;
+    }
+  }
+  
+  td, th {
+    border-width: 0 0 1px 1px;
+    padding: .5em 1em;
+  }
+}

@@ -172,7 +172,9 @@ ul.buttons {
       -moz-opacity: 0.75;
       -webkit-opacity: 0.75;
       -o-opacity: 0.75;
-      -khtml-opacity: 0.75; }
+      -khtml-opacity: 0.75;
+      height: 80px;
+      width: 80px; }
     .object a:hover img {
       -moz-opacity: 1;
       -webkit-opacity: 1;
@@ -280,6 +282,7 @@ body.index #i-found-something {
   margin-left: 1%; }
 
 body.standard #container {
+  padding-top: 3em;
   text-align: center; }
 body.standard #home-link {
   font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
@@ -295,6 +298,54 @@ body.standard #home-link {
     text-decoration: none; }
   body.standard #home-link span:before {
     content: "<< "; }
+
+body.standard .contributions li {
+  list-style: none;
+  height: 80px;
+  overflow: hidden;
+  padding: 1em 0 0 100px;
+  position: relative;
+  text-align: left; }
+body.standard .contributions .point-value {
+  font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
+  color: #fff;
+  font-size: 80px;
+  left: 0;
+  line-height: 1;
+  position: absolute;
+  text-align: center;
+  text-shadow: 2px 2px 0 #000;
+  top: 0;
+  width: 80px;
+  z-index: 3; }
+  body.standard .contributions .point-value:hover {
+    -moz-opacity: 0.5;
+    -webkit-opacity: 0.5;
+    -o-opacity: 0.5;
+    -khtml-opacity: 0.5; }
+body.standard .contributions img {
+  height: 80px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 80px;
+  z-index: 2; }
+body.standard .contributions span.username, body.standard .contributions span.contributed-name {
+  font-weight: bold; }
+body.standard .contributions span.time-ago {
+  display: block;
+  font-size: 75%; }
+
+#top-contributors {
+  border-spacing: 0;
+  border-width: 1px 1px 0 0;
+  margin: 0 auto; }
+  #top-contributors, #top-contributors td, #top-contributors th {
+    border-color: #033E6B;
+    border-style: solid; }
+  #top-contributors td, #top-contributors th {
+    border-width: 0 0 1px 1px;
+    padding: .5em 1em; }
 
 /* Fonts */
 /* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */
