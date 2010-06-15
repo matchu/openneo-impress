@@ -42,11 +42,11 @@
         <h2>Built by you, just for you!</h2>
         <p>
           Dress to Impress lets you plan how you want to dress up your Neopets,
-          before you even go shopping! Whenever we see a Neopet, we look up what
-          it's wearing and organize the data into our own wearables database
-          &mdash; a community closet, if you will. Then you can plan your
-          outfit, mixing and matching various items, so you can have the
-          best-dressed Neopet in all of Neopia!
+          before you even go shopping! Whenever you give us a Neopet's name, we
+          automatically look up what it's wearing and organize the data into
+          our own wearables database &mdash; a community closet, if you will.
+          Then you can plan your outfit, mixing and matching various items, so
+          you can have the best-dressed Neopet in all of Neopia!
         </p>
         <p>
           To make all this possible, though, we need your help &mdash; and if
