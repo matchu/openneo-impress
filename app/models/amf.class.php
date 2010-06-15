@@ -28,7 +28,7 @@ class Pwnage_Amf {
   }
   
   static function isTypedObject($obj) {
-    return get_class($obj) == 'SabreAMF_TypedObject';
+    return is_object($obj) && get_class($obj) == 'SabreAMF_TypedObject';
   }
   
   static function stripAMFCalls($obj) {

@@ -16,6 +16,10 @@ class Pwnage_OutfitsController extends Pwnage_ApplicationController {
     
     if(!$this->isCached()) {
       $this->preparePetTypeFields(array('color', 'species'));
+      $this->set('top_contributors', Pwnage_User::all(array(
+        'order_by' => 'points DESC',
+        'limit' => 3
+      )));
     }
   }
 }

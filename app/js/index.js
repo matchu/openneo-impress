@@ -1,15 +1,15 @@
 $(function () {
   var previewWithNameTimeout = null, previousName, previewLoadCount = 0,
-    awaitingLoad = false;
+    awaitingLoad = false, currentName, progress = 0;
   
-  function updatePreview(src) {;
-    $('#pet-preview').attr('src', src);
+  function updatePreview(base) {
+    var n = progress + 2;
+    $('#pet-preview').attr('src', 'http://pets.neopets.com/' + base + '/1/' + n + '.png');
     awaitingLoad = true;
   }
   
   function clearPreview() {
-    $('#pet-preview').addClass('loading');
-    $('#preview-response').text('');
+    $('#preview-response').text(currentName);
   }
   
   function previewLoading() {
@@ -24,9 +24,11 @@ $(function () {
   function updatePreviewWithName() {
     var name = $('#name').val();
     if(name) {
+      currentName = name;
       if(name != previousName) {
         previewLoading();
-        updatePreview('http://pets.neopets.com/cpn/' + name + '/1/1.png');
+        progress = 0;
+        updatePreview('cpn/' + name);
       }
     } else {
       clearPreview();
@@ -34,7 +36,7 @@ $(function () {
     previousName = name;
   }
   
-  var name = document.location.search.match(/\?name=(.+)/);
+  var name = document.location.search.match(/[\?&]name=([^&]+)/);
   if(name) {
     name = name[1];
     $('#name').val(name);
@@ -52,7 +54,11 @@ $(function () {
   $('#pet-preview').load(function () {
     if(awaitingLoad && $(this).data('loadId') == previewLoadCount) {
       $(this).removeClass('loading');
-      $('#preview-response').text('Is this what you wanted?');
+      progress += 2;
+      if(progress == 2) {
+        updatePreview('cpn/' + currentName);
+      }
+      $('#preview-response').text(currentName);
     }
   }).error(function () {
     if(awaitingLoad && $(this).data('loadId') == previewLoadCount) {
@@ -78,7 +84,7 @@ $(function () {
       dataType: 'json',
       success: function (data) {
         if(data) {
-          updatePreview('http://pets.neopets.com/cp/' + data.image_hash + '/1/1.png');
+          updatePreview('cp/' + data.image_hash);
         } else {
           previewNotFound("We don't have data on that yet. If you own or know"
             + " of a pet of that type, please type its name in above!");
@@ -90,7 +96,7 @@ $(function () {
     });
   });
   
-  $.getJSON('http://blog.openneo.net/api/read/json?callback=?', function (data) {
+  /*$.getJSON('http://blog.openneo.net/api/read/json?callback=?', function (data) {
     var post = data.posts[0], el = $('#latest-blog-post'),
       url = post['url-with-slug'], header = 'The OpenNeo Blog', body = '',
       truncate_body_at = 100, image;
@@ -117,5 +123,5 @@ $(function () {
       el.addClass('has-image');
     }
     el.show();
-  });
+  });*/
 });

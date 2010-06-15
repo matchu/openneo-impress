@@ -1,0 +1,262 @@
+/* Constants */
+/* Reset */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
+blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em,
+font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b,
+u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table,
+caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent; }
+
+/* Typography */
+body {
+  color: #004400;
+  font-family: Droid Serif, Georgia, "Times New Roman", Times, serif;
+  font-size: 90%;
+  line-height: 1.5; }
+
+a {
+  color: #226622; }
+
+input, button, select {
+  font-family: inherit;
+  font-size: 100%; }
+
+p {
+  margin-bottom: 1em; }
+
+h1, h2, h3 {
+  font-family: Delicious, Helvetica, Arial, Verdana, sans-serif; }
+
+h1 {
+  font-size: 3em;
+  line-height: 1;
+  margin-bottom: 0.50em; }
+
+h2 {
+  font-size: 2em;
+  margin-bottom: 0.75em; }
+
+h3 {
+  font-size: 1.5em;
+  line-height: 1;
+  margin-bottom: 1.00em; }
+
+/* Main */
+#container {
+  margin: 1em auto;
+  padding-top: 2em;
+  position: relative;
+  width: 800px; }
+
+input, button, select {
+  cursor: pointer; }
+
+input[type=text], input[type=password], select {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
+  background: #fff;
+  border: 1px solid #cceecc;
+  color: #448844;
+  padding: .25em; }
+  input[type=text]:focus, input[type=text]:active, input[type=password]:focus, input[type=password]:active, select:focus, select:active {
+    color: inherit; }
+
+input[type=submit], button[type=submit] {
+  /* http://www.zurb.com/blog_uploads/0000/0617/buttons-03.html */
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
+  background: #006400 url(/assets/images/alert-overlay.png) repeat-x;
+  border: 0;
+  display: inline-block;
+  padding: 5px 10px 6px;
+  color: #fff;
+  text-decoration: none;
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  position: relative;
+  font-weight: bold;
+  line-height: 1; }
+  input[type=submit]:hover, button[type=submit]:hover {
+    background-color: #005300; }
+  input[type=submit]:hover, button[type=submit]:hover {
+    color: #fff; }
+  input[type=submit]:active, button[type=submit]:active {
+    top: 1px; }
+  input[type=submit]:after, button[type=submit]:after {
+    content: " >>"; }
+
+#footer {
+  clear: both;
+  font-size: 75%;
+  padding-top: 1em;
+  text-align: center; }
+  #footer li {
+    display: inline;
+    margin: 0 .5em; }
+
+.notice, .error {
+  margin-bottom: 1em;
+  padding: .25em .5em; }
+
+.notice {
+  background: #fff6bf;
+  border: 1px solid #ffd324;
+  color: #514721; }
+
+.error {
+  background: #fbe3e4;
+  border: 1px solid #fbc2c4;
+  color: #8a1f11; }
+
+/* Index */
+#outfit-forms {
+  overflow: hidden;
+  display: inline-block;
+  font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
+  background: #eeffee;
+  border: 1px solid #006600;
+  padding: 1em;
+  margin-bottom: 3em;
+  position: relative; }
+  #outfit-forms {
+    display: block; }
+  #outfit-forms h1 {
+    margin-bottom: 0; }
+  #outfit-forms h2 {
+    font-size: 150%;
+    font-style: italic;
+    text-indent: 1em; }
+  #outfit-forms img {
+    float: left;
+    height: 300px;
+    margin-right: 2em;
+    width: 300px; }
+    #outfit-forms img.loading {
+      -moz-opacity: 0.5;
+      -webkit-opacity: 0.5;
+      -o-opacity: 0.5;
+      -khtml-opacity: 0.5; }
+  #outfit-forms fieldset {
+    position: relative;
+    left: 1em; }
+    #outfit-forms fieldset legend {
+      margin-left: -1em; }
+
+#preview-response {
+  background: gray;
+  background: rgba(0, 0, 0, 0.5);
+  bottom: 1em;
+  color: #fff;
+  margin-right: -1em;
+  padding: .25em .5em;
+  position: absolute;
+  right: 500px; }
+  #preview-response:empty {
+    display: none; }
+
+#form-1 {
+  font-size: 175%;
+  margin-bottom: 1em;
+  margin-top: 2em; }
+  #form-1 input {
+    font-size: 67%;
+    padding: .5em;
+    width: 10em; }
+  #form-1 button {
+    font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
+    background: #ff5c00 url(/assets/images/alert-overlay.png) repeat-x;
+    font-size: 14px;
+    padding: 8px 14px 9px;
+    font-size: 67%; }
+    #form-1 button:hover {
+      background-color: #ee4b00; }
+
+#form-2 {
+  -moz-opacity: 0.75;
+  -webkit-opacity: 0.75;
+  -o-opacity: 0.75;
+  -khtml-opacity: 0.75; }
+
+#description, #top-contributors {
+  float: left; }
+
+#description {
+  margin-right: 2%;
+  width: 64%; }
+
+#top-contributors {
+  border: 1px solid #cceecc;
+  margin-top: 1em;
+  padding: 1%;
+  width: 30%; }
+  #top-contributors ol {
+    margin-left: 2em;
+    padding-left: 1em; }
+  #top-contributors > a {
+    font-size: 80%;
+    display: block;
+    text-align: right; }
+
+#how-can-i-help, #i-found-something {
+  background: #eeffee;
+  border: 1px solid #006600;
+  padding: 1em;
+  float: left;
+  padding: 1%;
+  width: 46%; }
+  #how-can-i-help h2, #i-found-something h2 {
+    font-style: italic; }
+  #how-can-i-help input, #how-can-i-help button, #i-found-something input, #i-found-something button {
+    font-size: 125%; }
+
+#how-can-i-help {
+  margin-right: 1%; }
+
+#i-found-something {
+  margin-left: 1%; }
+
+#userbar {
+  font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
+  position: absolute;
+  right: 0;
+  top: 0; }
+  #userbar > * {
+    display: inline;
+    margin: 0 .25em; }
+
+#userbar-auth-servers li {
+  display: inline;
+  list-style: none;
+  margin: 0 .125em; }
+#userbar-auth-servers img {
+  vertical-align: bottom; }
+#userbar-auth-servers span {
+  display: none; }
+#userbar-auth-servers a {
+  text-decoration: none; }
+
+/* Fonts */
+/* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */
+@font-face {
+  font-family: Delicious;
+  src: url("/assets/fonts/Delicious-Roman.otf"); }
+
+@font-face {
+  font-family: Delicious;
+  font-weight: bold;
+  src: url("/assets/fonts/Delicious-Bold.otf"); }
+
+@font-face {
+  font-family: Delicious;
+  font-style: italic;
+  src: url("/assets/fonts/Delicious-Italic.otf"); }

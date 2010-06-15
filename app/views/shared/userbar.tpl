@@ -20,6 +20,6 @@
       </a>
     </li>  
 {  /foreach}
-{/if}
   </ul>
+{/if}
 </div>
