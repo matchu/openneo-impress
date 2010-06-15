@@ -98,7 +98,7 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
         $ids = isset($needed_ids_by_class[$parent_class]) ?
           $needed_ids_by_class[$parent_class] : array();
         $parents = call_user_func(array($parent_class, 'allByIdsOrChildren'),
-          $ids, $children, array(
+          $ids, &$children, array(
             'select' => $select_by_class[$parent_class]
           ));
         unset($children);
