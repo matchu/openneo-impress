@@ -47,6 +47,10 @@ h3 {
   line-height: 1;
   margin-bottom: 1.00em; }
 
+.inline-image {
+  margin-right: 1em;
+  vertical-align: middle; }
+
 /* Main */
 #container {
   margin: 1em auto;
@@ -106,12 +110,13 @@ input[type=submit], button[type=submit] {
 
 .notice, .error {
   margin-bottom: 1em;
-  padding: .25em .5em; }
+  padding: .25em .5em;
+  text-align: center; }
 
 .notice {
-  background: #fff6bf;
-  border: 1px solid #ffd324;
-  color: #514721; }
+  background: #e6efc2;
+  border: 1px solid #c6d880;
+  color: #264409; }
 
 .error {
   background: #fbe3e4;

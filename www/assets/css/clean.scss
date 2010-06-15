@@ -6,9 +6,9 @@ $module-bg-color:       #efe;
 $module-border-color:   #060;
 $input-border-color:    #cec;
 
-$notice-color:          #514721;
-$notice-bg-color:       #fff6bf;
-$notice-border-color:   #ffd324;
+$notice-color:         #264409;
+$notice-bg-color:      #e6efc2;
+$notice-border-color:  #c6d880;
 $error-color:           #8a1f11;
 $error-bg-color:        #fbe3e4;
 $error-border-color:    #fbc2c4;
@@ -153,6 +153,11 @@ h3 {
   margin-bottom: 1.00em;
 }
 
+.inline-image {
+  margin-right: 1em;
+  vertical-align: middle;
+}
+
 /* Main */
 
 $container_width: 800px;
@@ -201,6 +206,7 @@ input[type=submit], button[type=submit] {
 .notice, .error {
   margin-bottom: 1em;
   padding: .25em .5em;
+  text-align: center;
 }
 
 .notice {

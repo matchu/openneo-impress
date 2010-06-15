@@ -1,3 +1,7 @@
+function petImage(id, size) {
+  return 'http://pets.neopets.com/' + id + '/1/' + size + '.png';
+}
+
 var Preview = {
   clear: function () {
     $('#preview-response').text(Preview.Job.current.name);
@@ -31,8 +35,7 @@ Preview.Job = function (key, base) {
   job.loading = false;
   
   function getImageSrc() {
-    return 'http://pets.neopets.com/' + base + '/' + key + '/1/' +
-      quality + '.png'
+    return petImage(base + '/' + key, quality);
   }
   
   function load() {
@@ -70,10 +73,29 @@ $(function () {
     name: $('#preview-response').text()
   }
   
-  var name = document.location.search.match(/[\?&]name=([^&]+)/);
-  if(name) {
-    name = name[1];
-    $('#name').val(name);
+  var query = {};
+  $.each(document.location.search.substr(1).split('&'), function () {
+    var split_piece = this.split('=');
+    if(split_piece.length == 2) {
+      query[split_piece[0]] = split_piece[1];
+    }
+  });
+  
+  if(query.name) {
+    $('#name').val(query.name);
+    if(query.species && query.color) {
+      var notice = $('<div></div>', {
+          'class': 'notice',
+          'html': "Thanks for showing us <strong>" + query.name + "</strong>! " +
+            "Keep up the good work!"
+        }),
+        image = $('<img/>', {
+          'class': 'inline-image',
+          'src': petImage('cpn/' + query.name, 1)
+        });
+      image.prependTo(notice);
+      notice.prependTo('#container');
+    }
   }
   Preview.updateWithName();
   
