@@ -1,39 +1,73 @@
-$(function () {
-  var previewWithNameTimeout = null, previousName, previewLoadCount = 0,
-    awaitingLoad = false, currentName, progress = 0;
-  
-  function updatePreview(base) {
-    var n = progress + 2;
-    $('#pet-preview').attr('src', 'http://pets.neopets.com/' + base + '/1/' + n + '.png');
-    awaitingLoad = true;
-  }
-  
-  function clearPreview() {
-    $('#preview-response').text(currentName);
-  }
-  
-  function previewLoading() {
+var Preview = {
+  clear: function () {
+    $('#preview-response').text(Preview.Job.current.name);
+  },
+  displayLoading: function () {
+    $('#pet-preview').addClass('loading');
     $('#preview-response').text('Loading...');
-    $('#pet-preview').addClass('loading').data('loadId', ++previewLoadCount);
-  }
-  
-  function previewNotFound(str) {
+  },
+  notFound: function (str) {
+    $('#pet-preview').addClass('hidden');
     $('#preview-response').text(str);
-  }
-  
-  function updatePreviewWithName() {
-    var name = $('#name').val();
+  },
+  updateWithName: function () {
+    var name = $('#name').val(), job;
     if(name) {
       currentName = name;
-      if(name != previousName) {
-        previewLoading();
-        progress = 0;
-        updatePreview('cpn/' + name);
+      if(name != Preview.Job.current.name) {
+        job = new Preview.Job.Name(name);
+        job.setAsCurrent();
+        Preview.displayLoading();
       }
     } else {
-      clearPreview();
+      Preview.clear();
     }
-    previousName = name;
+  }
+}
+
+Preview.Job = function (key, base) {
+  var job = this,
+    quality = 2;
+  job.loading = false;
+  
+  function getImageSrc() {
+    return 'http://pets.neopets.com/' + base + '/' + key + '/1/' +
+      quality + '.png'
+  }
+  
+  function load() {
+    job.loading = true;
+    $('#pet-preview').attr('src', getImageSrc());
+  }
+  
+  this.increaseQualityIfPossible = function () {
+    if(quality == 2) {
+      quality = 4;
+      load();
+    }
+  }
+  
+  this.setAsCurrent = function () {
+    Preview.Job.current = job;
+    load();
+  }
+}
+
+Preview.Job.Name = function (name) {
+  this.name = name;
+  Preview.Job.apply(this, [name, 'cpn']);
+}
+
+Preview.Job.Hash = function (hash) {-
+  Preview.Job.apply(this, [hash, 'cp']);
+}
+
+
+$(function () {
+  var previewWithNameTimeout;
+  
+  Preview.Job.current = { // placeholder
+    name: $('#preview-response').text()
   }
   
   var name = document.location.search.match(/[\?&]name=([^&]+)/);
@@ -41,39 +75,40 @@ $(function () {
     name = name[1];
     $('#name').val(name);
   }
-  updatePreviewWithName();
+  Preview.updateWithName();
   
   $('#name').keyup(function () {
     if(previewWithNameTimeout) {
       clearTimeout(previewWithNameTimeout);
-      awaitingLoad = false;
+      Preview.Job.current.loading = false;
     }
-    previewWithNameTimeout = setTimeout(updatePreviewWithName, 250);
+    previewWithNameTimeout = setTimeout(Preview.updateWithName, 250);
   });
   
   $('#pet-preview').load(function () {
-    if(awaitingLoad && $(this).data('loadId') == previewLoadCount) {
-      $(this).removeClass('loading');
-      progress += 2;
-      if(progress == 2) {
-        updatePreview('cpn/' + currentName);
-      }
-      $('#preview-response').text(currentName);
+    if(Preview.Job.current.loading) {
+      Preview.Job.loading = false;
+      Preview.Job.current.increaseQualityIfPossible();
+      $(this).removeClass('loading').removeClass('hidden');
+      $('#preview-response').text(Preview.Job.current.name);
     }
   }).error(function () {
-    if(awaitingLoad && $(this).data('loadId') == previewLoadCount) {
-      previewNotFound('Pet not found.');
+    if(Preview.Job.current.loading) {
+      Preview.Job.loading = false;
+      Preview.notFound('Pet not found.');
     }
   });
   
   var selectFields = $('#species, #color');
   selectFields.change(function () {
-    var type = {};
+    var type = {}, name = [];
     selectFields.each(function () {
-      var el = $(this);
-      type[el.attr('id')] = el.children(':selected').val();
+      var el = $(this), selectedEl = el.children(':selected');
+      type[el.attr('id')] = selectedEl.val();
+      name.push(selectedEl.text());
     });
-    previewLoading();
+    name = name.join(' ');
+    Preview.displayLoading();
     $.ajax({
       url: '/pet_types.json',
       data: {
@@ -83,15 +118,17 @@ $(function () {
       },
       dataType: 'json',
       success: function (data) {
+        var job;
         if(data) {
-          updatePreview('cp/' + data.image_hash);
+          job = new Preview.Job.Hash(data.image_hash);
+          job.name = name;
+          job.setAsCurrent();
         } else {
-          previewNotFound("We don't have data on that yet. If you own or know"
-            + " of a pet of that type, please type its name in above!");
+          Preview.notFound("We haven't seen a " + name + ". Have you?");
         }
       },
       error: function () {
-        previewNotFound("Error fetching preview. Try again?");
+        Preview.notFound("Error fetching preview. Try again?");
       }
     });
   });

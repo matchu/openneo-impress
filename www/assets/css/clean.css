@@ -146,6 +146,8 @@ input[type=submit], button[type=submit] {
       -webkit-opacity: 0.5;
       -o-opacity: 0.5;
       -khtml-opacity: 0.5; }
+    #outfit-forms img.hidden {
+      visibility: hidden; }
   #outfit-forms fieldset {
     position: relative;
     left: 1em; }
