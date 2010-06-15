@@ -1,0 +1,133 @@
+body.index {
+  #outfit-forms {
+    @include clearfix;
+    @include header-text;
+    @include module;
+    
+    margin-bottom: 3em;
+    position: relative;
+    
+    h1 {
+      margin-bottom: 0;
+    }
+    
+    h2 {
+      font: {
+        size: 150%;
+        style: italic;
+      }
+      text-indent: 1em;
+    }
+    
+    img {
+      float: left;
+      height: 300px;
+      margin-right: 2em;
+      width: 300px;
+      
+      &.loading {
+        @include opacity(.5);
+      }
+      
+      &.hidden {
+        visibility: hidden;
+      }
+    }
+    
+    fieldset {
+      position: relative;
+      left: 1em;
+      legend {
+        margin-left: -1em;
+      }
+    }
+  }
+
+  #preview-response {
+    background: rgb(128, 128, 128);
+    background: rgba(0, 0, 0, .5);
+    bottom: 1em;
+    color: #fff;
+    margin-right: -1em;
+    padding: .25em .5em;
+    position: absolute;
+    right: $container_width - 300px;
+    
+    &:empty {
+      display: none;
+    }
+  }
+
+  #form-1 {
+    font-size: 175%;
+    margin: {
+      bottom: 1em;
+      top: 2em;
+    }
+    
+    input {
+      font-size: 67%;
+      padding: .5em;
+      width: 10em;
+    }
+    
+    button {
+      @include loud-awesome-button;
+      font-size: 67%;
+    }
+  }
+
+  #form-2 {
+    @include opacity(.75);
+  }
+
+  #description, #top-contributors {
+    float: left;
+  }
+
+  #description {
+    margin-right: 2%;
+    width: 64%;
+  }
+
+  #top-contributors {
+    border: 1px solid $input-border-color;
+    margin-top: 1em;
+    padding: 1%;
+    width: 30%;
+    
+    ol {
+      margin-left: 2em;
+      padding-left: 1em;
+    }
+    
+    > a {
+      font-size: 80%;
+      display: block;
+      text-align: right;
+    }
+  }
+
+  #how-can-i-help, #i-found-something {
+    @include module;
+    float: left;
+    padding: 1%;
+    width: 46%;
+    
+    h2 {
+      font-style: italic;
+    }
+    
+    input, button {
+      font-size: 125%;
+    }
+  }
+
+  #how-can-i-help {
+    margin-right: 1%;
+  }
+
+  #i-found-something {
+    margin-left: 1%;
+  }
+}

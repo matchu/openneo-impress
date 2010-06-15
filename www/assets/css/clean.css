@@ -123,115 +123,6 @@ input[type=submit], button[type=submit] {
   border: 1px solid #fbc2c4;
   color: #8a1f11; }
 
-/* Index */
-#outfit-forms {
-  overflow: hidden;
-  display: inline-block;
-  font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
-  background: #eeffee;
-  border: 1px solid #006600;
-  padding: 1em;
-  margin-bottom: 3em;
-  position: relative; }
-  #outfit-forms {
-    display: block; }
-  #outfit-forms h1 {
-    margin-bottom: 0; }
-  #outfit-forms h2 {
-    font-size: 150%;
-    font-style: italic;
-    text-indent: 1em; }
-  #outfit-forms img {
-    float: left;
-    height: 300px;
-    margin-right: 2em;
-    width: 300px; }
-    #outfit-forms img.loading {
-      -moz-opacity: 0.5;
-      -webkit-opacity: 0.5;
-      -o-opacity: 0.5;
-      -khtml-opacity: 0.5; }
-    #outfit-forms img.hidden {
-      visibility: hidden; }
-  #outfit-forms fieldset {
-    position: relative;
-    left: 1em; }
-    #outfit-forms fieldset legend {
-      margin-left: -1em; }
-
-#preview-response {
-  background: gray;
-  background: rgba(0, 0, 0, 0.5);
-  bottom: 1em;
-  color: #fff;
-  margin-right: -1em;
-  padding: .25em .5em;
-  position: absolute;
-  right: 500px; }
-  #preview-response:empty {
-    display: none; }
-
-#form-1 {
-  font-size: 175%;
-  margin-bottom: 1em;
-  margin-top: 2em; }
-  #form-1 input {
-    font-size: 67%;
-    padding: .5em;
-    width: 10em; }
-  #form-1 button {
-    font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
-    background: #ff5c00 url(/assets/images/alert-overlay.png) repeat-x;
-    font-size: 14px;
-    padding: 8px 14px 9px;
-    font-size: 67%; }
-    #form-1 button:hover {
-      background-color: #ee4b00; }
-
-#form-2 {
-  -moz-opacity: 0.75;
-  -webkit-opacity: 0.75;
-  -o-opacity: 0.75;
-  -khtml-opacity: 0.75; }
-
-#description, #top-contributors {
-  float: left; }
-
-#description {
-  margin-right: 2%;
-  width: 64%; }
-
-#top-contributors {
-  border: 1px solid #cceecc;
-  margin-top: 1em;
-  padding: 1%;
-  width: 30%; }
-  #top-contributors ol {
-    margin-left: 2em;
-    padding-left: 1em; }
-  #top-contributors > a {
-    font-size: 80%;
-    display: block;
-    text-align: right; }
-
-#how-can-i-help, #i-found-something {
-  background: #eeffee;
-  border: 1px solid #006600;
-  padding: 1em;
-  float: left;
-  padding: 1%;
-  width: 46%; }
-  #how-can-i-help h2, #i-found-something h2 {
-    font-style: italic; }
-  #how-can-i-help input, #how-can-i-help button, #i-found-something input, #i-found-something button {
-    font-size: 125%; }
-
-#how-can-i-help {
-  margin-right: 1%; }
-
-#i-found-something {
-  margin-left: 1%; }
-
 #userbar {
   font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
   position: absolute;
@@ -251,6 +142,106 @@ input[type=submit], button[type=submit] {
   display: none; }
 #userbar-auth-servers a {
   text-decoration: none; }
+
+/* Specific pages */
+body.index #outfit-forms {
+  overflow: hidden;
+  display: inline-block;
+  font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
+  background: #eeffee;
+  border: 1px solid #006600;
+  padding: 1em;
+  margin-bottom: 3em;
+  position: relative; }
+  body.index #outfit-forms {
+    display: block; }
+  body.index #outfit-forms h1 {
+    margin-bottom: 0; }
+  body.index #outfit-forms h2 {
+    font-size: 150%;
+    font-style: italic;
+    text-indent: 1em; }
+  body.index #outfit-forms img {
+    float: left;
+    height: 300px;
+    margin-right: 2em;
+    width: 300px; }
+    body.index #outfit-forms img.loading {
+      -moz-opacity: 0.5;
+      -webkit-opacity: 0.5;
+      -o-opacity: 0.5;
+      -khtml-opacity: 0.5; }
+    body.index #outfit-forms img.hidden {
+      visibility: hidden; }
+  body.index #outfit-forms fieldset {
+    position: relative;
+    left: 1em; }
+    body.index #outfit-forms fieldset legend {
+      margin-left: -1em; }
+body.index #preview-response {
+  background: gray;
+  background: rgba(0, 0, 0, 0.5);
+  bottom: 1em;
+  color: #fff;
+  margin-right: -1em;
+  padding: .25em .5em;
+  position: absolute;
+  right: 500px; }
+  body.index #preview-response:empty {
+    display: none; }
+body.index #form-1 {
+  font-size: 175%;
+  margin-bottom: 1em;
+  margin-top: 2em; }
+  body.index #form-1 input {
+    font-size: 67%;
+    padding: .5em;
+    width: 10em; }
+  body.index #form-1 button {
+    font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
+    background: #ff5c00 url(/assets/images/alert-overlay.png) repeat-x;
+    font-size: 14px;
+    padding: 8px 14px 9px;
+    font-size: 67%; }
+    body.index #form-1 button:hover {
+      background-color: #ee4b00; }
+body.index #form-2 {
+  -moz-opacity: 0.75;
+  -webkit-opacity: 0.75;
+  -o-opacity: 0.75;
+  -khtml-opacity: 0.75; }
+body.index #description, body.index #top-contributors {
+  float: left; }
+body.index #description {
+  margin-right: 2%;
+  width: 64%; }
+body.index #top-contributors {
+  border: 1px solid #cceecc;
+  margin-top: 1em;
+  padding: 1%;
+  width: 30%; }
+  body.index #top-contributors ol {
+    margin-left: 2em;
+    padding-left: 1em; }
+  body.index #top-contributors > a {
+    font-size: 80%;
+    display: block;
+    text-align: right; }
+body.index #how-can-i-help, body.index #i-found-something {
+  background: #eeffee;
+  border: 1px solid #006600;
+  padding: 1em;
+  float: left;
+  padding: 1%;
+  width: 46%; }
+  body.index #how-can-i-help h2, body.index #i-found-something h2 {
+    font-style: italic; }
+  body.index #how-can-i-help input, body.index #how-can-i-help button, body.index #i-found-something input, body.index #i-found-something button {
+    font-size: 125%; }
+body.index #how-can-i-help {
+  margin-right: 1%; }
+body.index #i-found-something {
+  margin-left: 1%; }
 
 /* Fonts */
 /* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */
