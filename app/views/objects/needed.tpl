@@ -22,12 +22,12 @@
   </li>
   <li>
     <a class="button" href="http://www.neopets.com/closet.phtml" target="_blank">
-      What do I own? &raquo;
+      What do I own?
     </a>
   </li>
   <li>
     <a class="button" href="{path to=needed_objects}">
-      Try another pet &raquo;
+      Try another pet
     </a>
   </li>
 </ul>

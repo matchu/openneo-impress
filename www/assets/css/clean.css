@@ -98,13 +98,21 @@ a.button, input[type=submit], button[type=submit] {
     top: 1px; }
   a.button:after, input[type=submit]:after, button[type=submit]:after {
     content: " >>"; }
+  a.button.loud, input[type=submit].loud, button[type=submit].loud {
+    font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
+    background: #ff5c00 url(/assets/images/alert-overlay.png) repeat-x;
+    font-size: 125%;
+    padding: 8px 14px 9px; }
+    a.button.loud:hover, input[type=submit].loud:hover, button[type=submit].loud:hover {
+      background-color: #ee4b00; }
 
 ul.buttons {
   margin-bottom: 1em; }
   ul.buttons li {
-    display: inline;
     list-style: none;
     margin: 0 .5em; }
+    ul.buttons li, ul.buttons li form {
+      display: inline; }
 
 #footer {
   clear: both;
@@ -207,7 +215,7 @@ body.index #form-1 {
   body.index #form-1 button {
     font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
     background: #ff5c00 url(/assets/images/alert-overlay.png) repeat-x;
-    font-size: 14px;
+    font-size: 125%;
     padding: 8px 14px 9px;
     font-size: 67%; }
     body.index #form-1 button:hover {

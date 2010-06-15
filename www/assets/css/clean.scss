@@ -96,7 +96,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
 
 @mixin loud-awesome-button {
   @include awesome-button-color(#ff5c00);
-  font-size: 14px;
+  font-size: 125%;
   padding: 8px 14px 9px;
 }
 
@@ -189,15 +189,21 @@ input[type=text], input[type=password], select {
   
 a.button, input[type=submit], button[type=submit] {
   @include awesome-button;
+  &.loud {
+    @include loud-awesome-button;
+  }
 }
 
 ul.buttons {
   margin-bottom:1em;
   
   li {
-    display: inline;
     list-style: none;
     margin: 0 .5em;
+    
+    &, form {
+      display: inline;
+    }
   }
 }
 
