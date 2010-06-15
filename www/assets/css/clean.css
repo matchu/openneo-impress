@@ -72,7 +72,7 @@ input[type=text], input[type=password], select {
   input[type=text]:focus, input[type=text]:active, input[type=password]:focus, input[type=password]:active, select:focus, select:active {
     color: inherit; }
 
-input[type=submit], button[type=submit] {
+a.button, input[type=submit], button[type=submit] {
   /* http://www.zurb.com/blog_uploads/0000/0617/buttons-03.html */
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -90,14 +90,21 @@ input[type=submit], button[type=submit] {
   position: relative;
   font-weight: bold;
   line-height: 1; }
-  input[type=submit]:hover, button[type=submit]:hover {
+  a.button:hover, input[type=submit]:hover, button[type=submit]:hover {
     background-color: #005300; }
-  input[type=submit]:hover, button[type=submit]:hover {
+  a.button:hover, input[type=submit]:hover, button[type=submit]:hover {
     color: #fff; }
-  input[type=submit]:active, button[type=submit]:active {
+  a.button:active, input[type=submit]:active, button[type=submit]:active {
     top: 1px; }
-  input[type=submit]:after, button[type=submit]:after {
+  a.button:after, input[type=submit]:after, button[type=submit]:after {
     content: " >>"; }
+
+ul.buttons {
+  margin-bottom: 1em; }
+  ul.buttons li {
+    display: inline;
+    list-style: none;
+    margin: 0 .5em; }
 
 #footer {
   clear: both;
@@ -143,7 +150,7 @@ input[type=submit], button[type=submit] {
 #userbar-auth-servers a {
   text-decoration: none; }
 
-/* Specific pages */
+/* Layouts */
 body.index #outfit-forms {
   overflow: hidden;
   display: inline-block;
@@ -242,6 +249,23 @@ body.index #how-can-i-help {
   margin-right: 1%; }
 body.index #i-found-something {
   margin-left: 1%; }
+
+body.standard #container {
+  text-align: center; }
+body.standard #home-link {
+  font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
+  font-size: 175%;
+  font-weight: bold;
+  left: 0;
+  line-height: 1;
+  padding: .25em;
+  position: absolute;
+  top: 0; }
+  body.standard #home-link:hover {
+    background: #eeffee;
+    text-decoration: none; }
+  body.standard #home-link span:before {
+    content: "<< "; }
 
 /* Fonts */
 /* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */

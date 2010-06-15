@@ -1,0 +1,27 @@
+body.standard {
+  #container {
+    text-align: center;
+  }
+  
+  #home-link {
+    @include header-text;
+    font: {
+      size: 175%;
+      weight: bold;
+    }
+    left: 0;
+    line-height: 1;
+    padding: .25em;
+    position: absolute;
+    top: 0;
+    
+    &:hover {
+      background: $module-bg-color;
+      text-decoration: none;
+    }
+    
+    span:before {
+      content: "<< ";
+    }
+  }
+}

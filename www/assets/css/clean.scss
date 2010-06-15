@@ -187,8 +187,18 @@ input[type=text], input[type=password], select {
   }
 }
   
-input[type=submit], button[type=submit] {
+a.button, input[type=submit], button[type=submit] {
   @include awesome-button;
+}
+
+ul.buttons {
+  margin-bottom:1em;
+  
+  li {
+    display: inline;
+    list-style: none;
+    margin: 0 .5em;
+  }
 }
 
 #footer {
@@ -253,9 +263,10 @@ input[type=submit], button[type=submit] {
   }
 }
 
-/* Specific pages */
+/* Layouts */
 
-@import "clean/outfits/start";
+@import "clean/index";
+@import "clean/standard";
 
 /* Fonts */
 
