@@ -158,6 +158,27 @@ ul.buttons {
 #userbar-auth-servers a {
   text-decoration: none; }
 
+.object {
+  display: -moz-inline-stack;
+  display: inline-block;
+  padding: .5em;
+  position: relative;
+  text-align: center;
+  vertical-align: top;
+  width: 100px; }
+  .object a {
+    text-decoration: none; }
+    .object a img {
+      -moz-opacity: 0.75;
+      -webkit-opacity: 0.75;
+      -o-opacity: 0.75;
+      -khtml-opacity: 0.75; }
+    .object a:hover img {
+      -moz-opacity: 1;
+      -webkit-opacity: 1;
+      -o-opacity: 1;
+      -khtml-opacity: 1; }
+
 /* Layouts */
 body.index #outfit-forms {
   overflow: hidden;

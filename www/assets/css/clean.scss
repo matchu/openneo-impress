@@ -269,6 +269,28 @@ ul.buttons {
   }
 }
 
+.object {
+  display: -moz-inline-stack;
+  display: inline-block;
+  padding: .5em;
+  position: relative;
+  text-align: center;
+  vertical-align: top;
+  width: 100px;
+  
+  a {
+    text-decoration: none;
+    
+    img {
+      @include opacity(.75);
+    }
+    
+    &:hover img {
+      @include opacity(1);
+    }
+  }
+}
+
 /* Layouts */
 
 @import "clean/index";
