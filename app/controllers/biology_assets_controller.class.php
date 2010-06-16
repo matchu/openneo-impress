@@ -22,6 +22,12 @@ class Pwnage_BiologyAssetsController extends Pwnage_ApplicationController {
         )
       );
       Pwnage_BiologyAsset::setLocalPathForCollection($assets);
+      $integer_keys = array('id', 'zone_id', 'depth', 'parent_id');
+      foreach($assets as &$asset) {
+        foreach($integer_keys as $integer_key) {
+          $asset->$integer_key = (int) $asset->$integer_key;
+        }
+      }
       $this->respondWithAndCache($assets, $assets_select);
     }
   }

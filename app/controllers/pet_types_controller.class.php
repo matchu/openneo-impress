@@ -30,6 +30,8 @@ class Pwnage_PetTypesController extends Pwnage_ApplicationController {
           $pet_type->pet_state_ids[] = intval($pet_state->id);
         }
       }
+      $pet_type->id = (int) $pet_type->id;
+      $pet_type->body_id = (int) $pet_type->body_id;
       $this->respondWith($pet_type, $attributes);
     } else {
       $this->respondWith(null);
