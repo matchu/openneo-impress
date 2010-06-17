@@ -1,5 +1,7 @@
 var View = {}, main_wardrobe;
 
+window.log = $.noop;
+
 function DeepObject() {}
 
 DeepObject.prototype.deepGet = function () {
@@ -276,21 +278,24 @@ function Wardrobe() {
   }
 }
 
-View.Console = function (wardrobe) {
-  window.log = (typeof console == 'undefined' || typeof console.log != 'function') ?
-    $.noop : $.proxy(console, 'log');
-  
-  wardrobe.bind('initialize', function () {
-    log('Welcome to the Wardrobe!');
-  });
-  
-  $.each(['updateItems', 'updateItemAssets', 'updatePetType', 'updatePetState'], function () {
-    wardrobe.bind(this, log);
-  });
-  
-  wardrobe.bind('petTypeNotFound', function (pet_type) {
-    log(pet_type.toString() + ' not found');
-  });
+if(document.location.search.substr(0, 6) == '?debug') {
+  View.Console = function (wardrobe) {
+    if(typeof console != 'undefined' && typeof console.log == 'function') {
+      window.log = $.proxy(console, 'log');
+    }
+    
+    wardrobe.bind('initialize', function () {
+      log('Welcome to the Wardrobe!');
+    });
+    
+    $.each(['updateItems', 'updateItemAssets', 'updatePetType', 'updatePetState'], function () {
+      wardrobe.bind(this, log);
+    });
+    
+    wardrobe.bind('petTypeNotFound', function (pet_type) {
+      log(pet_type.toString() + ' not found');
+    });
+  }
 }
 
 View.Hash = function (wardrobe) {
