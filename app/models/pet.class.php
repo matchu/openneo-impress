@@ -52,7 +52,7 @@ class Pwnage_Pet extends Pwnage_Outfit {
     return $viewer_data->custom_pet->getAMFData();
   }
   
-  protected function getPetState() {
+  public function getPetState() {
     if(!isset($this->pet_state)) {
       $this->pet_state = new Pwnage_PetState();
       $this->pet_state->setOriginPet($this);

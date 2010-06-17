@@ -51,6 +51,7 @@ class Pwnage_PetsController extends Pwnage_ApplicationController {
         }
         $query['color'] = $pet->getColor()->getId();
         $query['species'] = $pet->getSpecies()->getId();
+        $query['state'] = $pet->getPetState()->getId();
         $query['objects'] = $object_ids;
         $query['name'] = $pet_name;
         if($warning) {
