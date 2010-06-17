@@ -8,7 +8,7 @@
     {include file='shared/analytics.tpl'}
     <div id="container">
       <a id="home-link" href="/"><span>Dress to Impress</span></a>
-      <h1>{$_title}</h1>
+      <h1 id="title">{$_title}</h1>
       {insert name='flashes'}
 {$_content_for_layout|indent:4}
       {insert name='userbar'}

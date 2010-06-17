@@ -281,6 +281,15 @@ function Wardrobe() {
     }
   }
   
+  this.base_pet = new function BasePet() {
+    var base_pet = this;
+    
+    this.setName = function (name) {
+      base_pet.name = name;
+      wardrobe.events.trigger('updateBasePetName', name);
+    }
+  }
+  
   this.bind = function (event, callback) {
     if(typeof this.events[event] == 'undefined') {
       this.events[event] = [];
@@ -309,7 +318,7 @@ if(document.location.search.substr(0, 6) == '?debug') {
       log('Welcome to the Wardrobe!');
     });
     
-    $.each(['updateItems', 'updateItemAssets', 'updatePetType', 'updatePetState'], function () {
+    $.each(['updateBasePetName', 'updateItems', 'updateItemAssets', 'updatePetType', 'updatePetState'], function () {
       var event = this;
       wardrobe.bind(event, function (obj) {
         log(event, obj);
@@ -325,11 +334,13 @@ if(document.location.search.substr(0, 6) == '?debug') {
 View.Hash = function (wardrobe) {
   var data = {}, previous_query, TYPES = {
     INTEGER: 1,
-    ARRAY: 2
+    STRING: 2,
+    ARRAY: 3
   }, KEYS = {
     color: TYPES.INTEGER,
-    species: TYPES.INTEGER,
-    objects: TYPES.INTEGER_ARRAY
+    name: TYPES.STRING,
+    objects: TYPES.INTEGER_ARRAY,
+    species: TYPES.INTEGER
   };
   
   function checkQuery() {
@@ -349,6 +360,8 @@ View.Hash = function (wardrobe) {
       if(value) {
         if(KEYS[key] == TYPES.INTEGER) {
           new_data[key] = +value;
+        } else if(KEYS[key] == TYPES.STRING) {
+          new_data[key] = value;
         } else if(key.substr(key.length-2) == '[]') {
           key = key.substr(0, key.length-2);
           if(KEYS[key] == TYPES.INTEGER_ARRAY) {
@@ -364,6 +377,9 @@ View.Hash = function (wardrobe) {
     }
     if(new_data.objects !== data.objects) {
       wardrobe.outfit.setItemsByIds(new_data.objects);
+    }
+    if(new_data.name != data.name) {
+      wardrobe.base_pet.setName(new_data.name);
     }
     data = new_data;
   }
@@ -433,6 +449,12 @@ View.Preview = function (wardrobe) {
   wardrobe.bind('updateItems', updateAssets);
   wardrobe.bind('updateItemAssets', updateAssets);
   wardrobe.bind('updatePetState', updateAssets);
+}
+
+View.Title = function (wardrobe) {
+  wardrobe.bind('updateBasePetName', function (name) {
+    $('#title').text("Planning " + name + "'s outfit");
+  });
 }
 
 main_wardrobe = new Wardrobe();

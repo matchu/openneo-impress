@@ -1,3 +1,4 @@
+{title is="Planning an outfit"}
 <div id="preview">
   <span id="preview-swf">
     Javascript and Flash are required to preview outfits. Sorry!
