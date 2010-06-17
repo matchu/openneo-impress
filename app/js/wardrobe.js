@@ -40,21 +40,26 @@ function Wardrobe() {
     }
   }
   
+  function determineRestrictedZones() {
+    var i, zone;
+    this.restricted_zones = [];
+    while((zone = this.zones_restrict.indexOf(1, zone) + 1) != 0) {
+      this.restricted_zones.push(zone);
+    }
+  }
+  
   function Asset(data) {
     var asset = this;
-    $.each(data, function (key) {
-      asset[key] = this;
-    });
-
-    this.data_for_swf = {
-      id: +this.id,
-      depth: +this.depth,
-      local_path: ""+this.local_path
+    for(var key in data) {
+      if(data.hasOwnProperty(key)) {
+        asset[key] = data[key];
+      }
     }
   }
   
   function BiologyAsset(data) {
     Asset.apply(this, [data]);
+    determineRestrictedZones.apply(this);
   }
   
   function ItemAsset(data) {
@@ -71,6 +76,7 @@ function Wardrobe() {
       $.each(data, function (key, value) {
         item[key] = value;
       });
+      determineRestrictedZones.apply(this);
       this.loaded = true;
     }
     
@@ -202,6 +208,17 @@ function Wardrobe() {
     
     this.items = [];
     
+    function getRestrictedZones() {
+      // note: may contain duplicates - loop through assets, not these, for
+      // best performance
+      var restricted_zones = [],
+        restrictors = outfit.items.concat(outfit.pet_state.assets);
+      $.each(restrictors, function () {
+        restricted_zones = restricted_zones.concat(this.restricted_zones);
+      });
+      return restricted_zones;
+    }
+    
     function itemAssetsOnLoad(item_assets) {
       wardrobe.events.trigger('updateItemAssets', item_assets);
     }
@@ -237,11 +254,15 @@ function Wardrobe() {
       }
     }
     
-    this.visibleAssets = function () {
-      // TODO: zones_restrict
-      var assets = outfit.pet_state.assets;
-      $.each(this.items, function () {
-        assets = assets.concat(this.assets);
+    this.getVisibleAssets = function () {
+      var assets = [], restricted_zones = getRestrictedZones(),
+        asset_parents = outfit.items.concat([outfit.pet_state]);
+      $.each(asset_parents, function () {
+        $.each(this.assets, function () {
+          if($.inArray(this.zone_id, restricted_zones) == -1) {
+            assets.push(this);
+          }
+        });
       });
       return assets;
     }
@@ -289,7 +310,10 @@ if(document.location.search.substr(0, 6) == '?debug') {
     });
     
     $.each(['updateItems', 'updateItemAssets', 'updatePetType', 'updatePetState'], function () {
-      wardrobe.bind(this, log);
+      var event = this;
+      wardrobe.bind(event, function (obj) {
+        log(event, obj);
+      });
     });
     
     wardrobe.bind('petTypeNotFound', function (pet_type) {
@@ -371,7 +395,7 @@ View.Preview = function (wardrobe) {
     update_pending_flash = false;
   
   swfobject.embedSWF(
-    '/assets/swf/preview.swf?v=3',
+    '/assets/swf/preview.swf?v=0.10',
     'preview-swf',
     '100%',
     '100%',
@@ -385,6 +409,7 @@ View.Preview = function (wardrobe) {
     log('Preview SWF is ready');
     preview_swf = document.getElementById(preview_swf_id);
     if(update_pending_flash) {
+      log('About to set assets');
       update_pending_flash = false;
       updateAssets();
     }
@@ -394,19 +419,18 @@ View.Preview = function (wardrobe) {
     var assets, assets_for_swf;
     if(update_pending_flash) return false;
     if(preview_swf && preview_swf.setAssets) {
-      assets = wardrobe.outfit.visibleAssets();
-      log('Setting assets now');
-      assets_for_swf = $.map(assets, function (asset) {
-        return asset.data_for_swf;
-      });
-      log(assets_for_swf);
-      preview_swf.setAssets(assets_for_swf);
+      log('Getting assets');
+      assets = wardrobe.outfit.getVisibleAssets();
+      log('Setting assets');
+      log(assets);
+      preview_swf.setAssets(assets);
     } else {
       log('Will set assets once SWF is ready');
       update_pending_flash = true;
     }
   }
   
+  wardrobe.bind('updateItems', updateAssets);
   wardrobe.bind('updateItemAssets', updateAssets);
   wardrobe.bind('updatePetState', updateAssets);
 }
