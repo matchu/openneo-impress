@@ -30,6 +30,12 @@ DeepObject.prototype.deepSet = function () {
 function Wardrobe() {
   var wardrobe = this, BiologyAsset, ItemAsset;
   
+  /*
+  *
+  * Models
+  *
+  */
+  
   function determineRestrictedZones() {
     var i, zone;
     this.restricted_zones = [];
@@ -193,6 +199,12 @@ function Wardrobe() {
   
   function SwfAsset() {}
   
+  /*
+  *
+  * Controllers
+  *
+  */
+  
   function Controller() {
     var controller = this;
     this.events = {};
@@ -334,6 +346,12 @@ function Wardrobe() {
     });
   }
 }
+
+/*
+*
+* Views
+*
+*/
 
 if(document.location.search.substr(0, 6) == '?debug') {
   View.Console = function (wardrobe) {
