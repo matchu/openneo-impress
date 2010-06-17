@@ -17,6 +17,13 @@ class Pwnage_ObjectAssetsController extends PwnageCore_Controller {
       )
     );
     Pwnage_ObjectAsset::setLocalPathForCollection(&$assets);
+    $integer_keys = array('id', 'zone_id', 'depth', 'parent_id');
+    foreach($assets as &$asset) {
+      foreach($integer_keys as $integer_key) {
+        $asset->$integer_key = (int) $asset->$integer_key;
+      }
+      $asset->is_body_specific = (bool) $asset->is_body_specific;
+    }
     $this->respondWith($assets, $attributes);
   }
 }

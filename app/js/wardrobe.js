@@ -1,7 +1,32 @@
 var View = {}, main_wardrobe;
 
+function DeepObject() {}
+
+DeepObject.prototype.deepGet = function () {
+  var scope = this, i;
+  $.each(arguments, function () {
+    scope = scope[this];
+    if(typeof scope == 'undefined') return false;
+  });
+  return scope;
+}
+
+DeepObject.prototype.deepSet = function () {
+  var pop = $.proxy(Array.prototype.pop, 'apply'),
+    value = pop(arguments),
+    final_key = pop(arguments),
+    scope = this;
+  $.each(arguments, function () {
+    if(typeof scope[this] == 'undefined') {
+      scope[this] = {};
+    }
+    scope = scope[this];
+  });
+  scope[final_key] = value;
+}
+
 function Wardrobe() {
-  var wardrobe = this;
+  var wardrobe = this, BiologyAsset, ItemAsset;
   this.events = {};
   this.events.trigger = function (event) {
     var subarguments;
@@ -13,29 +38,90 @@ function Wardrobe() {
     }
   }
   
-  function Cache() {}
-
-  Cache.prototype.deepGet = function () {
-    var scope = this, i;
-    $.each(arguments, function () {
-      scope = scope[this];
-      if(typeof scope == 'undefined') return false;
+  function Asset(data) {
+    var asset = this;
+    $.each(data, function (key) {
+      asset[key] = this;
     });
-    return scope;
+
+    this.data_for_swf = {
+      id: +this.id,
+      depth: +this.depth,
+      local_path: ""+this.local_path
+    }
   }
-
-  Cache.prototype.deepSet = function () {
-    var pop = $.proxy(Array.prototype.pop, 'apply'),
-      value = pop(arguments),
-      final_key = pop(arguments),
-      scope = this;
-    $.each(arguments, function () {
-      if(typeof scope[this] == 'undefined') {
-        scope[this] = {};
-      }
-      scope = scope[this];
+  
+  function BiologyAsset(data) {
+    Asset.apply(this, [data]);
+  }
+  
+  function ItemAsset(data) {
+    Asset.apply(this, [data]);
+  }
+  
+  function Item(id) {
+    var item = this;
+    this.id = id;
+    this.assets = [];
+    this.loaded = false;
+    
+    this.update = function (data) {
+      $.each(data, function (key, value) {
+        item[key] = value;
+      });
+      this.loaded = true;
+    }
+    
+    Item.cache[id] = this;
+  }
+  
+  Item.find = function (id) {
+    var item = Item.cache[id];
+    if(!item) {
+      item = new Item(id);
+    }
+    return item;
+  }
+  
+  Item.loadByIds = function (ids, success) {
+    var ids_to_load = [], items = $.map(ids, function (id) {
+      var item = Item.find(id);
+      if(!item.loaded) ids_to_load.push(id);
+      return item;
     });
-    scope[final_key] = value;
+    if(ids_to_load.length) {
+      $.getJSON('/objects.json', {ids: ids_to_load}, function (data) {
+        $.each(data, function () {
+          Item.find(this.id).update(this);
+        });
+        success(items);
+      });
+    } else {
+      success(items);
+    }
+    return items;
+  }
+  
+  Item.cache = {};
+  
+  function PetState(id) {
+    var pet_state = this, loaded = false;
+    
+    this.id = id;
+    this.assets = [];
+    
+    this.assets.load = function (success) {
+      var params;
+      if(loaded) {
+        success(pet_state);
+      } else {
+        $.getJSON('/biology_assets.json?parent_id=' + pet_state.id, // FIXME: params object didn't work here...
+        function (data) {
+          pet_state.assets = $.map(data, function (obj) { return new BiologyAsset(obj) });
+          success(pet_state);
+        });
+      }
+    }
   }
   
   function PetType() {
@@ -73,13 +159,29 @@ function Wardrobe() {
       }
     }
     
+    this.loadItemAssets = function (item_ids, success) {
+      // TODO cache
+      $.getJSON('/object_assets.json?body_id=' + pet_type.body_id, { // FIXME: params object didn't work here...
+        parent_ids: item_ids
+      }, function (data) {
+        var item_assets = [];
+        $.each(data, function () {
+          var item = Item.find(this.parent_id),
+            asset = new ItemAsset(this);
+          item.assets.push(asset);
+          item_assets.push(asset);
+        });
+        success(item_assets);
+      });
+    }
+    
     this.toString = function () {
       return 'PetType{color_id: ' + this.color_id + ', species_id: ' +
         this.species_id + '}';
     }
   }
   
-  PetType.cache_by_color_and_species = new Cache();
+  PetType.cache_by_color_and_species = new DeepObject();
   
   PetType.findOrCreateByColorAndSpecies = function (color_id, species_id) {
     var pet_type = PetType.cache_by_color_and_species.deepGet(color_id, species_id);
@@ -91,38 +193,32 @@ function Wardrobe() {
     return pet_type;
   }
   
-  function PetState(id) {
-    var pet_state = this, loaded = false;
-    
-    this.id = id;
-    this.assets = [];
-    
-    this.assets.load = function (success) {
-      var params;
-      if(loaded) {
-        success(pet_state);
-      } else {
-        $.getJSON('/biology_assets.json?parent_id=' + pet_state.id, // FIXME: params object didn't work here...
-        function (data) {
-          pet_state.assets = data;
-          success(pet_state);
-        });
-      }
-    }
-  }
+  function SwfAsset() {}
   
   this.outfit = new function Outfit() {
-    var outfit = this, loading_pet_type;
+    var outfit = this, loading_pet_type, item_ids = [];
+    
+    this.items = [];
+    
+    function itemAssetsOnLoad(item_assets) {
+      wardrobe.events.trigger('updateItemAssets', item_assets);
+    }
+    
+    function itemsOnLoad(items) {
+      wardrobe.events.trigger('updateItems', items);
+    }
     
     function petStateOnLoad(pet_state) {
+      outfit.pet_state = pet_state;
       wardrobe.events.trigger('updatePetState', pet_state);
     }
     
     function petTypeOnLoad(pet_type) {
       if(pet_type == loading_pet_type) {
-        this.pet_type = pet_type;
+        outfit.pet_type = pet_type;
         wardrobe.events.trigger('updatePetType', pet_type);
         pet_type.pet_states[0].assets.load(petStateOnLoad);
+        updateItemAssets();
       }
     }
     
@@ -133,9 +229,32 @@ function Wardrobe() {
       }
     }
     
+    function updateItemAssets() {
+      if(outfit.pet_type && item_ids.length) {
+        outfit.pet_type.loadItemAssets(item_ids, itemAssetsOnLoad);
+      }
+    }
+    
+    this.visibleAssets = function () {
+      // TODO: zones_restrict
+      var assets = outfit.pet_state.assets;
+      $.each(this.items, function () {
+        assets = assets.concat(this.assets);
+      });
+      return assets;
+    }
+    
     this.setPetTypeByColorAndSpecies = function (color_id, species_id) {
       loading_pet_type = PetType.findOrCreateByColorAndSpecies(color_id, species_id);
       loading_pet_type.load(petTypeOnLoad, petTypeOnError);
+    }
+    
+    this.setItemsByIds = function (ids) {
+      item_ids = ids;
+      if(ids.length) {
+        this.items = Item.loadByIds(ids, itemsOnLoad);
+      }
+      updateItemAssets();
     }
   }
   
@@ -158,14 +277,14 @@ function Wardrobe() {
 }
 
 View.Console = function (wardrobe) {
-  var log = (typeof console == 'undefined' || typeof console.log != 'function') ?
+  window.log = (typeof console == 'undefined' || typeof console.log != 'function') ?
     $.noop : $.proxy(console, 'log');
   
   wardrobe.bind('initialize', function () {
     log('Welcome to the Wardrobe!');
   });
   
-  $.each(['log', 'updatePetType', 'updatePetState'], function () {
+  $.each(['updateItems', 'updateItemAssets', 'updatePetType', 'updatePetState'], function () {
     wardrobe.bind(this, log);
   });
   
@@ -181,7 +300,7 @@ View.Hash = function (wardrobe) {
   }, KEYS = {
     color: TYPES.INTEGER,
     species: TYPES.INTEGER,
-    objects: TYPES.ARRAY
+    objects: TYPES.INTEGER_ARRAY
   };
   
   function checkQuery() {
@@ -196,15 +315,26 @@ View.Hash = function (wardrobe) {
     var new_data = {};
     $.each(query.split('&'), function () {
       var key_value = this.split('='),
-        key = key_value[0], value = key_value[1];
-      if(KEYS[key]) {
-        if(KEYS[key] == TYPES.INTEGER) value = +value;
-        new_data[key] = value;
+        key = decodeURIComponent(key_value[0]),
+        value = decodeURIComponent(key_value[1]);
+      if(value) {
+        if(KEYS[key] == TYPES.INTEGER) {
+          new_data[key] = +value;
+        } else if(key.substr(key.length-2) == '[]') {
+          key = key.substr(0, key.length-2);
+          if(KEYS[key] == TYPES.INTEGER_ARRAY) {
+            if(typeof new_data[key] == 'undefined') new_data[key] = [];
+            new_data[key].push(+value);
+          }
+        }
       }
     });
     
     if(new_data.color !== data.color || new_data.species !== data.species) {
       wardrobe.outfit.setPetTypeByColorAndSpecies(new_data.color, new_data.species);
+    }
+    if(new_data.objects !== data.objects) {
+      wardrobe.outfit.setItemsByIds(new_data.objects);
     }
     data = new_data;
   }
@@ -227,6 +357,53 @@ View.Hash = function (wardrobe) {
       updateQuery();
     }
   });
+}
+
+View.Preview = function (wardrobe) {
+  var preview_el = $('#preview'),
+    preview_swf_id = 'preview-swf',
+    preview_swf,
+    update_pending_flash = false;
+  
+  swfobject.embedSWF(
+    '/assets/swf/preview.swf?v=3',
+    'preview-swf',
+    '100%',
+    '100%',
+    '9',
+    '/assets/js/swfobject/expressInstall.swf',
+    {'swf_assets_path': '/assets'},
+    {'wmode': 'transparent'}
+  );
+  
+  window.previewSWFIsReady = function () {
+    log('Preview SWF is ready');
+    preview_swf = document.getElementById(preview_swf_id);
+    if(update_pending_flash) {
+      update_pending_flash = false;
+      updateAssets();
+    }
+  }
+  
+  function updateAssets() {
+    var assets, assets_for_swf;
+    if(update_pending_flash) return false;
+    if(preview_swf && preview_swf.setAssets) {
+      assets = wardrobe.outfit.visibleAssets();
+      log('Setting assets now');
+      assets_for_swf = $.map(assets, function (asset) {
+        return asset.data_for_swf;
+      });
+      log(assets_for_swf);
+      preview_swf.setAssets(assets_for_swf);
+    } else {
+      log('Will set assets once SWF is ready');
+      update_pending_flash = true;
+    }
+  }
+  
+  wardrobe.bind('updateItemAssets', updateAssets);
+  wardrobe.bind('updatePetState', updateAssets);
 }
 
 main_wardrobe = new Wardrobe();

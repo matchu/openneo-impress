@@ -11,7 +11,6 @@
   </mx:Style>
   <mx:Script>
     <![CDATA[
-      import Asset;
       import flash.external.ExternalInterface;
       import mx.controls.SWFLoader;
       
@@ -20,11 +19,10 @@
         
       private function setAssets(freshAssets:Array):void {
         var freshAssetIds:Array = [];
-        var asset:Asset;
-        var assetData:Object;
+        var asset:Object;
         
-        for each(assetData in freshAssets) {
-          freshAssetIds.push(assetData.id);
+        for each(asset in freshAssets) {
+          freshAssetIds.push(asset.id);
         }
         
         for(var key:String in assets) {
@@ -36,16 +34,15 @@
           }
         }
         
-        for each(assetData in freshAssets) {
-          if(assets[assetData.id] == undefined) {
-            asset = new Asset(assetData);
+        for each(asset in freshAssets) {
+          if(assets[asset.id] == undefined) {
             log('add '+asset.id);
             addAsset(asset);
           }
         }
       }
       
-      private function addAsset(asset:Asset):void {
+      private function addAsset(asset:Object):void {
         var loader:SWFLoader = new SWFLoader();
         loader.source = asset.local_path;
         loader.percentWidth = 100;
@@ -68,7 +65,7 @@
       }
       
       private function removeAssetAt(assetId:int):void {
-        var asset:Asset = assets[assetId];
+        var asset:Object = assets[assetId];
         var depthIndex:int = occupiedDepths.indexOf(asset.depth);
         occupiedDepths.splice(depthIndex, 1);
         delete assets[assetId];
@@ -80,11 +77,11 @@
         Security.allowDomain('beta.items.impress.openneo.net');
         ExternalInterface.addCallback('setAssets', setAssets);
         log('flash ready - about to send notice');
-        ExternalInterface.call('MainWardrobe.View.Outfit.setFlashIsReady');
+        ExternalInterface.call('previewSWFIsReady');
       }
       
-      private function log(str:String):void {
-        ExternalInterface.call('log', str);
+      private function log(obj:Object):void {
+        ExternalInterface.call('log', obj);
       }
     ]]>
   </mx:Script>
