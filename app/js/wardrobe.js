@@ -29,16 +29,6 @@ DeepObject.prototype.deepSet = function () {
 
 function Wardrobe() {
   var wardrobe = this, BiologyAsset, ItemAsset;
-  this.events = {};
-  this.events.trigger = function (event) {
-    var subarguments;
-    if(wardrobe.events[event]) {
-      subarguments = Array.prototype.slice.apply(arguments, [1]);
-      $.each(wardrobe.events[event], function () {
-        this.apply(wardrobe, subarguments);
-      });
-    }
-  }
   
   function determineRestrictedZones() {
     var i, zone;
@@ -203,7 +193,29 @@ function Wardrobe() {
   
   function SwfAsset() {}
   
-  this.outfit = new function Outfit() {
+  function Controller() {
+    var controller = this;
+    this.events = {};
+    
+    this.bind = function (event, callback) {
+      if(typeof this.events[event] == 'undefined') {
+        this.events[event] = [];
+      }
+      this.events[event].push(callback);
+    }
+    
+    this.events.trigger = function (event) {
+      var subarguments;
+      if(controller.events[event]) {
+        subarguments = Array.prototype.slice.apply(arguments, [1]);
+        $.each(controller.events[event], function () {
+          this.apply(controller, subarguments);
+        });
+      }
+    }
+  }
+  
+  Controller.Outfit = function OutfitController() {
     var outfit = this, loading_pet_type, item_ids = [];
     
     this.items = [];
@@ -220,22 +232,22 @@ function Wardrobe() {
     }
     
     function itemAssetsOnLoad(item_assets) {
-      wardrobe.events.trigger('updateItemAssets', item_assets);
+      outfit.events.trigger('updateItemAssets', item_assets);
     }
     
     function itemsOnLoad(items) {
-      wardrobe.events.trigger('updateItems', items);
+      outfit.events.trigger('updateItems', items);
     }
     
     function petStateOnLoad(pet_state) {
       outfit.pet_state = pet_state;
-      wardrobe.events.trigger('updatePetState', pet_state);
+      outfit.events.trigger('updatePetState', pet_state);
     }
     
     function petTypeOnLoad(pet_type) {
       if(pet_type == loading_pet_type) {
         outfit.pet_type = pet_type;
-        wardrobe.events.trigger('updatePetType', pet_type);
+        outfit.events.trigger('updatePetType', pet_type);
         pet_type.pet_states[0].assets.load(petStateOnLoad);
         updateItemAssets();
       }
@@ -243,7 +255,7 @@ function Wardrobe() {
     
     function petTypeOnError(pet_type) {
       if(pet_type == loading_pet_type) {
-        wardrobe.events.trigger('petTypeNotFound', pet_type);
+        outfit.events.trigger('petTypeNotFound', pet_type);
         loading_pet_type = null;
       }
     }
@@ -281,29 +293,44 @@ function Wardrobe() {
     }
   }
   
-  this.base_pet = new function BasePet() {
+  Controller.BasePet = function BasePetController() {
     var base_pet = this;
     
     this.setName = function (name) {
       base_pet.name = name;
-      wardrobe.events.trigger('updateBasePetName', name);
+      base_pet.events.trigger('updateName', name);
     }
   }
-  
-  this.bind = function (event, callback) {
-    if(typeof this.events[event] == 'undefined') {
-      this.events[event] = [];
+
+  var underscored_name;
+
+  for(var name in Controller) {
+    if(Controller.hasOwnProperty(name)) {
+      // underscoring translated from
+      // http://api.rubyonrails.org/classes/ActiveSupport/Inflector.html#M000710
+      underscored_name = name.replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2').
+        replace(/([a-z\d])([A-Z])/g,'$1_$2').toLowerCase();
+      wardrobe[underscored_name] = new Controller[name];
+      Controller.apply(wardrobe[underscored_name]);
     }
-    this.events[event].push(callback);
   }
   
   this.initialize = function () {
-    this.events.trigger('initialize');
+    var view;
+    for(var name in wardrobe.views) {
+      if(wardrobe.views.hasOwnProperty(name)) {
+        view = wardrobe.views[name];
+        if(typeof view.initialize == 'function') {
+          view.initialize();
+        }
+      }
+    }
   }
   
   this.registerViews = function (views) {
-    $.each(views, function () {
-      this(wardrobe);
+    wardrobe.views = {};
+    $.each(views, function (name) {
+      wardrobe.views[name] = new this(wardrobe);
     });
   }
 }
@@ -314,18 +341,18 @@ if(document.location.search.substr(0, 6) == '?debug') {
       window.log = $.proxy(console, 'log');
     }
     
-    wardrobe.bind('initialize', function () {
+    this.initialize = function () {
       log('Welcome to the Wardrobe!');
-    });
+    }
     
-    $.each(['updateBasePetName', 'updateItems', 'updateItemAssets', 'updatePetType', 'updatePetState'], function () {
+    $.each(['updateItems', 'updateItemAssets', 'updatePetType', 'updatePetState'], function () {
       var event = this;
-      wardrobe.bind(event, function (obj) {
+      wardrobe.outfit.bind(event, function (obj) {
         log(event, obj);
       });
     });
     
-    wardrobe.bind('petTypeNotFound', function (pet_type) {
+    wardrobe.outfit.bind('petTypeNotFound', function (pet_type) {
       log(pet_type.toString() + ' not found');
     });
   }
@@ -390,12 +417,12 @@ View.Hash = function (wardrobe) {
     document.location.hash = '#' + new_query;
   }
   
-  wardrobe.bind('initialize', function () {
+  this.initialize = function () {
     checkQuery();
     setInterval(checkQuery, 100);
-  });
+  }
   
-  wardrobe.bind('updatePetType', function (pet_type) {
+  wardrobe.outfit.bind('updatePetType', function (pet_type) {
     if(pet_type.color_id != data.color || pet_type.species_id != data.species) {
       data.color = pet_type.color_id;
       data.species = pet_type.species_id;
@@ -446,13 +473,13 @@ View.Preview = function (wardrobe) {
     }
   }
   
-  wardrobe.bind('updateItems', updateAssets);
-  wardrobe.bind('updateItemAssets', updateAssets);
-  wardrobe.bind('updatePetState', updateAssets);
+  wardrobe.outfit.bind('updateItems', updateAssets);
+  wardrobe.outfit.bind('updateItemAssets', updateAssets);
+  wardrobe.outfit.bind('updatePetState', updateAssets);
 }
 
 View.Title = function (wardrobe) {
-  wardrobe.bind('updateBasePetName', function (name) {
+  wardrobe.base_pet.bind('updateName', function (name) {
     $('#title').text("Planning " + name + "'s outfit");
   });
 }
