@@ -1,5 +1,12 @@
 {title is="Planning an outfit"}
 <div id="preview">
+  <div id="preview-toolbar">
+    <form id="pet-type-form">
+      <select name="color"></select>
+      <select name="species"></select>
+      <input type="submit" value="Go" />
+    </form>
+  </div>
   <span id="preview-swf">
     Javascript and Flash are required to preview outfits. Sorry!
   </span>

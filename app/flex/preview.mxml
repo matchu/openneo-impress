@@ -81,7 +81,7 @@
       }
       
       private function log(obj:Object):void {
-        ExternalInterface.call('log', obj);
+        ExternalInterface.call('SWFLog', obj);
       }
     ]]>
   </mx:Script>
