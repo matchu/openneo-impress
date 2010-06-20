@@ -145,7 +145,19 @@ function Wardrobe() {
         });
       }
     }
+    
+    PetState.cache[id] = this;
   }
+  
+  PetState.find = function (id) {
+    var pet_state = PetState.cache[id];
+    if(!pet_state) {
+      pet_state = new PetState(id);
+    }
+    return pet_state;
+  }
+  
+  PetState.cache = {};
   
   function PetType() {
     var pet_type = this;
@@ -168,9 +180,9 @@ function Wardrobe() {
                 pet_type[key] = data[key];
               }
             }
-            $.each(pet_type.pet_state_ids, function () {
-              pet_type.pet_states.push(new PetState(this));
-            });
+            for(var i = 0; i < pet_type.pet_state_ids.length; i++) {
+              pet_type.pet_states.push(PetState.find(pet_type.pet_state_ids[i]));
+            }
             PetType.cache_by_color_and_species.deepSet(
               pet_type.color_id,
               pet_type.species_id,
@@ -213,6 +225,13 @@ function Wardrobe() {
     this.toString = function () {
       return 'PetType{color_id: ' + this.color_id + ', species_id: ' +
         this.species_id + '}';
+    }
+    
+    this.ownsPetState = function (pet_state) {
+      for(var i = 0; i < this.pet_states.length; i++) {
+        if(this.pet_states[i] == pet_state) return true;
+      }
+      return false;
     }
   }
   
@@ -283,12 +302,14 @@ function Wardrobe() {
     }
     
     function petStateOnLoad(pet_state) {
-      outfit.pet_state = pet_state;
       outfit.events.trigger('updatePetState', pet_state);
     }
     
     function petTypeOnLoad(pet_type) {
-      pet_type.pet_states[0].loadAssets(petStateOnLoad);
+      if(!outfit.pet_state || !pet_type.ownsPetState(outfit.pet_state)) {
+        outfit.setPetStateById();
+      }
+      outfit.events.trigger('petTypeLoaded', pet_type);
       updateItemAssets();
     }
     
@@ -314,6 +335,16 @@ function Wardrobe() {
         }
       });
       return visible_assets;
+    }
+    
+    this.setPetStateById = function (id) {
+      if(!id && this.pet_type) {
+        id = this.pet_type.pet_state_ids[0];
+      }
+      if(id) {
+        this.pet_state = PetState.find(id);
+        this.pet_state.loadAssets(petStateOnLoad);
+      }
     }
     
     this.setPetTypeByColorAndSpecies = function (color_id, species_id) {
@@ -426,12 +457,13 @@ View.Hash = function (wardrobe) {
   var data = {}, proposed_data = {}, previous_query, parse_in_progress = false, TYPES = {
     INTEGER: 1,
     STRING: 2,
-    ARRAY: 3
+    INTEGER_ARRAY: 3
   }, KEYS = {
     color: TYPES.INTEGER,
     name: TYPES.STRING,
     objects: TYPES.INTEGER_ARRAY,
-    species: TYPES.INTEGER
+    species: TYPES.INTEGER,
+    state: TYPES.INTEGER
   };
   
   function checkQuery() {
@@ -473,13 +505,26 @@ View.Hash = function (wardrobe) {
     if(new_data.name != data.name && new_data.name) {
       wardrobe.base_pet.setName(new_data.name);
     }
+    if(new_data.state != data.state) {
+      wardrobe.outfit.setPetStateById(new_data.state);
+    }
     data = new_data;
     parse_in_progress = false;
   }
   
   function changeQuery(changes) {
+    var value;
     if(!parse_in_progress) {
-      data = $.extend(data, changes);
+      for(var key in changes) {
+        if(changes.hasOwnProperty(key)) {
+          value = changes[key];
+          if(value === undefined) {
+            delete data[key];
+          } else {
+            data[key] = changes[key];
+          }
+        }
+      }
       updateQuery();
     }
   }
@@ -500,13 +545,21 @@ View.Hash = function (wardrobe) {
     if(pet_type.color_id != data.color || pet_type.species_id != data.species) {
       changeQuery({
         color: pet_type.color_id,
-        species: pet_type.species_id
+        species: pet_type.species_id,
+        state: undefined
       });
     }
   });
   
   wardrobe.outfit.bind('petTypeNotFound', function () {
     window.history.back();
+  });
+  
+  wardrobe.outfit.bind('updatePetState', function (pet_state) {
+    var pet_type = wardrobe.outfit.pet_type;
+    if(pet_state.id != data.state && (!pet_type || pet_state.id != pet_type.pet_state_ids[0])) {
+      changeQuery({state: pet_state.id});
+    }
   });
 }
 
@@ -551,12 +604,53 @@ View.Preview = function (wardrobe) {
   wardrobe.outfit.bind('updatePetState', updateAssets);
 }
 
+View.PetStateForm = function (wardrobe) {
+  var INPUT_NAME = 'pet_state_id', form_query = '#pet-state-form',
+    form = $(form_query),
+    ul = form.children('ul'),
+    radio_query = form_query + ' input[name=' + INPUT_NAME + ']',
+    checked_radio_query = radio_query + ':checked';
+  $(radio_query).live('click', function () {
+    wardrobe.outfit.setPetStateById(+this.value);
+  });
+  
+  function updatePetState(pet_state) {
+    if(pet_state) $(radio_query + '[value=' + pet_state.id + ']').attr('checked', 'checked');
+  }
+  
+  wardrobe.outfit.bind('petTypeLoaded', function (pet_type) {
+    var ids = pet_type.pet_state_ids, i, id, li, radio, label;
+    ul.children().remove();
+    for(var i = 0; i < ids.length; i++) {
+      id = 'pet-state-radio-' + i;
+      li = $('<li/>');
+      radio = $('<input/>', {
+        id: id,
+        name: INPUT_NAME,
+        type: 'radio',
+        value: ids[i]
+      });
+      label = $('<label/>', {
+        'for': id,
+        text: i + 1
+      });
+      if(i == 0) radio.attr('checked', 'checked');
+      radio.appendTo(li);
+      label.appendTo(li);
+      li.appendTo(ul);
+    }
+    updatePetState(wardrobe.outfit.pet_state);
+  });
+  
+  wardrobe.outfit.bind('updatePetState', updatePetState);
+}
+
 View.PetTypeForm = function (wardrobe) {
   var form = $('#pet-type-form'), dropdowns = {}, loaded = false;
   form.submit(function (e) {
     e.preventDefault();
     wardrobe.outfit.setPetTypeByColorAndSpecies(
-      parseInt(dropdowns.color.val()), parseInt(dropdowns.species.val())
+      +dropdowns.color.val(), +dropdowns.species.val()
     );
   }).children('select').each(function () {
     dropdowns[this.name] = $(this);

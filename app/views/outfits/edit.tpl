@@ -6,6 +6,10 @@
       <select name="species"></select>
       <input type="submit" value="Go" />
     </form>
+    <form id="pet-state-form">
+      Gender/Emotions:
+      <ul></ul>
+    </form>
   </div>
   <span id="preview-swf">
     Javascript and Flash are required to preview outfits. Sorry!
