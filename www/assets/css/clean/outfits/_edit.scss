@@ -4,3 +4,30 @@ $preview_dimension: $container_width / 2;
   height: $preview_dimension;
   width: $preview_dimension;
 }
+
+#preview-toolbar form {
+  display: inline;
+  margin-right: 2em;
+}
+
+#pet-state-form {
+  ul {
+    list-style: none;
+    &, li {
+      display: inline;
+    }
+  }
+  
+  input {
+    display: none;
+  }
+  
+  label {
+    @include awesome-button;
+    margin: 0 .25em;
+  }
+  
+  li.selected label {
+    @include awesome-button-color($marked_button_color);
+  }
+}

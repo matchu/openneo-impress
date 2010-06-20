@@ -608,14 +608,17 @@ View.PetStateForm = function (wardrobe) {
   var INPUT_NAME = 'pet_state_id', form_query = '#pet-state-form',
     form = $(form_query),
     ul = form.children('ul'),
-    radio_query = form_query + ' input[name=' + INPUT_NAME + ']',
-    checked_radio_query = radio_query + ':checked';
+    radio_query = form_query + ' input[name=' + INPUT_NAME + ']';
   $(radio_query).live('click', function () {
     wardrobe.outfit.setPetStateById(+this.value);
   });
   
   function updatePetState(pet_state) {
-    if(pet_state) $(radio_query + '[value=' + pet_state.id + ']').attr('checked', 'checked');
+    if(pet_state) {
+      ul.children('li.selected').removeClass('selected');
+      $(radio_query + '[value=' + pet_state.id + ']')
+        .attr('checked', 'checked').parent().addClass('selected');
+    }
   }
   
   wardrobe.outfit.bind('petTypeLoaded', function (pet_type) {

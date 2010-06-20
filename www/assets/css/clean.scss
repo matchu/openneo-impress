@@ -5,6 +5,7 @@ $link-color:            $text-color + #222;
 $module-bg-color:       #efe;
 $module-border-color:   #060;
 $input-border-color:    #cec;
+$marked-button-color:    #0b61a4;
 
 $notice-color:         #264409;
 $notice-bg-color:      #e6efc2;
@@ -88,16 +89,18 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
   &:active {
     top: 1px;
   }
-  
-  &:after {
-    content: " >>";
-  }
 }
 
 @mixin loud-awesome-button {
   @include awesome-button-color(#ff5c00);
   font-size: 125%;
   padding: 8px 14px 9px;
+}
+
+@mixin arrowed-awesome-button {
+  &:after {
+    content: " >>";
+  }
 }
 
 @mixin module {
@@ -169,7 +172,7 @@ $container_width: 800px;
   width: $container_width;
 }
 
-input, button, select {
+input, button, select, label {
   cursor: pointer;
 }
 
@@ -189,6 +192,7 @@ input[type=text], input[type=password], select {
   
 a.button, input[type=submit], button[type=submit] {
   @include awesome-button;
+  @include arrowed-awesome-button;
   &.loud {
     @include loud-awesome-button;
   }
