@@ -1,11 +1,17 @@
 $preview_dimension: 500px;
 
-#preview-toolbar form {
-  display: inline;
-  margin-left: 2em;
+#preview-toolbar {
+  @include clearfix;
+  margin-bottom: .5em;
   
-  &:first-child {
-    margin-left: 0;
+  form {
+    float: left;
+    margin-left: 2em;
+    padding: .5em;
+    
+    &:first-child {
+      margin-left: 0;
+    }
   }
 }
 
@@ -29,6 +35,42 @@ $preview_dimension: 500px;
   li.selected label {
     @include awesome-button-color($marked_button_color);
   }
+}
+
+#shorten-url-loading {
+  display: none;
+  font-size: 75%;
+  margin-left: .5em;
+}
+
+#shorten-url-response-form {
+  @include border-radius(3px);
+  background: $module-bg-color;
+  border: 1px solid $module-border-color;
+  display: none;
+}
+
+#shorten-url-copy-button-wrapper {
+  @include inline-block;
+  position: relative;
+  
+  button {
+    @include awesome-button;
+    
+    margin-right: .5em;
+    
+    &.hover {
+      @extend :hover;
+    }
+    
+    &.active {
+      @extend :active;
+    }
+  }
+}
+
+#shorten-url-response {
+  padding-top: .5em;
 }
 
 #preview-swf {

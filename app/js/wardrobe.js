@@ -623,7 +623,7 @@ View.Hash = function (wardrobe) {
     objects: TYPES.INTEGER_ARRAY,
     species: TYPES.INTEGER,
     state: TYPES.INTEGER
-  };
+  }, onUpdateQuery;
   
   function checkQuery() {
     var query = (document.location.hash || document.location.search).substr(1);
@@ -676,6 +676,7 @@ View.Hash = function (wardrobe) {
     }
     data = new_data;
     parse_in_progress = false;
+    onUpdateQuery();
   }
   
   function changeQuery(changes) {
@@ -700,6 +701,7 @@ View.Hash = function (wardrobe) {
     new_query = $.param(data).replace(/%5B%5D/g, '[]');
     previous_query = new_query;
     document.location.hash = '#' + new_query;
+    onUpdateQuery();
   }
   
   this.initialize = function () {
@@ -741,6 +743,47 @@ View.Hash = function (wardrobe) {
       changeQuery({state: pet_state.id});
     }
   });
+  
+  (function UrlShortener() {
+    ZeroClipboard.setMoviePath('/assets/swf/ZeroClipboard.swf');
+    var response_el = $('#shorten-url-response'),
+      form = $('#shorten-url-form'),
+      response_form = $('#shorten-url-response-form'),
+      loading = $('#shorten-url-loading'),
+      clip = new ZeroClipboard.Client(),
+      glued = false;
+    
+    onUpdateQuery = function () {
+      form.show();
+      loading.hide();
+      response_form.hide();
+    }
+    
+    BitlyCB.wardrobeSelfShorten = function (data) {
+      var response;
+      try {
+        response = data.results[document.location.href].shortUrl;
+      } catch (e) {
+        log('shortener error: likely no longer same URL', e);
+      }
+      form.hide();
+      response_form.show();
+      if(!glued) {
+        clip.glue('shorten-url-copy-button', 'shorten-url-copy-button-wrapper');
+        glued = true;
+      }
+      response_el.text(response);
+      clip.setText(response);
+    }
+    
+    form.submit(function (e) {
+      BitlyClient.shorten(document.location.href, 'BitlyCB.wardrobeSelfShorten');
+      loading.show();
+      e.preventDefault();
+    });
+    
+    response_form.submit(function (e) { e.preventDefault() });
+  })();
 }
 
 View.Preview = function (wardrobe) {
