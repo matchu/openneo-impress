@@ -2,6 +2,40 @@ var View = {}, main_wardrobe;
 
 window.log = window.SWFLog = $.noop;
 
+function arraysMatch(array1, array2) {
+  // http://www.breakingpar.com/bkp/home.nsf/0/87256B280015193F87256BFB0077DFFD
+  var temp;
+  if(!$.isArray(array1)|| !$.isArray(array2)) {
+    return array1 == array2;
+  }
+  temp = [];
+  if ( (!array1[0]) || (!array2[0]) ) {
+    return false;
+  }
+  if (array1.length != array2.length) {
+    return false;
+  }
+  for (var i=0; i<array1.length; i++) {
+    key = (typeof array1[i]) + "~" + array1[i];
+    if (temp[key]) { temp[key]++; } else { temp[key] = 1; }
+  }
+  for (var i=0; i<array2.length; i++) {
+    key = (typeof array2[i]) + "~" + array2[i];
+    if (temp[key]) {
+      if (temp[key] == 0) { return false; } else { temp[key]--; }
+    } else {
+      return false;
+    }
+  }
+  return true;
+}
+
+Array.prototype.map = function (property) {
+  return $.map(this, function (element) {
+    return element[property];
+  });
+}
+
 function DeepObject() {}
 
 DeepObject.prototype.deepGet = function () {
@@ -66,6 +100,7 @@ function Wardrobe() {
     var item = this;
     this.id = id;
     this.assets_by_body_id = {};
+    this.load_started = false;
     this.loaded = false;
     
     this.getAssetsFitting = function (pet_type) {
@@ -78,7 +113,7 @@ function Wardrobe() {
     
     this.update = function (data) {
       for(var key in data) {
-        if(data.hasOwnProperty(key)) {
+        if(data.hasOwnProperty(key) && key != 'id') { // do not replace ID with string
           item[key] = data[key];
         }
       }
@@ -97,19 +132,45 @@ function Wardrobe() {
     return item;
   }
   
+  var item_load_callbacks = [];
+  
   Item.loadByIds = function (ids, success) {
-    var ids_to_load = [], items = $.map(ids, function (id) {
+    var ids_to_load = [], ids_not_loaded = [], items = $.map(ids, function (id) {
       var item = Item.find(id);
-      if(!item.loaded) ids_to_load.push(id);
+      if(!item.load_started) {
+        ids_to_load.push(id);
+        item.load_started = true;
+      }
+      if(!item.loaded) {
+        ids_not_loaded.push(id);
+      }
       return item;
     });
     if(ids_to_load.length) {
       $.getJSON('/objects.json', {ids: ids_to_load}, function (data) {
+        var set, set_items, set_ids, set_callback, run_callback, ids_from_data = [];
         $.each(data, function () {
+          ids_from_data.push(+this.id);
           Item.find(this.id).update(this);
         });
+        for(var i = 0; i < item_load_callbacks.length; i++) {
+          set = item_load_callbacks[i];
+          set_items = set[0];
+          set_ids = set[1];
+          set_callback = set[2];
+          run_callback = true;
+          for(var j = 0; j < set_ids.length; j++) {
+            if($.inArray(set_ids[j], ids_from_data) == -1) {
+              run_callback = false;
+              break;
+            }
+          }
+          if(run_callback) set_callback(set_items);
+        }
         success(items);
       });
+    } else if(ids_not_loaded.length) {
+      item_load_callbacks.push([items, ids_not_loaded, success]);
     } else {
       success(items);
     }
@@ -208,7 +269,6 @@ function Wardrobe() {
           body_id: pet_type.body_id,
           parent_ids: item_ids_needed
         }, function (data) {
-          var item_assets = [];
           $.each(data, function () {
             var item = Item.find(this.parent_id),
               asset = new ItemAsset(this);
@@ -217,8 +277,10 @@ function Wardrobe() {
             }
             item.assets_by_body_id[pet_type.body_id].push(asset);
           });
-          success(item_assets);
+          success();
         });
+      } else {
+        success();
       }
     }
     
@@ -323,18 +385,33 @@ function Wardrobe() {
       }
     }
     
+    this.addItem = function (item) {
+      this.items.push(item);
+      item_ids.push(item.id);
+      updateItemAssets();
+      outfit.events.trigger('updateItems', this.items);
+    }
+    
     this.getVisibleAssets = function () {
       var assets = this.pet_state.assets, restricted_zones = getRestrictedZones(),
         visible_assets = [];
-      $.each(this.items, function () {
-        assets = assets.concat(this.getAssetsFitting(outfit.pet_type));
-      });
+      for(var i = 0; i < outfit.items.length; i++) {
+        assets = assets.concat(outfit.items[i].getAssetsFitting(outfit.pet_type));
+      }
       $.each(assets, function () {
         if($.inArray(this.zone_id, restricted_zones) == -1) {
           visible_assets.push(this);
         }
       });
       return visible_assets;
+    }
+    
+    this.removeItem = function (item) {
+      var i = $.inArray(item, this.items);
+      if(i != -1) {
+        this.items.splice(i, 1);
+        outfit.events.trigger('updateItems', this.items);
+      }
     }
     
     this.setPetStateById = function (id) {
@@ -354,17 +431,34 @@ function Wardrobe() {
     }
     
     this.setItemsByIds = function (ids) {
-      if(ids) {
-        item_ids = ids;
-        if(ids.length) {
-          this.items = Item.loadByIds(ids, itemsOnLoad);
-        } else {
-          this.items = [];
-        }
+      if(ids) item_ids = ids;
+      if(ids && ids.length) {
+        this.items = Item.loadByIds(ids, itemsOnLoad);
       } else {
         this.items = [];
+        itemsOnLoad(this.items);
       }
       updateItemAssets();
+    }
+  }
+  
+  Controller.Closet = function ClosetController() {
+    var closet = this, item_ids = [];
+    this.items = [];
+    
+    function itemsOnLoad(items) {
+      closet.events.trigger('updateItems', items);
+    }
+    
+    this.setItemsByIds = function (ids) {
+      if(ids && ids.length) {
+        item_ids = ids;
+        this.items = Item.loadByIds(ids, itemsOnLoad);
+      } else {
+        item_ids = ids;
+        this.items = [];
+        itemsOnLoad(this.items);
+      }
     }
   }
   
@@ -439,7 +533,7 @@ if(document.location.search.substr(0, 6) == '?debug') {
     }
     
     var outfit_events = ['updateItems', 'updateItemAssets', 'updatePetType', 'updatePetState'];
-    for(var i in outfit_events) {
+    for(var i = 0; i < outfit_events.length; i++) {
       (function (event) {
         wardrobe.outfit.bind(event, function (obj) {
           log(event, obj);
@@ -453,12 +547,77 @@ if(document.location.search.substr(0, 6) == '?debug') {
   }
 }
 
+View.Closet = function (wardrobe) {
+  var ul = $('#closet ul'),
+    control_sets = {}, toggle, klass;
+  
+  for(var i = 0; i < 2; i++) {
+    toggle = i == 0;
+    klass = 'control-set-' + (toggle ? 'worn' : 'unworn');
+    control_sets[toggle] = $('<a/>', {
+      'class': 'control-set ' + klass,
+      href: '#',
+      text: toggle ? 'Unwear' : 'Wear'
+    });
+    
+    (function (toggle) {
+      $('a.' + klass).live('click', function (e) {
+        var el = $(this), item = el.parent().data('item');
+        toggleWorn(item, !toggle);
+        e.preventDefault();
+      });
+    })(toggle);
+  }
+  
+  function toggleWorn(item, toggle) {
+    if(toggle) {
+      wardrobe.outfit.addItem(item);
+    } else {
+      wardrobe.outfit.removeItem(item);
+    }
+  }
+  
+  // TODO: add/remove instead of simply ripping out the guts and reconstructing
+  
+  function updateWorn(outfit_items) {
+    var item, worn, closet_items = wardrobe.closet.items, li;
+    for(var i = 0; i < closet_items.length; i++) {
+      item = closet_items[i];
+      worn = $.inArray(item, outfit_items) != -1;
+      li = $('li.object-' + item.id).toggleClass('worn', worn).
+        data({
+          'item': item,
+          'worn': worn
+        }).children('a.control-set').remove().end().append(control_sets[worn].clone());
+    }
+  }
+  
+  wardrobe.closet.bind('updateItems', function (items) {
+    var item, li;
+    ul.children().remove();
+    for(var i = 0; i < items.length; i++) {
+      item = items[i];
+      li = $('<li/>', {'class': 'object object-' + item.id});
+      img = $('<img/>', {
+        'src': item.thumbnail_url,
+        'alt': item.description,
+        'title': item.description
+      });
+      li.append(img).append(item.name).appendTo(ul);
+    }
+    updateWorn(wardrobe.outfit.items);
+  });
+  
+  wardrobe.outfit.bind('updateItems', updateWorn);
+}
+
 View.Hash = function (wardrobe) {
   var data = {}, proposed_data = {}, previous_query, parse_in_progress = false, TYPES = {
     INTEGER: 1,
     STRING: 2,
     INTEGER_ARRAY: 3
   }, KEYS = {
+    closet: TYPES.INTEGER_ARRAY,
     color: TYPES.INTEGER,
     name: TYPES.STRING,
     objects: TYPES.INTEGER_ARRAY,
@@ -475,12 +634,12 @@ View.Hash = function (wardrobe) {
   }
   
   function parseQuery(query) {
-    var new_data = {};
+    var new_data = {}, pairs = query.split('&');
     parse_in_progress = true;
-    $.each(query.split('&'), function () {
-      var key_value = this.split('='),
-        key = decodeURIComponent(key_value[0]),
-        value = decodeURIComponent(key_value[1]);
+    for(var i = 0; i < pairs.length; i++) {
+      var pair = pairs[i].split('='),
+        key = decodeURIComponent(pair[0]),
+        value = decodeURIComponent(pair[1]);
       if(value) {
         if(KEYS[key] == TYPES.INTEGER) {
           new_data[key] = +value;
@@ -494,13 +653,20 @@ View.Hash = function (wardrobe) {
           }
         }
       }
-    });
+    }
     
     if(new_data.color !== data.color || new_data.species !== data.species) {
       wardrobe.outfit.setPetTypeByColorAndSpecies(new_data.color, new_data.species);
     }
-    if(new_data.objects !== data.objects) {
-      wardrobe.outfit.setItemsByIds(new_data.objects);
+    if(new_data.closet) {
+      if(!arraysMatch(new_data.closet, data.closet)) {
+        wardrobe.closet.setItemsByIds(new_data.closet.slice(0));
+      }
+    } else if(!arraysMatch(new_data.objects, data.closet)) {
+      wardrobe.closet.setItemsByIds(new_data.objects.slice(0));
+    }
+    if(!arraysMatch(new_data.objects, data.objects)) {
+      wardrobe.outfit.setItemsByIds(new_data.objects.slice(0));
     }
     if(new_data.name != data.name && new_data.name) {
       wardrobe.base_pet.setName(new_data.name);
@@ -531,7 +697,7 @@ View.Hash = function (wardrobe) {
   
   function updateQuery() {
     var new_query;
-    new_query = $.param(data);
+    new_query = $.param(data).replace(/%5B%5D/g, '[]');
     previous_query = new_query;
     document.location.hash = '#' + new_query;
   }
@@ -540,6 +706,20 @@ View.Hash = function (wardrobe) {
     checkQuery();
     setInterval(checkQuery, 100);
   }
+  
+  wardrobe.outfit.bind('updateItems', function (items) {
+    var item_ids = items.map('id'), changes = {};
+    if(!arraysMatch(item_ids, data.objects)) {
+      changes.objects = item_ids;
+    }
+    // FIXME: no, closet should be drawing from its own item set
+    if(arraysMatch(item_ids, data.closet) || arraysMatch(item_ids, data.objects)) {
+      changes.closet = undefined;
+    } else {
+      changes.closet = wardrobe.closet.items.map('id');
+    }
+    if(changes.objects || changes.closet) changeQuery(changes);
+  });
   
   wardrobe.outfit.bind('updatePetType', function (pet_type) {
     if(pet_type.color_id != data.color || pet_type.species_id != data.species) {
@@ -557,7 +737,7 @@ View.Hash = function (wardrobe) {
   
   wardrobe.outfit.bind('updatePetState', function (pet_state) {
     var pet_type = wardrobe.outfit.pet_type;
-    if(pet_state.id != data.state && (!pet_type || pet_state.id != pet_type.pet_state_ids[0])) {
+    if(pet_state.id != data.state && pet_type && (data.state || pet_state.id != pet_type.pet_state_ids[0])) {
       changeQuery({state: pet_state.id});
     }
   });
@@ -624,25 +804,30 @@ View.PetStateForm = function (wardrobe) {
   wardrobe.outfit.bind('petTypeLoaded', function (pet_type) {
     var ids = pet_type.pet_state_ids, i, id, li, radio, label;
     ul.children().remove();
-    for(var i = 0; i < ids.length; i++) {
-      id = 'pet-state-radio-' + i;
-      li = $('<li/>');
-      radio = $('<input/>', {
-        id: id,
-        name: INPUT_NAME,
-        type: 'radio',
-        value: ids[i]
-      });
-      label = $('<label/>', {
-        'for': id,
-        text: i + 1
-      });
-      if(i == 0) radio.attr('checked', 'checked');
-      radio.appendTo(li);
-      label.appendTo(li);
-      li.appendTo(ul);
+    if(ids.length == 1) {
+      form.hide();
+    } else {
+      form.show();
+      for(var i = 0; i < ids.length; i++) {
+        id = 'pet-state-radio-' + i;
+        li = $('<li/>');
+        radio = $('<input/>', {
+          id: id,
+          name: INPUT_NAME,
+          type: 'radio',
+          value: ids[i]
+        });
+        label = $('<label/>', {
+          'for': id,
+          text: i + 1
+        });
+        if(i == 0) radio.attr('checked', 'checked');
+        radio.appendTo(li);
+        label.appendTo(li);
+        li.appendTo(ul);
+      }
+      updatePetState(wardrobe.outfit.pet_state);
     }
-    updatePetState(wardrobe.outfit.pet_state);
   });
   
   wardrobe.outfit.bind('updatePetState', updatePetState);

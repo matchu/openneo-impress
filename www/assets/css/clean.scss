@@ -287,13 +287,18 @@ ul.buttons {
     
     img {
       @include opacity(.75);
-      height: 80px;
-      width: 80px;
     }
     
     &:hover img {
       @include opacity(1);
     }
+  }
+  
+  img {
+    display: block;
+    height: 80px;
+    margin: 0 auto;
+    width: 80px;
   }
 }
 
