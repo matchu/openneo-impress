@@ -177,6 +177,30 @@ function Wardrobe() {
     return items;
   }
   
+  var ITEMS_URL = 'items.impress.openneo.net/index.js?callback=?',
+    PER_PAGE = 21;
+  if(document.location.hostname.substr(0, 5) == 'beta.') {
+    ITEMS_URL = 'beta.' + ITEMS_URL;
+  }
+  ITEMS_URL = 'http://' + ITEMS_URL;
+  
+  Item.loadByQuery = function (query, success, error) {
+    $.getJSON(ITEMS_URL, {q: query, per_page: PER_PAGE}, function (data) {
+      var items = [], item, item_data;
+      if(data.items) {
+        for(var i = 0; i < data.items.length; i++) {
+          item_data = data.items[i];
+          item = Item.find(item_data.id);
+          item.update(item_data);
+          items.push(item);
+        }
+        success(items, data.total_pages);
+      } else if(data.error) {
+        error(data.error);
+      }
+    });
+  }
+  
   Item.cache = {};
   
   function PetAttribute() {}
@@ -355,8 +379,39 @@ function Wardrobe() {
       return restricted_zones;
     }
     
-    function itemAssetsOnLoad(item_assets) {
-      outfit.events.trigger('updateItemAssets', item_assets);
+    function hasItem(item) {
+      return $.inArray(item, outfit.items) != -1;
+    }
+    
+    function itemAssetsOnLoad(added_item) {
+      var item_zones, item_zones_length, existing_item, existing_item_zones, passed,
+        new_items = [], new_item_ids = [];
+      if(added_item) {
+        // now that we've loaded, check for conflicts on the added item
+        item_zones = added_item.getAssetsFitting(outfit.pet_type).map('zone_id');
+        item_zones_length = item_zones.length;
+        for(var i = 0; i < outfit.items.length; i++) {
+          existing_item = outfit.items[i];
+          existing_item_zones = existing_item.getAssetsFitting(outfit.pet_type).map('zone_id');
+          passed = true;
+          if(existing_item != added_item) {
+            for(var j = 0; j < item_zones_length; j++) {
+              if($.inArray(item_zones[j], existing_item_zones) != -1) {
+                passed = false;
+                break;
+              }
+            }
+          }
+          if(passed) {
+            new_items.push(existing_item);
+            new_item_ids.push(existing_item.id);
+          }
+        }
+        outfit.items = new_items;
+        item_ids = new_item_ids;
+        outfit.events.trigger('updateItems', outfit.items);
+      }
+      outfit.events.trigger('updateItemAssets');
     }
     
     function itemsOnLoad(items) {
@@ -379,17 +434,21 @@ function Wardrobe() {
       outfit.events.trigger('petTypeNotFound', pet_type);
     }
     
-    function updateItemAssets() {
+    function updateItemAssets(added_item) {
       if(outfit.pet_type && outfit.pet_type.loaded && item_ids.length) {
-        outfit.pet_type.loadItemAssets(item_ids, itemAssetsOnLoad);
+        outfit.pet_type.loadItemAssets(item_ids, function () {
+          itemAssetsOnLoad(added_item)
+        });
       }
     }
     
     this.addItem = function (item) {
-      this.items.push(item);
-      item_ids.push(item.id);
-      updateItemAssets();
-      outfit.events.trigger('updateItems', this.items);
+      if(!hasItem(item)) {
+        this.items.push(item);
+        item_ids.push(item.id);
+        updateItemAssets(item);
+        outfit.events.trigger('updateItems', this.items);
+      }
     }
     
     this.getVisibleAssets = function () {
@@ -407,9 +466,11 @@ function Wardrobe() {
     }
     
     this.removeItem = function (item) {
-      var i = $.inArray(item, this.items);
+      var i = $.inArray(item, this.items), id_i;
       if(i != -1) {
         this.items.splice(i, 1);
+        id_i = $.inArray(item.id, item_ids);
+        item_ids.splice(id_i, 1);
         outfit.events.trigger('updateItems', this.items);
       }
     }
@@ -443,11 +504,34 @@ function Wardrobe() {
   }
   
   Controller.Closet = function ClosetController() {
+    // FIXME: a lot of duplication from outfit controller
     var closet = this, item_ids = [];
     this.items = [];
     
+    function hasItem(item) {
+      return $.inArray(item, closet.items) != -1;
+    }
+    
     function itemsOnLoad(items) {
       closet.events.trigger('updateItems', items);
+    }
+    
+    this.addItem = function (item) {
+      if(!hasItem(item)) {
+        this.items.push(item);
+        item_ids.push(item.id);
+        closet.events.trigger('updateItems', this.items);
+      }
+    }
+    
+    this.removeItem = function (item) {
+      var i = $.inArray(item, this.items), id_i;
+      if(i != -1) {
+        this.items.splice(i, 1);
+        id_i = $.inArray(item.id, item_ids);
+        item_ids.splice(id_i, 1);
+        closet.events.trigger('updateItems', this.items);
+      }
     }
     
     this.setItemsByIds = function (ids) {
@@ -480,6 +564,23 @@ function Wardrobe() {
     
     this.load = function () {
       PetAttribute.loadAll(onLoad);
+    }
+  }
+  
+  Controller.Search = function SearchController() {
+    var search = this;
+    
+    function itemsOnLoad(items, total_pages) {
+      search.events.trigger('updateItems', items);
+      search.events.trigger('updateTotalPages', total_pages);
+    }
+    
+    function itemsOnError(error) {
+      search.events.trigger('error', error);
+    }
+    
+    this.setItemsByQuery = function (query) {
+      Item.loadByQuery(query, itemsOnLoad, itemsOnError);
     }
   }
 
@@ -530,7 +631,6 @@ Partial.ItemSet = function ItemSet(wardrobe, selector) {
   
   function prepSetSpecificItems(type) {
     return function (specific_items) {
-      log('set specific', type, specific_items);
       var item, worn, li;
       for(var i = 0; i < items.length; i++) {
         item = items[i];
@@ -589,26 +689,22 @@ Partial.ItemSet.setWardrobe = function (wardrobe) {
       }).wrap('<li/>').parent().attr('class', full_class);
       
       (function (type, toggle) {
-        $('a.' + live_class).live('click', function (e) {
+        $('li.' + live_class + ' a').live('click', function (e) {
           var el = $(this), item = el.closest('.object').data('item');
-          toggle_fn[type](item, !toggle);
+          toggle_fn[type][!toggle](item);
           e.preventDefault();
         });
       })(type, toggle);
     }
   }
   
-  toggle_fn.closeted = function (item, toggle) {
-    log('closet/uncloset', item, toggle);
-  }
+  toggle_fn.closeted = {};
+  toggle_fn.closeted[true] = $.proxy(wardrobe.closet, 'addItem');
+  toggle_fn.closeted[false] = function (item) { wardrobe.outfit.removeItem(item); wardrobe.closet.removeItem(item); }
 
-  toggle_fn.worn = function (item, toggle) {
-    if(toggle) {
-      wardrobe.outfit.addItem(item);
-    } else {
-      wardrobe.outfit.removeItem(item);
-    }
-  }
+  toggle_fn.worn = {};
+  toggle_fn.worn[true] = function (item) { wardrobe.closet.addItem(item); wardrobe.outfit.addItem(item); }
+  toggle_fn.worn[false] = $.proxy(wardrobe.outfit, 'removeItem');
   
   Partial.ItemSet.setWardrobe = $.noop;
 }
@@ -954,6 +1050,29 @@ View.PetTypeForm = function (wardrobe) {
 View.Title = function (wardrobe) {
   wardrobe.base_pet.bind('updateName', function (name) {
     $('#title').text("Planning " + name + "'s outfit");
+  });
+}
+
+View.Search = function (wardrobe) {
+  var form_selector = '#preview-search-form', form = $(form_selector),
+    item_set = new Partial.ItemSet(wardrobe, form_selector + ' ul');
+  
+  form.submit(function (e) {
+    e.preventDefault();
+    wardrobe.search.setItemsByQuery(form.find('input[name=query]').val());
+  });
+  
+  wardrobe.search.bind('updateItems', function (items) {
+    item_set.setItems(items);
+  });
+  
+  wardrobe.search.bind('updateTotalPages', function (total_pages) {
+    // TODO pagination
+  });
+  
+  wardrobe.search.bind('error', function (error) {
+    // TODO friendly dialog
+    log(error);
   });
 }
 

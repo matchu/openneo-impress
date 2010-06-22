@@ -458,8 +458,7 @@ body.outfits-edit #preview-closet {
   overflow: auto;
   width: 300px; }
   body.outfits-edit #preview-closet .object {
-    background: #eeffee;
-    position: relative; }
+    background: #eeffee; }
     body.outfits-edit #preview-closet .object img {
       -moz-opacity: 0.5;
       -webkit-opacity: 0.5;
@@ -472,52 +471,9 @@ body.outfits-edit #preview-closet {
         -webkit-opacity: 1;
         -o-opacity: 1;
         -khtml-opacity: 1; }
-    body.outfits-edit #preview-closet .object ul {
-      display: none;
-      left: 0;
-      list-style: none;
-      position: absolute;
-      top: 0; }
-      body.outfits-edit #preview-closet .object ul li {
-        margin-bottom: .25em; }
-        body.outfits-edit #preview-closet .object ul li a {
-          /* http://www.zurb.com/blog_uploads/0000/0617/buttons-03.html */
-          -moz-border-radius: 5px;
-          -webkit-border-radius: 5px;
-          font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
-          background: #006400 url(/assets/images/alert-overlay.png) repeat-x;
-          border: 0;
-          display: inline-block;
-          padding: 5px 10px 6px;
-          color: #fff;
-          text-decoration: none;
-          -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-          -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-          text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25);
-          border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-          position: relative;
-          font-weight: bold;
-          line-height: 1;
-          font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
-          background: #aaaaaa url(/assets/images/alert-overlay.png) repeat-x;
-          -moz-opacity: 0.9;
-          -webkit-opacity: 0.9;
-          -o-opacity: 0.9;
-          -khtml-opacity: 0.9;
-          font-size: 80%; }
-          body.outfits-edit #preview-closet .object ul li a:hover {
-            background-color: #005300; }
-          body.outfits-edit #preview-closet .object ul li a:hover {
-            color: #fff; }
-          body.outfits-edit #preview-closet .object ul li a:active {
-            top: 1px; }
-          body.outfits-edit #preview-closet .object ul li a:hover {
-            background-color: #999999; }
-    body.outfits-edit #preview-closet .object:hover ul, body.outfits-edit #preview-closet #shorten-url-copy-button-wrapper button.object.hover ul, body.outfits-edit #shorten-url-copy-button-wrapper #preview-closet button.object.hover ul {
-      display: block; }
-body.outfits-edit #preview-search {
+body.outfits-edit #preview-search-form {
   text-align: left; }
-  body.outfits-edit #preview-search h2 {
+  body.outfits-edit #preview-search-form h2 {
     display: -moz-inline-box;
     -moz-box-orient: vertical;
     display: inline-block;
@@ -525,13 +481,59 @@ body.outfits-edit #preview-search {
     *display: inline;
     *vertical-align: auto;
     margin: 0 1em 0 0; }
-  body.outfits-edit #preview-search input {
+  body.outfits-edit #preview-search-form input {
     display: -moz-inline-box;
     -moz-box-orient: vertical;
     display: inline-block;
     vertical-align: middle;
     *display: inline;
     *vertical-align: auto; }
+
+.object {
+  position: relative; }
+  .object ul {
+    display: none;
+    left: 0;
+    list-style: none;
+    position: absolute;
+    top: 0; }
+    .object ul li {
+      margin-bottom: .25em; }
+      .object ul li a {
+        /* http://www.zurb.com/blog_uploads/0000/0617/buttons-03.html */
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
+        background: #006400 url(/assets/images/alert-overlay.png) repeat-x;
+        border: 0;
+        display: inline-block;
+        padding: 5px 10px 6px;
+        color: #fff;
+        text-decoration: none;
+        -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        position: relative;
+        font-weight: bold;
+        line-height: 1;
+        font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
+        background: #aaaaaa url(/assets/images/alert-overlay.png) repeat-x;
+        -moz-opacity: 0.9;
+        -webkit-opacity: 0.9;
+        -o-opacity: 0.9;
+        -khtml-opacity: 0.9;
+        font-size: 80%; }
+        .object ul li a:hover {
+          background-color: #005300; }
+        .object ul li a:hover {
+          color: #fff; }
+        .object ul li a:active {
+          top: 1px; }
+        .object ul li a:hover {
+          background-color: #999999; }
+  .object:hover ul, body.outfits-edit #shorten-url-copy-button-wrapper button.object.hover ul {
+    display: block; }
 
 /* Fonts */
 /* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */

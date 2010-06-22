@@ -87,9 +87,8 @@ body.outfits-edit {
     width: $container_width - $preview_dimension;
     
     .object {
-      background: $module-bg-color;
-      position: relative;
-    
+      background: $module-bg-color;  
+      
       img {
         @include opacity(.5);
       }
@@ -101,32 +100,10 @@ body.outfits-edit {
           @include opacity(1);
         }
       }
-      
-      ul {
-        display: none;
-        left: 0;
-        list-style: none;
-        position: absolute;
-        top: 0;
-        
-        li {
-          margin-bottom: .25em;
-          a {
-            @include awesome-button;
-            @include awesome-button-color(#aaa);
-            @include opacity(.9);
-            font-size: 80%;
-          }
-        }
-      }
-      
-      &:hover ul {
-        display: block;
-      }
     }
   }
 
-  #preview-search {
+  #preview-search-form {
     text-align: left;
     
     h2 {
@@ -137,5 +114,31 @@ body.outfits-edit {
     input {
       @include inline-block;
     }
+  }
+}
+
+.object {
+  position: relative;
+  
+  ul {
+    display: none;
+    left: 0;
+    list-style: none;
+    position: absolute;
+    top: 0;
+    
+    li {
+      margin-bottom: .25em;
+      a {
+        @include awesome-button;
+        @include awesome-button-color(#aaa);
+        @include opacity(.9);
+        font-size: 80%;
+      }
+    }
+  }
+  
+  &:hover ul {
+    display: block;
   }
 }
