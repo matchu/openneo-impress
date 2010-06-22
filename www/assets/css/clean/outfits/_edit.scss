@@ -1,125 +1,141 @@
 $preview_dimension: 500px;
-
-#preview-toolbar {
-  @include clearfix;
-  margin-bottom: .5em;
-  
-  form {
-    float: left;
-    margin-left: 2em;
-    padding: .5em;
+body.outfits-edit {
+  #preview-toolbar {
+    @include clearfix;
+    margin-bottom: .5em;
     
-    &:first-child {
-      margin-left: 0;
+    form {
+      float: left;
+      margin-left: 2em;
+      padding: .5em;
+      
+      &:first-child {
+        margin-left: 0;
+      }
     }
   }
-}
 
-#pet-state-form {
-  ul {
-    list-style: none;
-    &, li {
-      display: inline;
+  #pet-state-form {
+    ul {
+      list-style: none;
+      &, li {
+        display: inline;
+      }
+    }
+    
+    input {
+      display: none;
+    }
+    
+    label {
+      @include awesome-button;
+      margin: 0 .25em;
+    }
+    
+    li.selected label {
+      @include awesome-button-color($marked_button_color);
     }
   }
-  
-  input {
+
+  #shorten-url-loading {
+    display: none;
+    font-size: 75%;
+    margin-left: .5em;
+  }
+
+  #shorten-url-response-form {
+    @include border-radius(3px);
+    background: $module-bg-color;
+    border: 1px solid $module-border-color;
     display: none;
   }
-  
-  label {
-    @include awesome-button;
-    margin: 0 .25em;
-  }
-  
-  li.selected label {
-    @include awesome-button-color($marked_button_color);
-  }
-}
 
-#shorten-url-loading {
-  display: none;
-  font-size: 75%;
-  margin-left: .5em;
-}
-
-#shorten-url-response-form {
-  @include border-radius(3px);
-  background: $module-bg-color;
-  border: 1px solid $module-border-color;
-  display: none;
-}
-
-#shorten-url-copy-button-wrapper {
-  @include inline-block;
-  position: relative;
-  
-  button {
-    @include awesome-button;
-    
-    margin-right: .5em;
-    
-    &.hover {
-      @extend :hover;
-    }
-    
-    &.active {
-      @extend :active;
-    }
-  }
-}
-
-#shorten-url-response {
-  font-size: 75%;
-  padding-top: .5em;
-}
-
-#preview-swf {
-  float: left;
-  height: $preview_dimension;
-  width: $preview_dimension;
-}
-
-#closet {
-  float: left;
-  height: $preview_dimension;
-  overflow: auto;
-  width: $container_width - $preview_dimension;
-  
-  .object {
-    background: $module-bg-color;
+  #shorten-url-copy-button-wrapper {
+    @include inline-block;
     position: relative;
-  
-    img {
-      @include opacity(.5);
-    }
     
-    &.worn {
-      background: inherit;
-      
-      img {
-        @include opacity(1);
-      }
-    }
-    
-    a {
+    button {
       @include awesome-button;
-      @include awesome-button-color(#aaa);
-      @include opacity(.9);
-      bottom: 0;
-      display: none;
-      font-size: 80%;
-      position: absolute;
-      right: 0;
       
-      &:active {
-        bottom: -1px;
-        top: auto;
+      margin-right: .5em;
+      
+      &.hover {
+        @extend :hover;
+      }
+      
+      &.active {
+        @extend :active;
       }
     }
+  }
+
+  #shorten-url-response {
+    font-size: 75%;
+    padding-top: .5em;
+  }
+
+  #preview-swf {
+    float: left;
+    height: $preview_dimension;
+    width: $preview_dimension;
+  }
+
+  #preview-closet {
+    float: left;
+    height: $preview_dimension;
+    overflow: auto;
+    width: $container_width - $preview_dimension;
     
-    &:hover a {
-      display: inherit;
+    .object {
+      background: $module-bg-color;
+      position: relative;
+    
+      img {
+        @include opacity(.5);
+      }
+      
+      &.worn {
+        background: inherit;
+        
+        img {
+          @include opacity(1);
+        }
+      }
+      
+      ul {
+        display: none;
+        left: 0;
+        list-style: none;
+        position: absolute;
+        top: 0;
+        
+        li {
+          margin-bottom: .25em;
+          a {
+            @include awesome-button;
+            @include awesome-button-color(#aaa);
+            @include opacity(.9);
+            font-size: 80%;
+          }
+        }
+      }
+      
+      &:hover ul {
+        display: block;
+      }
+    }
+  }
+
+  #preview-search {
+    text-align: left;
+    
+    h2 {
+      @include inline-block;
+      margin: 0 1em 0 0;
+    }
+    
+    input {
+      @include inline-block;
     }
   }
 }

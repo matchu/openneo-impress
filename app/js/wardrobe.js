@@ -1,4 +1,4 @@
-var View = {}, main_wardrobe;
+var View = {}, Partial = {}, main_wardrobe;
 
 window.log = window.SWFLog = $.noop;
 
@@ -522,6 +522,97 @@ function Wardrobe() {
 *
 */
 
+Partial.ItemSet = function ItemSet(wardrobe, selector) {
+  var item_set = this, ul = $(selector), items = [], setClosetItems,
+    setOutfitItems;
+  
+  Partial.ItemSet.setWardrobe(wardrobe);
+  
+  function prepSetSpecificItems(type) {
+    return function (specific_items) {
+      log('set specific', type, specific_items);
+      var item, worn, li;
+      for(var i = 0; i < items.length; i++) {
+        item = items[i];
+        in_set = $.inArray(item, specific_items) != -1;
+        li = $('li.object-' + item.id).toggleClass(type, in_set).
+          data('item', item).data(type, in_set).children('ul').
+          children('li.control-set-for-' + type).remove().end()
+          .append(Partial.ItemSet.CONTROL_SETS[type][in_set].clone());
+      }
+    }
+  }
+  
+  setClosetItems = prepSetSpecificItems('closeted');
+  
+  setOutfitItems = prepSetSpecificItems('worn');
+  
+  this.setItems = function (new_items) {
+    var item, li, controls;
+    items = new_items;
+    ul.children().remove();
+    for(var i = 0; i < items.length; i++) {
+      item = items[i];
+      li = $('<li/>', {'class': 'object object-' + item.id});
+      img = $('<img/>', {
+        'src': item.thumbnail_url,
+        'alt': item.description,
+        'title': item.description
+      });
+      controls = $('<ul/>');
+      li.append(img).append(controls).append(item.name).appendTo(ul);
+    }
+    setClosetItems(wardrobe.closet.items);
+    setOutfitItems(wardrobe.outfit.items);
+  }
+  
+  wardrobe.outfit.bind('updateItems', setOutfitItems);
+  wardrobe.closet.bind('updateItems', setClosetItems);
+}
+
+Partial.ItemSet.CONTROL_SETS = {};
+
+Partial.ItemSet.setWardrobe = function (wardrobe) {
+  var type, verb_set, toggle, live_class, full_class, toggle_fn = {};
+  for(var i = 0; i < 2; i++) {
+    type = i == 0 ? 'worn' : 'closeted';
+    verb_set = i == 0 ? ['Unwear', 'Wear'] : ['Uncloset', 'Closet'];
+    Partial.ItemSet.CONTROL_SETS[type] = {};
+    for(var j = 0; j < 2; j++) {
+      toggle = j == 0;
+      full_class = 'control-set control-set-for-' + type;
+      live_class = 'control-set-' + (toggle ? '' : 'not-') + type;
+      full_class += ' ' + live_class;
+      Partial.ItemSet.CONTROL_SETS[type][toggle] = $('<a/>', {
+        href: '#',
+        text: verb_set[toggle ? 0 : 1]
+      }).wrap('<li/>').parent().attr('class', full_class);
+      
+      (function (type, toggle) {
+        $('a.' + live_class).live('click', function (e) {
+          var el = $(this), item = el.closest('.object').data('item');
+          toggle_fn[type](item, !toggle);
+          e.preventDefault();
+        });
+      })(type, toggle);
+    }
+  }
+  
+  toggle_fn.closeted = function (item, toggle) {
+    log('closet/uncloset', item, toggle);
+  }
+
+  toggle_fn.worn = function (item, toggle) {
+    if(toggle) {
+      wardrobe.outfit.addItem(item);
+    } else {
+      wardrobe.outfit.removeItem(item);
+    }
+  }
+  
+  Partial.ItemSet.setWardrobe = $.noop;
+}
+
 if(document.location.search.substr(0, 6) == '?debug') {
   View.Console = function (wardrobe) {
     if(typeof console != 'undefined' && typeof console.log == 'function') {
@@ -548,67 +639,9 @@ if(document.location.search.substr(0, 6) == '?debug') {
 }
 
 View.Closet = function (wardrobe) {
-  var ul = $('#closet ul'),
-    control_sets = {}, toggle, klass;
+  var item_set = new Partial.ItemSet(wardrobe, '#preview-closet ul');
   
-  for(var i = 0; i < 2; i++) {
-    toggle = i == 0;
-    klass = 'control-set-' + (toggle ? 'worn' : 'unworn');
-    control_sets[toggle] = $('<a/>', {
-      'class': 'control-set ' + klass,
-      href: '#',
-      text: toggle ? 'Unwear' : 'Wear'
-    });
-    
-    (function (toggle) {
-      $('a.' + klass).live('click', function (e) {
-        var el = $(this), item = el.parent().data('item');
-        toggleWorn(item, !toggle);
-        e.preventDefault();
-      });
-    })(toggle);
-  }
-  
-  function toggleWorn(item, toggle) {
-    if(toggle) {
-      wardrobe.outfit.addItem(item);
-    } else {
-      wardrobe.outfit.removeItem(item);
-    }
-  }
-  
-  // TODO: add/remove instead of simply ripping out the guts and reconstructing
-  
-  function updateWorn(outfit_items) {
-    var item, worn, closet_items = wardrobe.closet.items, li;
-    for(var i = 0; i < closet_items.length; i++) {
-      item = closet_items[i];
-      worn = $.inArray(item, outfit_items) != -1;
-      li = $('li.object-' + item.id).toggleClass('worn', worn).
-        data({
-          'item': item,
-          'worn': worn
-        }).children('a.control-set').remove().end().append(control_sets[worn].clone());
-    }
-  }
-  
-  wardrobe.closet.bind('updateItems', function (items) {
-    var item, li;
-    ul.children().remove();
-    for(var i = 0; i < items.length; i++) {
-      item = items[i];
-      li = $('<li/>', {'class': 'object object-' + item.id});
-      img = $('<img/>', {
-        'src': item.thumbnail_url,
-        'alt': item.description,
-        'title': item.description
-      });
-      li.append(img).append(item.name).appendTo(ul);
-    }
-    updateWorn(wardrobe.outfit.items);
-  });
-  
-  wardrobe.outfit.bind('updateItems', updateWorn);
+  wardrobe.closet.bind('updateItems', $.proxy(item_set, 'setItems'));
 }
 
 View.Hash = function (wardrobe) {

@@ -24,11 +24,22 @@
   <div id="preview-swf">
     Javascript and Flash are required to preview outfits. Sorry!
   </div>
-  <div id="closet">
+  <div id="preview-closet">
     <h2>Closet</h2>
     <ul></ul>
   </div>
+  <form id="preview-search-form">
+    <header>
+      <h2>Add an item</h2>
+      <input type="text" name="query" placeholder="Search items..." />
+      <input type="submit" value="Go" />
+    </header>
+    <ul></ul>
+  </form>
 </div>
+<!--[if IE]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>

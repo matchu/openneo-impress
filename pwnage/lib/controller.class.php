@@ -5,13 +5,13 @@ class PwnageCore_Controller {
   private $before_filters;
   private $cache_id;
   private $cache_lifetime = 0;
-  private $current_action;
+  public $current_action;
   protected $format;
   private $formats = array('html');
   protected $get = array();
   private $has_rendered_or_redirected = false;
   private $layout;
-  private $name;
+  public $name;
   protected $path = array();
   protected $post = array();
   private $resource_cache;
@@ -48,7 +48,6 @@ class PwnageCore_Controller {
       if(!$this->has_rendered_or_redirected) {
         $this->current_action = $action_name;
         $this->$action_name();
-        unset($this->current_action);
       }
     } catch(PwnageCore_BadRequestException $e) {
       header('HTTP/1.0 400 Bad Request');
