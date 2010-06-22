@@ -638,7 +638,8 @@ Partial.ItemSet = function ItemSet(wardrobe, selector) {
         li = $('li.object-' + item.id).toggleClass(type, in_set).
           data('item', item).data(type, in_set).children('ul').
           children('li.control-set-for-' + type).remove().end()
-          .append(Partial.ItemSet.CONTROL_SETS[type][in_set].clone());
+          [type == 'worn' ? 'prepend' : 'append']
+          (Partial.ItemSet.CONTROL_SETS[type][in_set].clone());
       }
     }
   }
