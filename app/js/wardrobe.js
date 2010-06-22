@@ -760,20 +760,21 @@ View.Hash = function (wardrobe) {
     }
     
     BitlyCB.wardrobeSelfShorten = function (data) {
-      var response;
+      var hash, url;
       try {
-        response = data.results[document.location.href].shortUrl;
+        hash = data.results[document.location.href].hash;
       } catch (e) {
         log('shortener error: likely no longer same URL', e);
       }
+      url = 'http://outfits.openneo.net/' + hash;
       form.hide();
       response_form.show();
       if(!glued) {
         clip.glue('shorten-url-copy-button', 'shorten-url-copy-button-wrapper');
         glued = true;
       }
-      response_el.text(response);
-      clip.setText(response);
+      response_el.text(url);
+      clip.setText(url);
     }
     
     form.submit(function (e) {

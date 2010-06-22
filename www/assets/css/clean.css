@@ -451,6 +451,7 @@ body.standard .contributions span.time-ago {
       top: 1px; }
 
 #shorten-url-response {
+  font-size: 75%;
   padding-top: .5em; }
 
 #preview-swf {
