@@ -33,6 +33,7 @@
       <h2>Add an item</h2>
       <input type="text" name="query" placeholder="Search items..." />
       <input type="submit" value="Go" />
+      <div id="preview-search-form-pagination"></div>
     </header>
     <ul></ul>
   </form>

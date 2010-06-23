@@ -488,6 +488,18 @@ body.outfits-edit #preview-search-form {
     vertical-align: middle;
     *display: inline;
     *vertical-align: auto; }
+body.outfits-edit #preview-search-form-pagination {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *display: inline;
+  *vertical-align: auto;
+  margin-left: 2em; }
+  body.outfits-edit #preview-search-form-pagination a, body.outfits-edit #preview-search-form-pagination span {
+    margin: 0 .25em; }
+  body.outfits-edit #preview-search-form-pagination .current {
+    font-weight: bold; }
 
 .object {
   position: relative; }

@@ -115,6 +115,19 @@ body.outfits-edit {
       @include inline-block;
     }
   }
+  
+  #preview-search-form-pagination {
+    @include inline-block;
+    margin-left: 2em;
+    
+    a, span {
+      margin: 0 .25em;
+    }
+    
+    .current {
+      font-weight: bold;
+    }
+  }
 }
 
 .object {

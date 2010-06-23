@@ -184,8 +184,8 @@ function Wardrobe() {
   }
   ITEMS_URL = 'http://' + ITEMS_URL;
   
-  Item.loadByQuery = function (query, success, error) {
-    $.getJSON(ITEMS_URL, {q: query, per_page: PER_PAGE}, function (data) {
+  Item.loadByQuery = function (query, page, success, error) {
+    $.getJSON(ITEMS_URL, {q: query, per_page: PER_PAGE, page: page}, function (data) {
       var items = [], item, item_data;
       if(data.items) {
         for(var i = 0; i < data.items.length; i++) {
@@ -570,17 +570,28 @@ function Wardrobe() {
   Controller.Search = function SearchController() {
     var search = this;
     
-    function itemsOnLoad(items, total_pages) {
+    function itemsOnLoad(items, total_pages, page) {
       search.events.trigger('updateItems', items);
-      search.events.trigger('updateTotalPages', total_pages);
+      search.events.trigger('updatePagination', page, total_pages);
     }
     
     function itemsOnError(error) {
       search.events.trigger('error', error);
     }
     
-    this.setItemsByQuery = function (query) {
-      Item.loadByQuery(query, itemsOnLoad, itemsOnError);
+    this.setItemsByQuery = function (query, page) {
+      if(query && page) {
+        Item.loadByQuery(query, page, function (items, total_pages) {
+          itemsOnLoad(items, total_pages, page);
+        }, itemsOnError);
+      } else {
+        search.events.trigger('updateItems', []);
+        search.events.trigger('updatePagination', 0, 0);
+      }
+      search.events.trigger('updateRequest', {
+        query: query,
+        page: page
+      });
     }
   }
 
@@ -751,6 +762,8 @@ View.Hash = function (wardrobe) {
     color: TYPES.INTEGER,
     name: TYPES.STRING,
     objects: TYPES.INTEGER_ARRAY,
+    search: TYPES.STRING,
+    search_page: TYPES.INTEGER,
     species: TYPES.INTEGER,
     state: TYPES.INTEGER
   }, onUpdateQuery;
@@ -803,6 +816,9 @@ View.Hash = function (wardrobe) {
     }
     if(new_data.state != data.state) {
       wardrobe.outfit.setPetStateById(new_data.state);
+    }
+    if(new_data.search != data.search || new_data.search_page != data.search_page) {
+      wardrobe.search.setItemsByQuery(new_data.search, new_data.search_page);
     }
     data = new_data;
     parse_in_progress = false;
@@ -871,6 +887,15 @@ View.Hash = function (wardrobe) {
     var pet_type = wardrobe.outfit.pet_type;
     if(pet_state.id != data.state && pet_type && (data.state || pet_state.id != pet_type.pet_state_ids[0])) {
       changeQuery({state: pet_state.id});
+    }
+  });
+  
+  wardrobe.search.bind('updateRequest', function (request) {
+    if(request.page != data.search_page || request.query != data.search) {
+      changeQuery({
+        search_page: request.page,
+        search: request.query
+      });
     }
   });
   
@@ -1048,32 +1073,109 @@ View.PetTypeForm = function (wardrobe) {
   wardrobe.outfit.bind('updatePetType', updatePetType);
 }
 
-View.Title = function (wardrobe) {
-  wardrobe.base_pet.bind('updateName', function (name) {
-    $('#title').text("Planning " + name + "'s outfit");
-  });
-}
-
 View.Search = function (wardrobe) {
   var form_selector = '#preview-search-form', form = $(form_selector),
-    item_set = new Partial.ItemSet(wardrobe, form_selector + ' ul');
+    item_set = new Partial.ItemSet(wardrobe, form_selector + ' ul'),
+    input_el = form.find('input[name=query]'),
+    PAGINATION = {
+      INNER_WINDOW: 4,
+      OUTER_WINDOW: 1,
+      GAP_TEXT: '&hellip;',
+      PREV_TEXT: '&larr; Previous',
+      NEXT_TEXT: 'Next &rarr;',
+      PAGE_EL: $('<a/>', {href: '#'}),
+      CURRENT_EL: $('<span/>', {'class': 'current'}),
+      EL_ID: '#preview-search-form-pagination'
+    }
+    
+  PAGINATION.EL = $(PAGINATION.EL_ID);
+  PAGINATION.GAP_EL = $('<span/>', {'class': 'gap', html: PAGINATION.GAP_TEXT})
+  PAGINATION.PREV_EL = $('<a/>', {href: '#', rel: 'prev', html: PAGINATION.PREV_TEXT});
+  PAGINATION.NEXT_EL = $('<a/>', {href: '#', rel: 'next', html: PAGINATION.NEXT_TEXT});
+  
+  $(PAGINATION.EL_ID + ' a').live('click', function (e) {
+    e.preventDefault();
+    loadPage($(this).data('page'));
+  });
+  
+  function loadPage(page) {
+    wardrobe.search.setItemsByQuery(input_el.val(), page);
+  }
   
   form.submit(function (e) {
     e.preventDefault();
-    wardrobe.search.setItemsByQuery(form.find('input[name=query]').val());
+    loadPage(1);
   });
   
   wardrobe.search.bind('updateItems', function (items) {
     item_set.setItems(items);
   });
   
-  wardrobe.search.bind('updateTotalPages', function (total_pages) {
-    // TODO pagination
+  wardrobe.search.bind('updateRequest', function (request) {
+    input_el.val(request.query || '');
+  });
+  
+  wardrobe.search.bind('updatePagination', function (current_page, total_pages) {
+    // ported from http://github.com/mislav/will_paginate/blob/master/lib/will_paginate/view_helpers.rb#L274
+    var window_from = current_page - PAGINATION.INNER_WINDOW,
+      window_to = current_page + PAGINATION.INNER_WINDOW,
+      visible = [], left_gap, right_gap, subtract_left, subtract_right,
+      i = 1;
+    
+    if(window_to > total_pages) {
+      window_from -= window_to - total_pages;
+      window_to = total_pages;
+    }
+    
+    if(window_from < 1) {
+      window_to += 1 - window_from;
+      window_from = 1;
+      if(window_to > total_pages) window_to = total_pages;
+    }
+    
+    left_gap  = [2 + PAGINATION.OUTER_WINDOW, window_from];
+    right_gap = [window_to + 1, total_pages - PAGINATION.OUTER_WINDOW];
+    
+    subtract_left = (left_gap[1] - left_gap[0]) > 1;
+    subtract_right = (right_gap[1] - right_gap[0]) > 1;
+    
+    PAGINATION.EL.children().remove();
+    
+    if(current_page > 1) {
+      PAGINATION.PREV_EL.clone().data('page', current_page - 1).appendTo(PAGINATION.EL);
+    }
+    
+    while(i <= total_pages) {
+      if(subtract_left && i >= left_gap[0] && i < left_gap[1]) {
+        PAGINATION.GAP_EL.clone().appendTo(PAGINATION.EL);
+        i = left_gap[1];
+      } else if(subtract_right && i >= right_gap[0] && i < right_gap[1]) {
+        PAGINATION.GAP_EL.clone().appendTo(PAGINATION.EL);
+        i = right_gap[1];
+      } else {
+        if(i == current_page) {
+          PAGINATION.CURRENT_EL.clone().text(i).appendTo(PAGINATION.EL);
+        } else {
+          PAGINATION.PAGE_EL.clone().text(i).data('page', i).appendTo(PAGINATION.EL);
+        }
+        i++;
+      }
+    }
+    
+    if(current_page != total_pages) {
+      PAGINATION.NEXT_EL.clone().data('page', current_page + 1).appendTo(PAGINATION.EL);
+    }
   });
   
   wardrobe.search.bind('error', function (error) {
     // TODO friendly dialog
     log(error);
+  });
+}
+
+View.Title = function (wardrobe) {
+  wardrobe.base_pet.bind('updateName', function (name) {
+    $('#title').text("Planning " + name + "'s outfit");
   });
 }
 
