@@ -787,7 +787,7 @@ View.Hash = function (wardrobe) {
         if(KEYS[key] == TYPES.INTEGER) {
           new_data[key] = +value;
         } else if(KEYS[key] == TYPES.STRING) {
-          new_data[key] = value;
+          new_data[key] = decodeURIComponent(value).replace(/\+/g, ' ');
         } else if(key.substr(key.length-2) == '[]') {
           key = key.substr(0, key.length-2);
           if(KEYS[key] == TYPES.INTEGER_ARRAY) {
