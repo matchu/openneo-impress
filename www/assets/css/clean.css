@@ -471,6 +471,8 @@ body.outfits-edit #preview-closet {
         -webkit-opacity: 1;
         -o-opacity: 1;
         -khtml-opacity: 1; }
+    body.outfits-edit #preview-closet .object.no-assets {
+      background: #fbe3e4; }
 body.outfits-edit #preview-search-form {
   text-align: left; }
   body.outfits-edit #preview-search-form h2 {

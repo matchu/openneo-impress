@@ -100,6 +100,10 @@ body.outfits-edit {
           @include opacity(1);
         }
       }
+      
+      &.no-assets {
+        background: $error-bg-color;
+      }
     }
   }
 

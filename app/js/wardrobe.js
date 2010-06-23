@@ -108,7 +108,13 @@ function Wardrobe() {
     }
     
     this.hasAssetsFitting = function (pet_type) {
-      return typeof item.assets_by_body_id[pet_type.body_id] != 'undefined';
+      return typeof item.assets_by_body_id[pet_type.body_id] != 'undefined' &&
+        item.assets_by_body_id[pet_type.body_id].length > 0;
+    }
+    
+    this.couldNotLoadAssetsFitting = function (pet_type) {
+      return typeof item.assets_by_body_id[pet_type.body_id] != 'undefined' &&
+        item.assets_by_body_id[pet_type.body_id].length == 0;
     }
     
     this.update = function (data) {
@@ -293,6 +299,7 @@ function Wardrobe() {
           body_id: pet_type.body_id,
           parent_ids: item_ids_needed
         }, function (data) {
+          var item;
           $.each(data, function () {
             var item = Item.find(this.parent_id),
               asset = new ItemAsset(this);
@@ -301,6 +308,12 @@ function Wardrobe() {
             }
             item.assets_by_body_id[pet_type.body_id].push(asset);
           });
+          for(var i = 0, l = item_ids.length; i < l; i++) {
+            item = Item.find(item_ids[i]);
+            if(!item.hasAssetsFitting(pet_type)) {
+              item.assets_by_body_id[pet_type.body_id] = [];
+            }
+          }
           success();
         });
       } else {
@@ -636,7 +649,7 @@ function Wardrobe() {
 
 Partial.ItemSet = function ItemSet(wardrobe, selector) {
   var item_set = this, ul = $(selector), items = [], setClosetItems,
-    setOutfitItems;
+    setOutfitItems, setOutfitItemsControls;
   
   Partial.ItemSet.setWardrobe(wardrobe);
   
@@ -657,7 +670,20 @@ Partial.ItemSet = function ItemSet(wardrobe, selector) {
   
   setClosetItems = prepSetSpecificItems('closeted');
   
-  setOutfitItems = prepSetSpecificItems('worn');
+  setOutfitItemsControls = prepSetSpecificItems('worn');
+  setOutfitItems = function (specific_items) {
+    setOutfitItemsControls(specific_items);
+    setHasAssets(specific_items);
+  }
+  
+  function setHasAssets(specific_items) {
+    var item, no_assets, li, existing_why_red;
+    for(var i = 0, l = specific_items.length; i < l; i++) {
+      item = specific_items[i];
+      no_assets = item.couldNotLoadAssetsFitting(wardrobe.outfit.pet_type);
+      $('li.object-' + item.id).toggleClass('no-assets', no_assets);
+    }
+  }
   
   this.setItems = function (new_items) {
     var item, li, controls;
@@ -678,6 +704,7 @@ Partial.ItemSet = function ItemSet(wardrobe, selector) {
     setOutfitItems(wardrobe.outfit.items);
   }
   
+  wardrobe.outfit.bind('updateItemAssets', function () { setHasAssets(wardrobe.outfit.items) });
   wardrobe.outfit.bind('updateItems', setOutfitItems);
   wardrobe.closet.bind('updateItems', setClosetItems);
 }
