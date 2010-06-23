@@ -1206,6 +1206,12 @@ View.Title = function (wardrobe) {
   });
 }
 
+$.ajaxSetup({
+  error: function (xhr) {
+    $.jGrowl("There was an error loading that last resource. Oops. Please try again!");
+  }
+});
+
 main_wardrobe = new Wardrobe();
 main_wardrobe.registerViews(View);
 main_wardrobe.initialize();
