@@ -1162,7 +1162,7 @@ View.Search = function (wardrobe) {
       }
     }
     
-    if(current_page != total_pages) {
+    if(current_page < total_pages) {
       PAGINATION.NEXT_EL.clone().data('page', current_page + 1).appendTo(PAGINATION.EL);
     }
   });
