@@ -1,5 +1,9 @@
 {title is="Planning an outfit"}
 <div id="preview">
+  <div id="pet-type-not-found" class="possible-error">
+    We haven't seen <!-- TODO: specify --> that combination before. Have you?
+    Submit the pet's name if you have!
+  </div>
   <div id="preview-toolbar">
     <form id="pet-type-form">
       <select name="color"></select>
@@ -35,6 +39,11 @@
       <input type="submit" value="Go" />
       <div id="preview-search-form-pagination"></div>
     </header>
+    <div id="preview-search-form-loading">Loading...</div>
+    <div id="preview-search-form-error" class="possible-error"></div>
+    <div id="preview-search-form-no-results">
+      No results for "<span></span>"
+    </div>
     <ul></ul>
   </form>
 </div>
@@ -47,4 +56,4 @@
 <script type="text/javascript" src="http://bit.ly/javascript-api.js?version=latest&login=openneo&apiKey=R_4d0438829b7a99860de1d3edf55d8dc8"></script>
 <script type="text/javascript" src="/assets/js/ZeroClipboard.js"></script>
 <script type="text/javascript" src="/assets/js/jquery.jgrowl.js"></script>
-<script type="text/javascript" src="/assets/js/wardrobe.js?v=062220101316"></script>
+<script type="text/javascript" src="/assets/js/wardrobe.js?v=062620101551"></script>

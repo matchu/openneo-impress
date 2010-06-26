@@ -123,7 +123,7 @@ ul.buttons {
     display: inline;
     margin: 0 .5em; }
 
-.notice, .error {
+.notice, .error, body.outfits-edit .possible-error {
   margin-bottom: 1em;
   padding: .25em .5em;
   text-align: center; }
@@ -133,7 +133,7 @@ ul.buttons {
   border: 1px solid #c6d880;
   color: #264409; }
 
-.error {
+.error, body.outfits-edit .possible-error {
   background: #fbe3e4;
   border: 1px solid #fbc2c4;
   color: #8a1f11; }
@@ -593,6 +593,15 @@ body.outfits-edit #preview-search-form-pagination {
     margin: 0 .25em; }
   body.outfits-edit #preview-search-form-pagination .current {
     font-weight: bold; }
+body.outfits-edit #preview-search-form-loading {
+  display: none;
+  font-size: 75%;
+  font-style: italic;
+  margin-left: 2em; }
+body.outfits-edit #preview-search-form-no-results {
+  display: none; }
+body.outfits-edit .possible-error {
+  display: none; }
 
 .object {
   position: relative; }

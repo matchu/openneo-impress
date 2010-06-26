@@ -134,6 +134,25 @@ body.outfits-edit {
       font-weight: bold;
     }
   }
+  
+  #preview-search-form-loading {
+    display: none;
+    font: {
+      size: 75%;
+      style: italic;
+    }
+    margin-left: 2em;
+  }
+  
+  #preview-search-form-no-results {
+    display: none;
+  }
+  
+  .possible-error {
+    @extend .error;
+    
+    display: none;
+  }
 }
 
 .object {

@@ -583,6 +583,8 @@ function Wardrobe() {
   Controller.Search = function SearchController() {
     var search = this;
     
+    this.request = {};
+    
     function itemsOnLoad(items, total_pages, page) {
       search.events.trigger('updateItems', items);
       search.events.trigger('updatePagination', page, total_pages);
@@ -593,18 +595,20 @@ function Wardrobe() {
     }
     
     this.setItemsByQuery = function (query, page) {
+      search.request = {
+        query: query,
+        page: page
+      };
+      search.events.trigger('updateRequest', search.request);
       if(query && page) {
         Item.loadByQuery(query, page, function (items, total_pages) {
           itemsOnLoad(items, total_pages, page);
         }, itemsOnError);
+        search.events.trigger('startRequest');
       } else {
         search.events.trigger('updateItems', []);
         search.events.trigger('updatePagination', 0, 0);
       }
-      search.events.trigger('updateRequest', {
-        query: query,
-        page: page
-      });
     }
   }
 
@@ -1098,12 +1102,20 @@ View.PetTypeForm = function (wardrobe) {
   });
   
   wardrobe.outfit.bind('updatePetType', updatePetType);
+  
+  wardrobe.outfit.bind('petTypeNotFound', function () {
+    $('#pet-type-not-found').show('normal').delay(3000).hide('fast');
+  });
 }
 
 View.Search = function (wardrobe) {
   var form_selector = '#preview-search-form', form = $(form_selector),
     item_set = new Partial.ItemSet(wardrobe, form_selector + ' ul'),
     input_el = form.find('input[name=query]'),
+    error_el = $('#preview-search-form-error'),
+    loading_el = $('#preview-search-form-loading'),
+    no_results_el = $('#preview-search-form-no-results'),
+    no_results_span = no_results_el.children('span'),
     PAGINATION = {
       INNER_WINDOW: 4,
       OUTER_WINDOW: 1,
@@ -1129,17 +1141,32 @@ View.Search = function (wardrobe) {
     wardrobe.search.setItemsByQuery(input_el.val(), page);
   }
   
+  function stopLoading() {
+    loading_el.stop(true, true).hide();
+  }
+  
   form.submit(function (e) {
     e.preventDefault();
     loadPage(1);
   });
   
+  wardrobe.search.bind('startRequest', function () {
+    loading_el.delay(1000).show('slow');
+  });
+  
   wardrobe.search.bind('updateItems', function (items) {
+    stopLoading();
     item_set.setItems(items);
+    if(!items.length && wardrobe.search.request.query) {
+      no_results_el.show();
+    }
   });
   
   wardrobe.search.bind('updateRequest', function (request) {
+    error_el.hide('fast');
+    no_results_el.hide();
     input_el.val(request.query || '');
+    no_results_span.text(request.query);
   });
   
   wardrobe.search.bind('updatePagination', function (current_page, total_pages) {
@@ -1195,8 +1222,8 @@ View.Search = function (wardrobe) {
   });
   
   wardrobe.search.bind('error', function (error) {
-    // TODO friendly dialog
-    log(error);
+    stopLoading();
+    error_el.text(error).show('normal');
   });
 }
 
