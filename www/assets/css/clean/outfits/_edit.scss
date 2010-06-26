@@ -135,6 +135,12 @@ body.outfits-edit {
     }
   }
   
+  #preview-search-form-clear {
+    display: none;
+    font-size: 75%;
+    margin-left: 2em;
+  }
+  
   #preview-search-form-loading {
     display: none;
     font: {
@@ -146,6 +152,15 @@ body.outfits-edit {
   
   #preview-search-form-no-results {
     display: none;
+  }
+  
+  #preview-search-form-help {
+    font-size: 75%;
+    margin-left: 2em;
+  }
+  
+  .search-helper {
+    font-family: inherit;
   }
   
   .possible-error {

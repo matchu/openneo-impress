@@ -1,4 +1,8 @@
-var View = {}, Partial = {}, main_wardrobe;
+var View = {}, Partial = {}, main_wardrobe, ITEMS_SERVER = 'items.impress.openneo.net';
+if(document.location.hostname.substr(0, 5) == 'beta.') {
+  ITEMS_SERVER = 'beta.' + ITEMS_SERVER;
+}
+ITEMS_SERVER = 'http://' + ITEMS_SERVER;
 
 window.log = window.SWFLog = $.noop;
 
@@ -183,12 +187,8 @@ function Wardrobe() {
     return items;
   }
   
-  var ITEMS_URL = 'items.impress.openneo.net/index.js?callback=?',
+  var ITEMS_URL = ITEMS_SERVER + '/index.js?callback=?',
     PER_PAGE = 21;
-  if(document.location.hostname.substr(0, 5) == 'beta.') {
-    ITEMS_URL = 'beta.' + ITEMS_URL;
-  }
-  ITEMS_URL = 'http://' + ITEMS_URL;
   
   Item.loadByQuery = function (query, page, success, error) {
     $.getJSON(ITEMS_URL, {q: query, per_page: PER_PAGE, page: page}, function (data) {
@@ -208,6 +208,21 @@ function Wardrobe() {
   }
   
   Item.cache = {};
+  
+  function ItemZoneSet(name) {
+    this.name = name;
+  }
+  
+  ItemZoneSet.loadAll = function (success) {
+    $.getJSON(ITEMS_SERVER + '/item_zone_sets.js?callback=?', function (data) {
+      for(var i = 0, l = data.length; i < l; i++) {
+        ItemZoneSet.all.push(new ItemZoneSet(data[i]));
+      }
+      success(ItemZoneSet.all);
+    });
+  }
+  
+  ItemZoneSet.all = [];
   
   function PetAttribute() {}
   
@@ -577,6 +592,18 @@ function Wardrobe() {
     
     this.load = function () {
       PetAttribute.loadAll(onLoad);
+    }
+  }
+  
+  Controller.ItemZoneSets = function ItemZoneSetsController() {
+    var item_zone_sets = this;
+    
+    function onLoad(sets) {
+      item_zone_sets.events.trigger('update', sets);
+    }
+    
+    this.load = function () {
+      ItemZoneSet.loadAll(onLoad);
     }
   }
   
@@ -1112,7 +1139,9 @@ View.Search = function (wardrobe) {
   var form_selector = '#preview-search-form', form = $(form_selector),
     item_set = new Partial.ItemSet(wardrobe, form_selector + ' ul'),
     input_el = form.find('input[name=query]'),
+    clear_el = $('#preview-search-form-clear'),
     error_el = $('#preview-search-form-error'),
+    help_el = $('#preview-search-form-help'),
     loading_el = $('#preview-search-form-loading'),
     no_results_el = $('#preview-search-form-no-results'),
     no_results_span = no_results_el.children('span'),
@@ -1137,6 +1166,8 @@ View.Search = function (wardrobe) {
     loadPage($(this).data('page'));
   });
   
+  this.initialize = $.proxy(wardrobe.item_zone_sets, 'load');
+  
   function loadPage(page) {
     wardrobe.search.setItemsByQuery(input_el.val(), page);
   }
@@ -1150,6 +1181,12 @@ View.Search = function (wardrobe) {
     loadPage(1);
   });
   
+  clear_el.click(function (e) {
+    e.preventDefault();
+    input_el.val('');
+    form.submit();
+  });
+  
   wardrobe.search.bind('startRequest', function () {
     loading_el.delay(1000).show('slow');
   });
@@ -1157,16 +1194,22 @@ View.Search = function (wardrobe) {
   wardrobe.search.bind('updateItems', function (items) {
     stopLoading();
     item_set.setItems(items);
-    if(!items.length && wardrobe.search.request.query) {
-      no_results_el.show();
+    if(wardrobe.search.request.query) {
+      if(!items.length) {
+        no_results_el.show();
+      }
+    } else {
+      help_el.show();
     }
   });
   
   wardrobe.search.bind('updateRequest', function (request) {
     error_el.hide('fast');
+    help_el.hide();
     no_results_el.hide();
     input_el.val(request.query || '');
     no_results_span.text(request.query);
+    clear_el.toggle(!!request.query);
   });
   
   wardrobe.search.bind('updatePagination', function (current_page, total_pages) {
@@ -1224,6 +1267,42 @@ View.Search = function (wardrobe) {
   wardrobe.search.bind('error', function (error) {
     stopLoading();
     error_el.text(error).show('normal');
+  });
+  
+  help_el.find('dt').wrapInner($('<a/>', {href: '#'}));
+  
+  help_el.find('dt a').live('click', function (e) {
+    var el = $(this), children = el.children(), query;
+    e.preventDefault();
+    if(children.length) {
+      query = children.map(function () {
+        return this[$(this).is('span') ? 'innerText' : 'value'];
+      }).get().join('');
+    } else {
+      query = el.text();
+    }
+    input_el.val(query);
+    form.submit();
+  });
+  
+  $('select.search-helper').live('change', function () {
+    var el = $(this), filter = el.attr('data-search-filter');
+    // TODO: do species as well as type
+    $('select.search-helper').val(el.val());
+  }).live('click', function (e) {
+    e.stopPropagation();
+  });
+  
+  wardrobe.item_zone_sets.bind('update', function (sets) {
+    var select = $('<select/>',
+      {'class': 'search-helper', 'data-search-filter': 'type'}),
+      span = $('span.search-helper[data-search-filter=type]');
+    for(var i = 0, l = sets.length; i < l; i++) {
+      $('<option/>', {text: sets[i].name}).appendTo(select);
+    }
+    span.replaceWith(function () {
+      return select.clone().fadeIn('fast');
+    });
   });
 }
 

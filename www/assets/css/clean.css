@@ -16,7 +16,7 @@ caption, tbody, tfoot, thead, tr, th, td {
 /* Typography */
 body {
   color: #004400;
-  font-family: Droid Serif, Georgia, "Times New Roman", Times, serif;
+  font-family: "Droid Serif", Georgia, "Times New Roman", Times, serif;
   font-size: 90%;
   line-height: 1.5; }
 
@@ -187,6 +187,12 @@ ul.buttons {
     height: 80px;
     margin: 0 auto;
     width: 80px; }
+
+dt {
+  font-weight: bold; }
+
+dd {
+  margin: 0 0 1.5em 1em; }
 
 /* Layouts */
 body.index #outfit-forms {
@@ -593,6 +599,10 @@ body.outfits-edit #preview-search-form-pagination {
     margin: 0 .25em; }
   body.outfits-edit #preview-search-form-pagination .current {
     font-weight: bold; }
+body.outfits-edit #preview-search-form-clear {
+  display: none;
+  font-size: 75%;
+  margin-left: 2em; }
 body.outfits-edit #preview-search-form-loading {
   display: none;
   font-size: 75%;
@@ -600,6 +610,11 @@ body.outfits-edit #preview-search-form-loading {
   margin-left: 2em; }
 body.outfits-edit #preview-search-form-no-results {
   display: none; }
+body.outfits-edit #preview-search-form-help {
+  font-size: 75%;
+  margin-left: 2em; }
+body.outfits-edit .search-helper {
+  font-family: inherit; }
 body.outfits-edit .possible-error {
   display: none; }
 
