@@ -2,8 +2,8 @@
 <?php
 require_once dirname(__FILE__).'/../pwnage/environment.php';
 
-define('ScriptRoot', PWNAGE_ROOT.'/app/js');
-define('PublicScriptRoot', PWNAGE_ROOT.'/www/assets/js');
+define('SCRIPT_ROOT', PWNAGE_ROOT.'/app/js');
+define('PUBLIC_SCRIPT_ROOT', PWNAGE_ROOT.'/www/assets/js');
 
 class Pwnage_ClosureRequest {
   private $input;
@@ -43,31 +43,55 @@ class Pwnage_ClosureRequest {
   }
 }
 
-function scanDirForScripts($dir) {
-  echo "Scanning $dir...\n";
-  $files = glob("$dir/*.js");
-  foreach($files as $file) {
-    $basename = basename($file);
-    $public_path = PublicScriptRoot.'/'.str_replace(array(ScriptRoot.'/', ScriptRoot),
+class Pwnage_JSFile {
+  protected $file;
+  protected $public_path;
+  
+  
+  public function __construct($file) {
+    $this->file = $file;
+    $this->public_path = PUBLIC_SCRIPT_ROOT.'/'.str_replace(array(SCRIPT_ROOT.'/', SCRIPT_ROOT),
       '', $file);
-    $public_dir = dirname($public_path);
+  }
+  
+  public function minify() {
+    $basename = basename($this->file);
+    $this->prepPublicDir();
+    echo "Processing $basename...\n";
+    $request = new Pwnage_ClosureRequest($this->file);
+    $output = $request->exec();
+    file_put_contents($this->public_path, $output);
+    echo "$basename saved.\n";
+  }
+  
+  protected function prepPublicDir() {
+    $public_dir = dirname($this->public_path);
     if(!file_exists($public_dir) && !is_dir($public_dir)) {
       echo "Making dir $public_dir...\n";
       mkdir($public_dir, 0777, true);
     }
-    echo "Processing $basename...\n";
-    $request = new Pwnage_ClosureRequest($file);
-    $output = $request->exec();
-    file_put_contents($public_path, $output);
-    echo "$basename saved.\n";
   }
-  $dirs = glob("$dir/*", GLOB_ONLYDIR);
-  if($dirs) {
-    foreach($dirs as $dir) {
-      scanDirForScripts($dir);
+  
+  static function scanDir($dir) {
+    echo "Scanning $dir...\n";
+    $files = glob("$dir/*.js");
+    foreach($files as $file) {
+      $js_file = new Pwnage_JSFile($file);
+      $js_file->minify();
+    }
+    $dirs = glob("$dir/*", GLOB_ONLYDIR);
+    if($dirs) {
+      foreach($dirs as $dir) {
+        self::scanDir($dir);
+      }
     }
   }
 }
 
-scanDirForScripts(ScriptRoot);
+if(isset($argv[1])) {
+  $js_file = new Pwnage_JSFile(SCRIPT_ROOT.'/'.$argv[1]);
+  $js_file->minify();
+} else {
+  Pwnage_JSFile::scanDir(SCRIPT_ROOT);
+}
 ?>
