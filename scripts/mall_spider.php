@@ -31,6 +31,8 @@ function setMode($new_mode) {
 $mode = spiderObjects;
 $trace = false;
 $limit = 100;
+$colors = false;
+$objects = false;
 
 try {
   $arguments = $argv;
@@ -44,6 +46,10 @@ try {
     } elseif(preg_match('/^--limit=([0-9]+)$/', $arg, $matches)) {
       setMode(spiderAssets);
       $limit = (int) $matches[1];
+    } elseif(preg_match('/^--colors=([0-9]+(,[0-9]+)*)$/', $arg, $matches)) {
+      $colors = $matches[1];
+    } elseif(preg_match('/^--objects=([0-9]+(,[0-9]+)*)$/', $arg, $matches)) {
+      $objects = $matches[1];
     } elseif($arg == '--trace') {
       $trace = true;
     } else {
@@ -54,7 +60,7 @@ try {
   if($mode == spiderObjects) {
     Pwnage_Object::spiderMall();
   } elseif($mode == spiderAssets) {
-    Pwnage_ObjectAsset::spiderMall($limit);
+    Pwnage_ObjectAsset::spiderMall($limit, $colors, $objects);
   } elseif($mode == spiderCatFile) {
     if(file_exists($cat_file)) {
       if($data = file_get_contents($cat_file)) {

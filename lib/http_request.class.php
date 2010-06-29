@@ -7,8 +7,8 @@ class HttpRequest {
   
   public function getResponse() {
     $ch = curl_init($this->url);
-    curl_setopt($ch, CURLOPT_HEADERS, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($ch);
     curl_close($ch);
     return $response;

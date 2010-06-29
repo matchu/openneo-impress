@@ -76,16 +76,25 @@ class Pwnage_ObjectAsset extends Pwnage_SwfAsset {
     return parent::rejectExistingInCollection($objects, self::$table);
   }
   
-  static function spiderMall($limit=100) {
+  static function spiderMall($limit=100, $colors=false, $objects=false) {
+    // SECURITY: $colors and $objects are trusted to be [0-9]+ and commas.
+    // Do NOT accept user input for this function before sanitizing!
+    //
     // The combination-finding query used to be one really, really slow one,
     // but since MySQL's query optimizer is broken, we managed to speed it up
     // very, very, very much by pulling out the subquery into a separate query.
-    $standard_color_string = implode(', ', Pwnage_Color::getStandardIds());
+    if(!$colors) $colors = implode(',', Pwnage_Color::getStandardIds());
     echo "Finding combinations to search for...\n";
+    $where = array('swf_asset_type = ?', 'object');
+    if($objects) {
+      self::mergeConditions($where, array(
+        "parent_id IN ($objects)"
+      ));
+    }
     $relationships = Pwnage_ParentSwfAssetRelationship::all(array(
       'select' => 'DISTINCT parent_id, body_id',
       'joins' => 'INNER JOIN swf_assets ON swf_assets.id = parents_swf_assets.swf_asset_id',
-      'where' => array('swf_asset_type = ?', 'object')
+      'where' => $where
     ));
     $objects_with_assets = array();
     $combinations_with_assets = array();
@@ -101,16 +110,19 @@ class Pwnage_ObjectAsset extends Pwnage_SwfAsset {
     $combinations_with_assets_str = implode(', ', $combinations_with_assets);
     unset($combinations_with_assets);
     $db = PwnageCore_Db::getInstance();
+    $where = <<<SQL
+      pt.color_id IN ($colors) AND
+      o.id NOT IN ($objects_with_assets_str) AND
+      (o.id, pt.body_id) NOT IN ($combinations_with_assets_str) AND
+      o.sold_in_mall = 1
+SQL;
+    if($objects) $where .= " AND o.id IN ($objects)";
     $combination_stmt = $db->prepare(<<<SQL
       SELECT o.id, o.name, p.name, p.id, pt.id, pt.color_id, pt.species_id,
         o.zones_restrict, pt.body_id
       FROM objects o, pet_types pt
       INNER JOIN pets p ON p.pet_type_id = pt.id
-      WHERE
-      pt.color_id IN ($standard_color_string) AND
-      o.id NOT IN ($objects_with_assets_str) AND
-      (o.id, pt.body_id) NOT IN ($combinations_with_assets_str) AND
-      o.sold_in_mall = 1
+      WHERE $where
       GROUP BY o.id, pt.body_id
       ORDER BY o.last_spidered ASC
       LIMIT $limit
@@ -194,6 +206,8 @@ SQL
             }
             $current_object_is_body_specific = $asset->isBodySpecific();
           }
+        } else {
+          echo "Data doesn't fit. Bad body type?\n";
         }
         if(!$current_object_is_body_specific) {
           echo "Object not body-specific; our job here is done.\n";
