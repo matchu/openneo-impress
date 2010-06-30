@@ -880,7 +880,6 @@ View.Hash = function (wardrobe) {
     }
     data = new_data;
     parse_in_progress = false;
-    onUpdateQuery();
   }
   
   function changeQuery(changes) {
@@ -911,6 +910,7 @@ View.Hash = function (wardrobe) {
   this.initialize = function () {
     checkQuery();
     setInterval(checkQuery, 100);
+    onUpdateQuery();
   }
   
   wardrobe.outfit.bind('updateItems', function (items) {
@@ -958,45 +958,50 @@ View.Hash = function (wardrobe) {
   });
   
   (function Share() {
-    ZeroClipboard.setMoviePath('/assets/swf/ZeroClipboard.swf');
-    var response_el = $('#shorten-url-response'),
-      form = $('#shorten-url-form'),
-      response_form = $('#shorten-url-response-form'),
-      loading = $('#shorten-url-loading'),
-      clip = new ZeroClipboard.Client(),
-      glued = false;
+    var CALLBACK_NAME = 'shortenResponse',
+      button_id = '#share-button',
+      button = $(button_id),
+      wrapper = button.parent(),
+      SHORT_URL_HOST = 'http://outfits.openneo.net/',
+      current_url,
+      shortening = false,
+      shortened = false;
     
     onUpdateQuery = function () {
-      form.show();
-      loading.hide();
-      response_form.hide();
+      var l = window.location;
+      current_url = l.protocol + '//' + l.host + l.pathname + l.hash;
+      setURL(current_url);
+      shortened = false;
     }
     
-    BitlyCB.wardrobeSelfShorten = function (data) {
-      var hash, url;
-      try {
-        hash = data.results[document.location.href].hash;
-      } catch (e) {
-        log('shortener error: likely no longer same URL', e);
+    function setURL(url) {
+      if(typeof addthis_share != 'undefined') {
+        addthis_share.url = url;
+        button.replaceWith(button.clone());
+        addthis.button(button_id);
       }
-      url = 'http://outfits.openneo.net/' + hash;
-      form.hide();
-      response_form.show();
-      if(!glued) {
-        clip.glue('shorten-url-copy-button', 'shorten-url-copy-button-wrapper');
-        glued = true;
-      }
-      response_el.text(url);
-      clip.setText(url);
     }
     
-    form.submit(function (e) {
-      BitlyClient.shorten(document.location.href, 'BitlyCB.wardrobeSelfShorten');
-      loading.show();
-      e.preventDefault();
-    });
+    BitlyCB[CALLBACK_NAME] = function (data) {
+      var url, key;
+      for(key in data.results) {
+        url = SHORT_URL_HOST + data.results[key].hash;
+        break;
+      }
+      setURL(url);
+      shortening = false;
+      shortened = true;
+    }
     
-    response_form.submit(function (e) { e.preventDefault() });
+    function startShorten() {
+      if(!shortening && !shortened) {
+        shortening = true;
+        BitlyClient.shorten(current_url, 'BitlyCB.' + CALLBACK_NAME);
+      }
+    }
+    
+    wrapper.mouseover(startShorten);
+    button.focus(startShorten);
   })();
 }
 

@@ -90,18 +90,18 @@ a.button, input[type=submit], button {
   position: relative;
   font-weight: bold;
   line-height: 1; }
-  a.button:hover, input[type=submit]:hover, button:hover, body.outfits-edit #shorten-url-copy-button-wrapper button.hover {
+  a.button:hover, input[type=submit]:hover, button:hover {
     background-color: #005300; }
-  a.button:hover, input[type=submit]:hover, button:hover, body.outfits-edit #shorten-url-copy-button-wrapper button.hover {
+  a.button:hover, input[type=submit]:hover, button:hover {
     color: #fff; }
-  a.button:active, input[type=submit]:active, button:active, body.outfits-edit #shorten-url-copy-button-wrapper button.active {
+  a.button:active, input[type=submit]:active, button:active {
     top: 1px; }
   a.button.loud, input[type=submit].loud, button.loud {
     font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
     background: #ff5c00 url(/assets/images/alert-overlay.png) repeat-x;
     font-size: 125%;
     padding: 8px 14px 9px; }
-    a.button.loud:hover, input[type=submit].loud:hover, button.loud:hover, body.outfits-edit #shorten-url-copy-button-wrapper button.loud.hover {
+    a.button.loud:hover, input[type=submit].loud:hover, button.loud:hover {
       background-color: #ee4b00; }
 
 a.button:after {
@@ -255,7 +255,7 @@ body.index #form-1 {
     font-size: 125%;
     padding: 8px 14px 9px;
     font-size: 67%; }
-    body.index #form-1 button:hover, body.index #form-1 body.outfits-edit #shorten-url-copy-button-wrapper button.hover, body.outfits-edit #shorten-url-copy-button-wrapper body.index #form-1 button.hover {
+    body.index #form-1 button:hover {
       background-color: #ee4b00; }
 body.index #form-2 {
   -moz-opacity: 0.75;
@@ -307,7 +307,7 @@ body.standard #home-link {
   padding: .25em;
   position: absolute;
   top: 0; }
-  body.standard #home-link:hover, body.standard body.outfits-edit #shorten-url-copy-button-wrapper button#home-link.hover, body.outfits-edit #shorten-url-copy-button-wrapper body.standard button#home-link.hover {
+  body.standard #home-link:hover {
     background: #eeffee;
     text-decoration: none; }
   body.standard #home-link span:before {
@@ -332,7 +332,7 @@ body.standard .contributions .point-value {
   top: 0;
   width: 80px;
   z-index: 3; }
-  body.standard .contributions .point-value:hover, body.standard .contributions body.outfits-edit #shorten-url-copy-button-wrapper button.point-value.hover, body.outfits-edit #shorten-url-copy-button-wrapper body.standard .contributions button.point-value.hover {
+  body.standard .contributions .point-value:hover {
     -moz-opacity: 0.5;
     -webkit-opacity: 0.5;
     -o-opacity: 0.5;
@@ -453,17 +453,14 @@ div.jGrowl div.jGrowl-closer {
     display: none; } }
 
 body.outfits-edit #preview-toolbar {
-  overflow: hidden;
-  display: inline-block;
-  margin-bottom: .5em; }
-  body.outfits-edit #preview-toolbar {
-    display: block; }
-  body.outfits-edit #preview-toolbar > * {
-    float: left;
-    margin-left: 2em;
-    padding: .5em; }
-    body.outfits-edit #preview-toolbar > *:first-child {
-      margin-left: 0; }
+  margin-bottom: .5em;
+  position: relative;
+  text-align: left; }
+  body.outfits-edit #preview-toolbar form {
+    display: inline;
+    margin-right: 2em; }
+body.outfits-edit #pet-info form {
+  display: inline; }
 body.outfits-edit #pet-state-form ul {
   list-style: none; }
   body.outfits-edit #pet-state-form ul, body.outfits-edit #pet-state-form ul li {
@@ -500,81 +497,37 @@ body.outfits-edit #pet-state-form li.selected label {
   background: #0b61a4 url(/assets/images/alert-overlay.png) repeat-x; }
   body.outfits-edit #pet-state-form li.selected label:hover {
     background-color: #005093; }
-body.outfits-edit #share a, body.outfits-edit #share form {
-  display: -moz-inline-box;
-  -moz-box-orient: vertical;
-  display: inline-block;
-  vertical-align: middle;
-  *display: inline;
-  *vertical-align: auto; }
 body.outfits-edit #share-button {
-  font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
-  background: #ff5c00 url(/assets/images/alert-overlay.png) repeat-x; }
-  body.outfits-edit #share-button:hover, body.outfits-edit #shorten-url-copy-button-wrapper button#share-button.hover {
-    background-color: #ee4b00; }
+  margin-right: 1em;
+  position: absolute;
+  right: 0;
+  top: 0; }
   body.outfits-edit #share-button img {
     margin-bottom: -.25em;
     margin-right: .25em;
     height: 16px;
     width: 16px; }
-body.outfits-edit #shorten-url-loading {
-  display: none;
-  font-size: 75%;
-  margin-left: .5em; }
-body.outfits-edit #shorten-url-response-form {
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  background: #eeffee;
-  border: 1px solid #006600;
-  display: none;
-  margin-bottom: -.5em;
-  margin-top: -.5em;
-  padding: .5em; }
-body.outfits-edit #shorten-url-copy-button-wrapper {
-  display: -moz-inline-box;
-  -moz-box-orient: vertical;
-  display: inline-block;
-  vertical-align: middle;
-  *display: inline;
-  *vertical-align: auto;
-  position: relative; }
-  body.outfits-edit #shorten-url-copy-button-wrapper button {
-    /* http://www.zurb.com/blog_uploads/0000/0617/buttons-03.html */
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
-    background: #006400 url(/assets/images/alert-overlay.png) repeat-x;
-    border: 0;
-    display: inline-block;
-    padding: 5px 10px 6px;
-    color: #fff;
-    text-decoration: none;
-    -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    position: relative;
-    font-weight: bold;
-    line-height: 1;
-    margin-right: .5em; }
-    body.outfits-edit #shorten-url-copy-button-wrapper button:hover, body.outfits-edit #shorten-url-copy-button-wrapper button.hover {
-      background-color: #005300; }
-    body.outfits-edit #shorten-url-copy-button-wrapper button:hover, body.outfits-edit #shorten-url-copy-button-wrapper button.hover {
-      color: #fff; }
-    body.outfits-edit #shorten-url-copy-button-wrapper button:active, body.outfits-edit #shorten-url-copy-button-wrapper button.active {
-      top: 1px; }
-body.outfits-edit #shorten-url-response {
-  font-size: 75%;
-  padding-top: .5em; }
+  body.outfits-edit #share-button:active {
+    top: 1px; }
+body.outfits-edit #share-button-toolbox {
+  left: 0;
+  position: absolute;
+  top: 0; }
+  body.outfits-edit #share-button-toolbox a {
+    cursor: pointer; }
 body.outfits-edit #preview-swf {
   float: left;
   height: 500px;
   width: 500px; }
 body.outfits-edit #preview-closet {
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  background: #eeffee;
   float: left;
   height: 500px;
+  margin-left: 20px;
   overflow: auto;
-  width: 300px; }
+  width: 280px; }
   body.outfits-edit #preview-closet .object {
     background: #eeffee; }
     body.outfits-edit #preview-closet .object img {
@@ -682,7 +635,7 @@ body.outfits-edit .possible-error {
           top: 1px; }
         .object ul li a:hover {
           background-color: #999999; }
-  .object:hover ul, body.outfits-edit #shorten-url-copy-button-wrapper button.object.hover ul {
+  .object:hover ul {
     display: block; }
 
 /* Fonts */

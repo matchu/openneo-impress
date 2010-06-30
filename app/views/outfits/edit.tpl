@@ -14,21 +14,11 @@
       Gender/Emotions:
       <ul></ul>
     </form>
-    <div id="share">
-      <button id="share-button">
-        <img src="http://sharethis.com/images/share-icon-16x16.png" />
+    <div>
+      <button id="share-button" class="addthis_button">
+        <img src="http://s7.addthis.com/static/t00/logo1414.gif" />
         Share
       </button>
-      <form id="shorten-url-form">
-        <input id="shorten-url-submit-button" type="submit" value="Shorten URL" />
-        <span id="shorten-url-loading">Loading...</span>
-      </form>
-      <form id="shorten-url-response-form">
-        <div id="shorten-url-copy-button-wrapper">
-          <button id="shorten-url-copy-button">Copy</button>
-        </div>
-        <span id="shorten-url-response"></span>
-      </form>
     </div>
   </div>
   <div id="preview-swf">
@@ -75,9 +65,8 @@
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
 <script type="text/javascript" src="http://bit.ly/javascript-api.js?version=latest&login=openneo&apiKey=R_4d0438829b7a99860de1d3edf55d8dc8"></script>
-<script type="text/javascript" src="/assets/js/ZeroClipboard.js"></script>
+<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=openneo"></script>
 <script type="text/javascript" src="/assets/js/jquery.jgrowl.js"></script>
 <script type="text/javascript" src="/assets/js/wardrobe.js?v=062620101639"></script>

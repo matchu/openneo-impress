@@ -1,20 +1,22 @@
 @import "../../jquery.jgrowl";
 
-$preview_dimension: 500px;
+$preview-dimension: 500px;
+$closet-margin:    20px;
+
 body.outfits-edit {
   #preview-toolbar {
-    @include clearfix;
     margin-bottom: .5em;
+    position: relative;
+    text-align: left;
     
-    > * {
-      float: left;
-      margin-left: 2em;
-      padding: .5em;
-      
-      &:first-child {
-        margin-left: 0;
-      }
+    form {
+      display: inline;
+      margin-right: 2em;
     }
+  }
+  
+  #pet-info form {
+    display: inline;
   }
 
   #pet-state-form {
@@ -39,14 +41,11 @@ body.outfits-edit {
     }
   }
   
-  #share {
-    a, form {
-      @include inline-block;
-    }
-  }
-  
   #share-button {
-    @include loud-awesome-button-color;
+    margin-right: 1em;
+    position: absolute;
+    right: 0;
+    top: 0;
     
     img {
       margin: {
@@ -56,61 +55,36 @@ body.outfits-edit {
       height: 16px;
       width: 16px;
     }
-  }
-
-  #shorten-url-loading {
-    display: none;
-    font-size: 75%;
-    margin-left: .5em;
-  }
-
-  #shorten-url-response-form {
-    @include border-radius(3px);
-    background: $module-bg-color;
-    border: 1px solid $module-border-color;
-    display: none;
-    margin: {
-      bottom: -.5em;
-      top: -.5em;
-    }
-    padding: .5em;
-  }
-
-  #shorten-url-copy-button-wrapper {
-    @include inline-block;
-    position: relative;
     
-    button {
-      @include awesome-button;
-      
-      margin-right: .5em;
-      
-      &.hover {
-        @extend :hover;
-      }
-      
-      &.active {
-        @extend :active;
-      }
+    &:active {
+      top: 1px;
     }
   }
-
-  #shorten-url-response {
-    font-size: 75%;
-    padding-top: .5em;
+  
+  #share-button-toolbox {
+    left: 0;
+    position: absolute;
+    top: 0;
+    
+    a {
+      cursor: pointer;
+    }
   }
 
   #preview-swf {
     float: left;
-    height: $preview_dimension;
-    width: $preview_dimension;
+    height: $preview-dimension;
+    width: $preview-dimension;
   }
 
   #preview-closet {
+    @include border-radius(10px);
+    background: $module-bg-color;
     float: left;
-    height: $preview_dimension;
+    height: $preview-dimension;
+    margin-left: $closet_margin;
     overflow: auto;
-    width: $container_width - $preview_dimension;
+    width: $container_width - $preview-dimension - $closet_margin;
     
     .object {
       background: $module-bg-color;  
