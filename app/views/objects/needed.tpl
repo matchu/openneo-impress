@@ -1,5 +1,4 @@
-{if isset($objects)}
-{  title is="Needed Objects For $color_name $species_name"}
+{title is="Needed Objects For $color_name $species_name"}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
 <h2>
@@ -25,11 +24,6 @@
       What do I own?
     </a>
   </li>
-  <li>
-    <a class="button" href="{path to=needed_objects}">
-      Try another pet
-    </a>
-  </li>
 </ul>
 <ul id="needed-objects">
 {  foreach from=$objects item=object}
@@ -42,33 +36,3 @@
   </li>
 {  /foreach}
 </ul>
-{else}
-{  title is='Needed Objects'}
-<div class="mascot-dialogue">
-  <p>
-    Hey, you! Are you here to help us out? Well, aren't you precious!
-  </p>
-  <p>
-    We're looking for
-    <strong>new, fresh clothing combinations</strong>
-    so we can see what different wearables look like on different kinds of pets.
-  </p>
-  <p>
-    <strong>
-      Just tell us your pet's name, and we'll tell you what clothes
-      we're looking for.
-    </strong>
-    Then if you have any of these items, have your pet wear it, and head down
-    the runway!
-  </p>
-</div>
-<form action="/pets/load" method="POST">
-  <input type="hidden" name="origin"
-    value="{path to=needed_objects}" />
-  <fieldset>
-    <legend>Enter pet's name</legend>
-    <input type="text" name="name" value="{$pet_name|escape}" />
-    <input type="submit" value="Go" />
-  </fieldset>
-</form>
-{/if}

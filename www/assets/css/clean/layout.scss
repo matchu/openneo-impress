@@ -1,0 +1,368 @@
+@import "constants";
+
+/* Reset */
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
+  blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em,
+  font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b,
+  u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table,
+  caption, tbody, tfoot, thead, tr, th, td
+{
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+@mixin clearfix {
+  overflow: hidden;
+  display: inline-block;
+  & {
+    display: block;
+  }
+}
+
+@mixin border-radius($r) {
+  -moz-border-radius: $r; 
+  -webkit-border-radius: $r;
+}
+
+@mixin inline-block {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *display: inline;
+  *vertical-align: auto;
+}
+
+@mixin opacity($o) {
+  -moz-opacity: $o;
+  -webkit-opacity: $o;
+  -o-opacity: $o;
+  -khtml-opacity: $o;
+}
+
+@mixin header-text {
+  font-family: $header-font;
+}
+
+@mixin awesome-button-color($c) {
+  @include header-text;
+  
+  background: $c url(/assets/images/alert-overlay.png) repeat-x;
+  
+  &:hover {
+    background-color: $c - #111;
+  }
+}
+
+@mixin awesome-button {
+  /* http://www.zurb.com/blog_uploads/0000/0617/buttons-03.html */
+  @include border-radius(5px);
+  @include awesome-button-color(#006400);
+  border: 0;
+  display: inline-block; 
+  padding: 5px 10px 6px; 
+  color: #fff; 
+  text-decoration: none;
+  -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  position: relative;
+  font-weight: bold;
+  line-height: 1;
+
+  &:hover {
+    color: #fff;
+  }
+
+  &:active {
+    top: 1px;
+  }
+}
+
+@mixin loud-awesome-button-color {
+  @include awesome-button-color(#ff5c00);
+}
+
+@mixin loud-awesome-button {
+  @include loud-awesome-button-color;
+  font-size: 125%;
+  padding: 8px 14px 9px;
+}
+
+@mixin arrowed-awesome-button {
+  &:after {
+    content: " >>";
+  }
+}
+
+@mixin module {
+  background: $module-bg-color;
+  border: 1px solid $module-border-color;
+  padding: 1em;
+}
+
+/* Typography */
+
+body {
+  color: $text-color;
+  font: {
+    family: $body-font;
+    size: 90%;
+  }
+  line-height: 1.5;
+}
+
+a {
+  color: $link-color;
+}
+
+input, button, select {
+  font: {
+    family: inherit;
+    size: 100%;
+  }
+}
+
+p {
+  margin-bottom: 1em;
+}
+
+h1, h2, h3 {
+  @include header-text;
+}
+
+h1 {
+  font-size: 3em;
+  line-height: 1;
+  margin-bottom: 0.50em;
+}
+
+h2 {
+  font-size: 2em;
+  margin-bottom: 0.75em;
+}
+
+h3 {
+  font-size: 1.5em;
+  line-height: 1;
+  margin-bottom: 1.00em;
+}
+
+.inline-image {
+  margin-right: 1em;
+  vertical-align: middle;
+}
+
+/* Main */
+
+$container_width: 800px;
+
+#container {
+  margin: 1em auto;
+  padding-top: 2em;
+  position: relative;
+  width: $container_width;
+}
+
+input, button, select, label {
+  cursor: pointer;
+}
+
+input[type=text], input[type=password], select {
+  @include border-radius(3px);
+  @include header-text;
+  
+  background: #fff;
+  border: 1px solid $input-border-color;
+  color: $text-color + #444;
+  padding: .25em;
+  
+  &:focus, &:active {
+    color: inherit;
+  }
+}
+  
+a.button, input[type=submit], button {
+  @include awesome-button;
+  &.loud {
+    @include loud-awesome-button;
+  }
+}
+
+a.button {
+  @include arrowed-awesome-button;
+}
+
+ul.buttons {
+  margin-bottom:1em;
+  
+  li {
+    list-style: none;
+    margin: 0 .5em;
+    
+    &, form {
+      display: inline;
+    }
+  }
+}
+
+#footer {
+  clear: both;
+  font-size: 75%;
+  padding-top: 1em;
+  text-align: center;
+  
+  li {
+    display: inline;
+    margin: 0 .5em;
+  }
+}
+
+.notice, .error {
+  margin-bottom: 1em;
+  padding: .25em .5em;
+  text-align: center;
+}
+
+.notice {
+  background: $notice-bg-color;
+  border: 1px solid $notice-border-color;
+  color: $notice-color;
+}
+
+.error {
+  background: $error-bg-color;
+  border: 1px solid $error-border-color;
+  color: $error-color;
+}
+
+#userbar {
+  @include header-text;
+  position: absolute;
+  right: 0;
+  top: 0;
+  
+  > * {
+    display: inline;
+    margin: 0 .25em;
+  }
+}
+
+#userbar-auth-servers {
+  li {
+    display: inline;
+    list-style: none;
+    margin: 0 .125em;
+  }
+  
+  img {
+    vertical-align: bottom;
+  }
+  
+  span {
+    display: none;
+  }
+  
+  a {
+    text-decoration: none;
+  }
+}
+
+.object {
+  @include inline-block;
+  padding: .5em;
+  position: relative;
+  text-align: center;
+  vertical-align: top;
+  width: 100px;
+  
+  a {
+    text-decoration: none;
+    
+    img {
+      @include opacity(.75);
+    }
+    
+    &:hover img {
+      @include opacity(1);
+    }
+  }
+  
+  img {
+    display: block;
+    height: 80px;
+    margin: 0 auto;
+    width: 80px;
+  }
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  margin: 0 0 1.5em 1em;
+}
+
+#home-link {
+  @include header-text;
+  font: {
+    size: 175%;
+    weight: bold;
+  }
+  left: 0;
+  line-height: 1;
+  padding: .25em;
+  position: absolute;
+  top: 0;
+  
+  &:hover {
+    background: $module-bg-color;
+    text-decoration: none;
+  }
+  
+  span:before {
+    content: "<< ";
+  }
+}
+
+/* Fonts */
+
+/* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */
+@font-face {
+	font-family: Delicious;
+	src: url('/assets/fonts/Delicious-Roman.otf');
+}
+
+@font-face {
+	font-family: Delicious;
+	font-weight: bold;
+	src: url('/assets/fonts/Delicious-Bold.otf');
+}
+
+@font-face {
+	font-family: Delicious;
+	font-style: italic;
+	src: url('/assets/fonts/Delicious-Italic.otf');
+}
+
+@font-face {
+  font-family: 'Droid Serif';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Droid Serif'), url('http://themes.googleusercontent.com/font?kit=70P0G8gxVDIV6F9om0DsKg') format('truetype');
+}
+
+@font-face {
+  font-family: 'Droid Serif';
+  font-style: normal;
+  font-weight: bold;
+  src: local('Droid Serif'), url('http://themes.googleusercontent.com/font?kit=QQt14e8dY39u-eYBZmppwf5Jgr8ufe5A6KahQF76Xmg') format('truetype');
+}

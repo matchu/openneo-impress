@@ -1,4 +1,3 @@
-/* Constants */
 /* Reset */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
 blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em,
@@ -195,6 +194,49 @@ dt {
 dd {
   margin: 0 0 1.5em 1em; }
 
+#home-link {
+  font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
+  font-size: 175%;
+  font-weight: bold;
+  left: 0;
+  line-height: 1;
+  padding: .25em;
+  position: absolute;
+  top: 0; }
+  #home-link:hover {
+    background: #eeffee;
+    text-decoration: none; }
+  #home-link span:before {
+    content: "<< "; }
+
+/* Fonts */
+/* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */
+@font-face {
+  font-family: Delicious;
+  src: url("/assets/fonts/Delicious-Roman.otf"); }
+
+@font-face {
+  font-family: Delicious;
+  font-weight: bold;
+  src: url("/assets/fonts/Delicious-Bold.otf"); }
+
+@font-face {
+  font-family: Delicious;
+  font-style: italic;
+  src: url("/assets/fonts/Delicious-Italic.otf"); }
+
+@font-face {
+  font-family: "Droid Serif";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Droid Serif"), url("http://themes.googleusercontent.com/font?kit=70P0G8gxVDIV6F9om0DsKg") format("truetype"); }
+
+@font-face {
+  font-family: "Droid Serif";
+  font-style: normal;
+  font-weight: bold;
+  src: local("Droid Serif"), url("http://themes.googleusercontent.com/font?kit=QQt14e8dY39u-eYBZmppwf5Jgr8ufe5A6KahQF76Xmg") format("truetype"); }
+
 /* Layouts */
 body.index #outfit-forms {
   overflow: hidden;
@@ -298,20 +340,6 @@ body.index #i-found-something {
 body.standard #container {
   padding-top: 3em;
   text-align: center; }
-body.standard #home-link {
-  font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
-  font-size: 175%;
-  font-weight: bold;
-  left: 0;
-  line-height: 1;
-  padding: .25em;
-  position: absolute;
-  top: 0; }
-  body.standard #home-link:hover {
-    background: #eeffee;
-    text-decoration: none; }
-  body.standard #home-link span:before {
-    content: "<< "; }
 
 body.standard .contributions li {
   list-style: none;
@@ -637,19 +665,3 @@ body.outfits-edit .possible-error {
           background-color: #999999; }
   .object:hover ul {
     display: block; }
-
-/* Fonts */
-/* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */
-@font-face {
-  font-family: Delicious;
-  src: url("/assets/fonts/Delicious-Roman.otf"); }
-
-@font-face {
-  font-family: Delicious;
-  font-weight: bold;
-  src: url("/assets/fonts/Delicious-Bold.otf"); }
-
-@font-face {
-  font-family: Delicious;
-  font-style: italic;
-  src: url("/assets/fonts/Delicious-Italic.otf"); }

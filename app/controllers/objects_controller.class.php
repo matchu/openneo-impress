@@ -39,25 +39,24 @@ class Pwnage_ObjectsController extends Pwnage_ApplicationController {
   }
   
   public function needed() {
-    if(isset($this->get['species']) && isset($this->get['color'])) {
-      $pet_type = Pwnage_PetType::findBySpeciesIdAndColorId(
-        $this->get['species'],
-        $this->get['color'],
-        array(
-          'select' => 'species_id, color_id, body_id'
-        )
-      );
-      if($pet_type) {
-        $objects = $pet_type->getNeededObjects(array(
-          'select' => 'id, name, thumbnail_url',
-          'order_by' => 'name ASC'
-        ));
-        $this->set(array(
-          'color_name' => $pet_type->getColor()->getName(),
-          'objects' => $objects,
-          'species_name' => $pet_type->getSpecies()->getName()
-        ));
-      }
+    $this->requireParam($this->get, array('species', 'color', 'name'));
+    $pet_type = Pwnage_PetType::findBySpeciesIdAndColorId(
+      $this->get['species'],
+      $this->get['color'],
+      array(
+        'select' => 'species_id, color_id, body_id'
+      )
+    );
+    if($pet_type) {
+      $objects = $pet_type->getNeededObjects(array(
+        'select' => 'id, name, thumbnail_url',
+        'order_by' => 'name ASC'
+      ));
+      $this->set(array(
+        'color_name' => $pet_type->getColor()->getName(),
+        'objects' => $objects,
+        'species_name' => $pet_type->getSpecies()->getName()
+      ));
     }
     $this->set('pet_name', $this->get['name']);
   }
