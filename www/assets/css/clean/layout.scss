@@ -175,7 +175,7 @@ input, button, select, label {
   cursor: pointer;
 }
 
-input[type=text], input[type=password], select {
+input[type=text], input[type=password], input[type=search], select {
   @include border-radius(3px);
   @include header-text;
   

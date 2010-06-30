@@ -60,7 +60,7 @@ h3 {
 input, button, select, label {
   cursor: pointer; }
 
-input[type=text], input[type=password], select {
+input[type=text], input[type=password], input[type=search], select {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
@@ -68,7 +68,7 @@ input[type=text], input[type=password], select {
   border: 1px solid #cceecc;
   color: #448844;
   padding: .25em; }
-  input[type=text]:focus, input[type=text]:active, input[type=password]:focus, input[type=password]:active, select:focus, select:active {
+  input[type=text]:focus, input[type=text]:active, input[type=password]:focus, input[type=password]:active, input[type=search]:focus, input[type=search]:active, select:focus, select:active {
     color: inherit; }
 
 a.button, input[type=submit], button {
@@ -336,6 +336,47 @@ body.index #how-can-i-help {
   margin-right: 1%; }
 body.index #i-found-something {
   margin-left: 1%; }
+body.index #sections {
+  overflow: hidden;
+  display: inline-block;
+  height: 120px;
+  list-style: none;
+  margin-bottom: 1em; }
+  body.index #sections {
+    display: block; }
+  body.index #sections h3 {
+    margin-bottom: .5em; }
+  body.index #sections li {
+    border-left-color: #006600;
+    border-left-style: solid;
+    border-left-width: 1px;
+    float: left;
+    height: 100%;
+    margin-left: 14px;
+    padding-bottom: 0.5em;
+    padding-left: 14px;
+    padding-top: 0.5em;
+    position: relative;
+    width: 247.333px; }
+    body.index #sections li:first-child {
+      border-left: 0;
+      margin-left: 0;
+      padding-left: 0; }
+  body.index #sections div {
+    color: #448844;
+    font-size: 75%;
+    margin-left: 1em;
+    z-index: 2; }
+  body.index #sections h4, body.index #sections input {
+    font-size: 116%; }
+  body.index #sections h4, body.index #sections input[type=text] {
+    color: inherit; }
+  body.index #sections img {
+    -moz-opacity: 0.75;
+    -webkit-opacity: 0.75;
+    -o-opacity: 0.75;
+    -khtml-opacity: 0.75;
+    float: right; }
 
 body.standard #container {
   padding-top: 3em;

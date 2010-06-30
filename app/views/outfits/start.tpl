@@ -38,6 +38,52 @@
           </fieldset>
         </form>
       </div>
+      <ul id="sections">
+        <li id="section-forum">
+          <img src="/assets/images/forum.png" />
+          <h3>
+            <a href="http://forum.openneo.net/">Forum</a>
+          </h3>
+          <div>
+            <h4>Join our community!</h4>
+            <p>
+              Show off your designs, ask for advice, or play silly forum games
+              here.
+            </p>
+          </div>
+        </li>
+        <li>
+          <img src="/assets/images/items.png" />
+          <h3>
+            <a href="http://items.impress.openneo.net">
+              Item Database
+            </a>
+          </h3>
+          <div>
+            <h4>Looking for something?</h4>
+            <p>
+              Take a look at what we got!
+            </p>
+            <form action="http://items.impress.openneo.net">
+              <input type="search" name="q" placeholder="search items..." />
+              <input type="submit" value="Search" />
+            </form>
+          </div>
+        </li>
+        <li>
+          <img src="/assets/images/blog.png" />
+          <h3>
+            <a href="http://blog.openneo.net/">OpenNeo Blog</a>
+          </h3>
+          <div>
+            <h4>We'll keep you posted!</h4>
+            <p>
+              Dress to Impress is always improving, and you can always stay in
+              the loop through our blog.
+            </p>
+          </div>
+        </li>
+      </ul>
       <div id="description">
         <h2>Built by you, just for you!</h2>
         <p>

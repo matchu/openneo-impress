@@ -60,7 +60,7 @@ h3 {
 input, button, select, label {
   cursor: pointer; }
 
-input[type=text], input[type=password], select {
+input[type=text], input[type=password], input[type=search], select {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
@@ -68,7 +68,7 @@ input[type=text], input[type=password], select {
   border: 1px solid #cceecc;
   color: #448844;
   padding: .25em; }
-  input[type=text]:focus, input[type=text]:active, input[type=password]:focus, input[type=password]:active, select:focus, select:active {
+  input[type=text]:focus, input[type=text]:active, input[type=password]:focus, input[type=password]:active, input[type=search]:focus, input[type=search]:active, select:focus, select:active {
     color: inherit; }
 
 a.button, input[type=submit], button {
