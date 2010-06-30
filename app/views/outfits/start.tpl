@@ -129,7 +129,7 @@
           Enter your pet's name, and we'll tell you what items you can help us
           model. Thanks so much!
         </p>
-        <input id="name" type="text" name="name"
+        <input type="text" name="name"
           value="{$name}"
           autocomplete="off" spellcheck="false" />
         <button type="submit">
@@ -145,7 +145,7 @@
           Enter the name of the pet you found, and we'll keep a copy of what
           it's wearing. Thanks so much!
         </p>
-        <input id="name" type="text" name="name"
+        <input type="text" name="name"
           value="{$name}"
           autocomplete="off" spellcheck="false" />
         <button type="submit">
