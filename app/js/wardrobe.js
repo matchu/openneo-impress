@@ -957,7 +957,7 @@ View.Hash = function (wardrobe) {
     }
   });
   
-  (function UrlShortener() {
+  (function Share() {
     ZeroClipboard.setMoviePath('/assets/swf/ZeroClipboard.swf');
     var response_el = $('#shorten-url-response'),
       form = $('#shorten-url-form'),
@@ -1269,14 +1269,22 @@ View.Search = function (wardrobe) {
     error_el.text(error).show('normal');
   });
   
-  help_el.find('dt').wrapInner($('<a/>', {href: '#'}));
+  help_el.find('dt').each(function () {
+    var el = $(this);
+    if(!el.children().length) {
+      el.wrapInner($('<a/>', {href: '#'}));
+    }
+  }).children('span:not(.search-helper)').each(function () {
+    var el = $(this);
+    el.replaceWith($('<a/>', {href: '#', text: el.text()}));
+  });
   
   help_el.find('dt a').live('click', function (e) {
-    var el = $(this), children = el.children(), query;
+    var el = $(this), siblings = el.parent().children(), query;
     e.preventDefault();
-    if(children.length) {
-      query = children.map(function () {
-        return this[$(this).is('span') ? 'innerText' : 'value'];
+    if(siblings.length) {
+      query = siblings.map(function () {
+        return this[$(this).is('select') ? 'value' : 'innerText'];
       }).get().join('');
     } else {
       query = el.text();
@@ -1287,23 +1295,32 @@ View.Search = function (wardrobe) {
   
   $('select.search-helper').live('change', function () {
     var el = $(this), filter = el.attr('data-search-filter');
-    // TODO: do species as well as type
-    $('select.search-helper').val(el.val());
-  }).live('click', function (e) {
-    e.stopPropagation();
+    $('select.search-helper[data-search-filter=' + filter + ']').val(el.val());
   });
   
-  wardrobe.item_zone_sets.bind('update', function (sets) {
-    var select = $('<select/>',
-      {'class': 'search-helper', 'data-search-filter': 'type'}),
-      span = $('span.search-helper[data-search-filter=type]');
-    for(var i = 0, l = sets.length; i < l; i++) {
-      $('<option/>', {text: sets[i].name}).appendTo(select);
+  function prepBuildHelper(type, getSet) {
+    return function (objs) {
+      var select = $('<select/>',
+        {'class': 'search-helper', 'data-search-filter': type}),
+        span = $('span.search-helper[data-search-filter=' + type + ']');
+      objs = getSet(objs);
+      for(var i = 0, l = objs.length; i < l; i++) {
+        $('<option/>', {text: objs[i].name}).appendTo(select);
+      }
+      span.replaceWith(function () {
+        return select.clone().fadeIn('fast');
+      });
     }
-    span.replaceWith(function () {
-      return select.clone().fadeIn('fast');
-    });
-  });
+  }
+  
+  function getSpecies(x) { return x.species }
+  
+  wardrobe.item_zone_sets.bind('update', prepBuildHelper('type', function (x) {
+    return x;
+  }));
+  
+  wardrobe.pet_attributes.bind('update', prepBuildHelper('species', getSpecies));
+  wardrobe.pet_attributes.bind('update', prepBuildHelper('only', getSpecies));
 }
 
 View.Title = function (wardrobe) {

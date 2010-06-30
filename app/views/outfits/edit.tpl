@@ -14,16 +14,22 @@
       Gender/Emotions:
       <ul></ul>
     </form>
-    <form id="shorten-url-form">
-      <input id="shorten-url-submit-button" type="submit" value="Shorten URL" />
-      <span id="shorten-url-loading">Loading...</span>
-    </form>
-    <form id="shorten-url-response-form">
-      <div id="shorten-url-copy-button-wrapper">
-        <button id="shorten-url-copy-button">Copy</button>
-      </div>
-      <span id="shorten-url-response"></span>
-    </form>
+    <div id="share">
+      <button id="share-button">
+        <img src="http://sharethis.com/images/share-icon-16x16.png" />
+        Share
+      </button>
+      <form id="shorten-url-form">
+        <input id="shorten-url-submit-button" type="submit" value="Shorten URL" />
+        <span id="shorten-url-loading">Loading...</span>
+      </form>
+      <form id="shorten-url-response-form">
+        <div id="shorten-url-copy-button-wrapper">
+          <button id="shorten-url-copy-button">Copy</button>
+        </div>
+        <span id="shorten-url-response"></span>
+      </form>
+    </div>
   </div>
   <div id="preview-swf">
     Javascript and Flash are required to preview outfits. Sorry!
@@ -50,12 +56,12 @@
         returns any item with the phrase "altador cup" in it, but not the word
         "background"
       </dd>
-      <dt>species:shoyru</dt>
-      <dd>returns any item a Shoyru can wear</dd>
-      <dt>only:shoyru</dt>
-      <dd>returns any item only a Shoyru can wear</dd>
+      <dt><span>species:</span><span class="search-helper" data-search-filter="species">Acara</span></dt>
+      <dd>returns any item a <span class="search-helper" data-search-filter="species">Acara</span> can wear</dd>
+      <dt><span>only:</span><span class="search-helper" data-search-filter="only">Acara</span></dt>
+      <dd>returns any item only a <span class="search-helper" data-search-filter="only">Acara</span> can wear</dd>
       <dt><span>type:</span><span class="search-helper" data-search-filter="type">background</span></dt>
-      <dd>returns any item that fills a "<span class="search-helper" data-search-filter="type">background</span>" zone</dd>
+      <dd>returns any item that fills a <span class="search-helper" data-search-filter="type">background</span> zone</dd>
     </dl>
     <div id="preview-search-form-loading">Loading...</div>
     <div id="preview-search-form-error" class="possible-error"></div>

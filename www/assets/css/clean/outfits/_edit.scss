@@ -6,7 +6,7 @@ body.outfits-edit {
     @include clearfix;
     margin-bottom: .5em;
     
-    form {
+    > * {
       float: left;
       margin-left: 2em;
       padding: .5em;
@@ -38,6 +38,25 @@ body.outfits-edit {
       @include awesome-button-color($marked_button_color);
     }
   }
+  
+  #share {
+    a, form {
+      @include inline-block;
+    }
+  }
+  
+  #share-button {
+    @include loud-awesome-button-color;
+    
+    img {
+      margin: {
+        bottom: -.25em;
+        right: .25em;
+      }
+      height: 16px;
+      width: 16px;
+    }
+  }
 
   #shorten-url-loading {
     display: none;
@@ -50,6 +69,11 @@ body.outfits-edit {
     background: $module-bg-color;
     border: 1px solid $module-border-color;
     display: none;
+    margin: {
+      bottom: -.5em;
+      top: -.5em;
+    }
+    padding: .5em;
   }
 
   #shorten-url-copy-button-wrapper {

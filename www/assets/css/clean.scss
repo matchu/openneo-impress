@@ -103,8 +103,12 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
   }
 }
 
-@mixin loud-awesome-button {
+@mixin loud-awesome-button-color {
   @include awesome-button-color(#ff5c00);
+}
+
+@mixin loud-awesome-button {
+  @include loud-awesome-button-color;
   font-size: 125%;
   padding: 8px 14px 9px;
 }
@@ -202,12 +206,15 @@ input[type=text], input[type=password], select {
   }
 }
   
-a.button, input[type=submit], button[type=submit] {
+a.button, input[type=submit], button {
   @include awesome-button;
-  @include arrowed-awesome-button;
   &.loud {
     @include loud-awesome-button;
   }
+}
+
+a.button {
+  @include arrowed-awesome-button;
 }
 
 ul.buttons {

@@ -72,7 +72,7 @@ input[type=text], input[type=password], select {
   input[type=text]:focus, input[type=text]:active, input[type=password]:focus, input[type=password]:active, select:focus, select:active {
     color: inherit; }
 
-a.button, input[type=submit], button[type=submit] {
+a.button, input[type=submit], button {
   /* http://www.zurb.com/blog_uploads/0000/0617/buttons-03.html */
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -90,21 +90,22 @@ a.button, input[type=submit], button[type=submit] {
   position: relative;
   font-weight: bold;
   line-height: 1; }
-  a.button:hover, input[type=submit]:hover, button[type=submit]:hover, body.outfits-edit #shorten-url-copy-button-wrapper button[type=submit].hover {
+  a.button:hover, input[type=submit]:hover, button:hover, body.outfits-edit #shorten-url-copy-button-wrapper button.hover {
     background-color: #005300; }
-  a.button:hover, input[type=submit]:hover, button[type=submit]:hover, body.outfits-edit #shorten-url-copy-button-wrapper button[type=submit].hover {
+  a.button:hover, input[type=submit]:hover, button:hover, body.outfits-edit #shorten-url-copy-button-wrapper button.hover {
     color: #fff; }
-  a.button:active, input[type=submit]:active, button[type=submit]:active, body.outfits-edit #shorten-url-copy-button-wrapper button[type=submit].active {
+  a.button:active, input[type=submit]:active, button:active, body.outfits-edit #shorten-url-copy-button-wrapper button.active {
     top: 1px; }
-  a.button:after, input[type=submit]:after, button[type=submit]:after {
-    content: " >>"; }
-  a.button.loud, input[type=submit].loud, button[type=submit].loud {
+  a.button.loud, input[type=submit].loud, button.loud {
     font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
     background: #ff5c00 url(/assets/images/alert-overlay.png) repeat-x;
     font-size: 125%;
     padding: 8px 14px 9px; }
-    a.button.loud:hover, input[type=submit].loud:hover, button[type=submit].loud:hover, body.outfits-edit #shorten-url-copy-button-wrapper button[type=submit].loud.hover {
+    a.button.loud:hover, input[type=submit].loud:hover, button.loud:hover, body.outfits-edit #shorten-url-copy-button-wrapper button.loud.hover {
       background-color: #ee4b00; }
+
+a.button:after {
+  content: " >>"; }
 
 ul.buttons {
   margin-bottom: 1em; }
@@ -457,11 +458,11 @@ body.outfits-edit #preview-toolbar {
   margin-bottom: .5em; }
   body.outfits-edit #preview-toolbar {
     display: block; }
-  body.outfits-edit #preview-toolbar form {
+  body.outfits-edit #preview-toolbar > * {
     float: left;
     margin-left: 2em;
     padding: .5em; }
-    body.outfits-edit #preview-toolbar form:first-child {
+    body.outfits-edit #preview-toolbar > *:first-child {
       margin-left: 0; }
 body.outfits-edit #pet-state-form ul {
   list-style: none; }
@@ -499,6 +500,23 @@ body.outfits-edit #pet-state-form li.selected label {
   background: #0b61a4 url(/assets/images/alert-overlay.png) repeat-x; }
   body.outfits-edit #pet-state-form li.selected label:hover {
     background-color: #005093; }
+body.outfits-edit #share a, body.outfits-edit #share form {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *display: inline;
+  *vertical-align: auto; }
+body.outfits-edit #share-button {
+  font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
+  background: #ff5c00 url(/assets/images/alert-overlay.png) repeat-x; }
+  body.outfits-edit #share-button:hover, body.outfits-edit #shorten-url-copy-button-wrapper button#share-button.hover {
+    background-color: #ee4b00; }
+  body.outfits-edit #share-button img {
+    margin-bottom: -.25em;
+    margin-right: .25em;
+    height: 16px;
+    width: 16px; }
 body.outfits-edit #shorten-url-loading {
   display: none;
   font-size: 75%;
@@ -508,7 +526,10 @@ body.outfits-edit #shorten-url-response-form {
   -webkit-border-radius: 3px;
   background: #eeffee;
   border: 1px solid #006600;
-  display: none; }
+  display: none;
+  margin-bottom: -.5em;
+  margin-top: -.5em;
+  padding: .5em; }
 body.outfits-edit #shorten-url-copy-button-wrapper {
   display: -moz-inline-box;
   -moz-box-orient: vertical;
