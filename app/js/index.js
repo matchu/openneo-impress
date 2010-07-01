@@ -2,20 +2,29 @@ function petImage(id, size) {
   return 'http://pets.neopets.com/' + id + '/1/' + size + '.png';
 }
 
+var preview_el = $('#pet-preview'),
+  img_el = preview_el.find('img'),
+  response_el = preview_el.find('span'),
+  name_el = $('#name');
+
+preview_el.click(function () {
+  name_el.val(Preview.Job.current.name).closest('form').submit();
+});
+
 var Preview = {
   clear: function () {
-    $('#preview-response').text(Preview.Job.current.name);
+    if(typeof Preview.Job.fallback != 'undefined') Preview.Job.fallback.setAsCurrent();
   },
   displayLoading: function () {
-    $('#pet-preview').addClass('loading');
-    $('#preview-response').text('Loading...');
+    preview_el.addClass('loading');
+    response_el.text('Loading...');
   },
   notFound: function (str) {
-    $('#pet-preview').addClass('hidden');
-    $('#preview-response').text(str);
+    preview_el.addClass('hidden');
+    response_el.text(str);
   },
   updateWithName: function () {
-    var name = $('#name').val(), job;
+    var name = name_el.val(), job;
     if(name) {
       currentName = name;
       if(name != Preview.Job.current.name) {
@@ -29,6 +38,14 @@ var Preview = {
   }
 }
 
+$.get('/spotlight_pets.txt', function (data) {
+  var names = data.split('\n'), i = Math.floor(Math.random()*(names.length-1));
+  Preview.Job.fallback = new Preview.Job.Name(names[i]);
+  if(!Preview.Job.current) {
+    Preview.Job.fallback.setAsCurrent();
+  }
+});
+
 Preview.Job = function (key, base) {
   var job = this,
     quality = 2;
@@ -40,7 +57,7 @@ Preview.Job = function (key, base) {
   
   function load() {
     job.loading = true;
-    $('#pet-preview').attr('src', getImageSrc());
+    img_el.attr('src', getImageSrc());
   }
   
   this.increaseQualityIfPossible = function () {
@@ -69,10 +86,6 @@ Preview.Job.Hash = function (hash) {-
 $(function () {
   var previewWithNameTimeout;
   
-  Preview.Job.current = { // placeholder
-    name: $('#preview-response').text()
-  }
-  
   var query = {};
   $.each(document.location.search.substr(1).split('&'), function () {
     var split_piece = this.split('=');
@@ -82,7 +95,7 @@ $(function () {
   });
   
   if(query.name) {
-    $('#name').val(query.name);
+    name_el.val(query.name);
     if(query.species && query.color) {
       var notice = $('<div></div>', {
           'class': 'notice',
@@ -99,7 +112,7 @@ $(function () {
   }
   Preview.updateWithName();
   
-  $('#name').keyup(function () {
+  name_el.keyup(function () {
     if(previewWithNameTimeout) {
       clearTimeout(previewWithNameTimeout);
       Preview.Job.current.loading = false;
@@ -107,12 +120,12 @@ $(function () {
     previewWithNameTimeout = setTimeout(Preview.updateWithName, 250);
   });
   
-  $('#pet-preview').load(function () {
+  img_el.load(function () {
     if(Preview.Job.current.loading) {
       Preview.Job.loading = false;
       Preview.Job.current.increaseQualityIfPossible();
-      $(this).removeClass('loading').removeClass('hidden');
-      $('#preview-response').text(Preview.Job.current.name);
+      preview_el.removeClass('loading').removeClass('hidden').addClass('loaded');
+      response_el.text(Preview.Job.current.name);
     }
   }).error(function () {
     if(Preview.Job.current.loading) {

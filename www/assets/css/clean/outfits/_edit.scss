@@ -79,7 +79,6 @@ body.outfits-edit {
 
   #preview-closet {
     @include border-radius(10px);
-    background: $module-bg-color;
     float: left;
     height: $preview-dimension;
     margin-left: $closet_margin;

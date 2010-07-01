@@ -18,18 +18,42 @@ body.index {
       text-indent: 1em;
     }
     
-    img {
+    #pet-preview {
       float: left;
       height: 300px;
       margin-right: 2em;
+      position: relative;
       width: 300px;
       
-      &.loading {
+      img {
+        height: 100%;
+        width: 100%;
+      }
+      
+      &.loading img {
         @include opacity(.5);
       }
       
-      &.hidden {
-        visibility: hidden;
+      &.hidden img {
+        display: none;
+      }
+      
+      &.loaded {
+        cursor: pointer;
+      }
+
+      span {
+        background: rgb(128, 128, 128);
+        background: rgba(0, 0, 0, .5);
+        bottom: 0;
+        color: #fff;
+        padding: .25em .5em;
+        position: absolute;
+        right: 0;
+        
+        &:empty {
+          display: none;
+        }
       }
     }
     
@@ -39,21 +63,6 @@ body.index {
       legend {
         margin-left: -1em;
       }
-    }
-  }
-
-  #preview-response {
-    background: rgb(128, 128, 128);
-    background: rgba(0, 0, 0, .5);
-    bottom: 1em;
-    color: #fff;
-    margin-right: -1em;
-    padding: .25em .5em;
-    position: absolute;
-    right: $container_width - 300px;
-    
-    &:empty {
-      display: none;
     }
   }
 

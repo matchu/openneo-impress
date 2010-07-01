@@ -260,34 +260,39 @@ body.index #outfit-forms {
     font-size: 150%;
     font-style: italic;
     text-indent: 1em; }
-  body.index #outfit-forms img {
+  body.index #outfit-forms #pet-preview {
     float: left;
     height: 300px;
     margin-right: 2em;
+    position: relative;
     width: 300px; }
-    body.index #outfit-forms img.loading {
+    body.index #outfit-forms #pet-preview img {
+      height: 100%;
+      width: 100%; }
+    body.index #outfit-forms #pet-preview.loading img {
       -moz-opacity: 0.5;
       -webkit-opacity: 0.5;
       -o-opacity: 0.5;
       -khtml-opacity: 0.5; }
-    body.index #outfit-forms img.hidden {
-      visibility: hidden; }
+    body.index #outfit-forms #pet-preview.hidden img {
+      display: none; }
+    body.index #outfit-forms #pet-preview.loaded {
+      cursor: pointer; }
+    body.index #outfit-forms #pet-preview span {
+      background: gray;
+      background: rgba(0, 0, 0, 0.5);
+      bottom: 0;
+      color: #fff;
+      padding: .25em .5em;
+      position: absolute;
+      right: 0; }
+      body.index #outfit-forms #pet-preview span:empty {
+        display: none; }
   body.index #outfit-forms fieldset {
     position: relative;
     left: 1em; }
     body.index #outfit-forms fieldset legend {
       margin-left: -1em; }
-body.index #preview-response {
-  background: gray;
-  background: rgba(0, 0, 0, 0.5);
-  bottom: 1em;
-  color: #fff;
-  margin-right: -1em;
-  padding: .25em .5em;
-  position: absolute;
-  right: 500px; }
-  body.index #preview-response:empty {
-    display: none; }
 body.index #form-1 {
   font-size: 175%;
   margin-bottom: 1em;
@@ -585,7 +590,6 @@ body.outfits-edit #preview-swf {
 body.outfits-edit #preview-closet {
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
-  background: #eeffee;
   float: left;
   height: 500px;
   margin-left: 20px;

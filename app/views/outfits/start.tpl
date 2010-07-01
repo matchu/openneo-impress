@@ -11,8 +11,10 @@
       {include file='shared/analytics.tpl'}
       {insert name=flashes}
       <div id="outfit-forms">
-        <img id="pet-preview" src="http://pets.neopets.com/cpn/Viqc/1/4.png" />
-        <div id="preview-response">Viqc</div>
+        <div id="pet-preview">
+          <img src="/assets/images/default_preview.png" />
+          <span></span>
+        </div>
         <h1>Dress to Impress</h1>
         <h2>Neopets wearables made easy!</h2>
         <form id="form-1" action="{path to=load_pet}" method="POST">
@@ -142,7 +144,6 @@
           Let's model!
         </button>
       </form>
-      <!-- TODO: implement! -->
       <form id="i-found-something" action="{path to=load_pet}" method="POST">
         <input type="hidden" name="origin"
           value="{path to=root}" />
@@ -162,7 +163,7 @@
       {include file='shared/footer.tpl'}
     </div>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
-    <script type="text/javascript" src="/assets/js/index.js?03072010203443"></script>
+    <script type="text/javascript" src="/assets/js/index.js?063020102323"></script>
     {include file='shared/feedback.tpl'}
   </body>
 </html>
