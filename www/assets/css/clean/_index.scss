@@ -192,4 +192,20 @@ body.index {
   #read-more {
     float: right;
   }
+  
+  #tell-the-world {
+    font-size: 87.5%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    
+    img {
+      margin: {
+        bottom: -.25em;
+        right: .25em;
+      }
+      height: 16px;
+      width: 16px;
+    }
+  }
 }

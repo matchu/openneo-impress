@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:og="http://opengraphprotocol.org/schema/">
   <head>
     <title>Dress to Impress</title>
     <link type="text/css" rel="stylesheet" href="/assets/css/start/jquery_ui.css" />
     <link type="text/css" rel="stylesheet" href="/assets/css/clean.css" />
     <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Serif">
+    <meta name="description" content="Neopets wearables made easy! Plan your whole outfit before you even pay a Neopoint." />
+    <link rel="image_src" href="http://impress.openneo.net/assets/images/default_preview.png" / >
   </head>
   <body class="index">
     <div id="container">
@@ -160,9 +162,14 @@
         </button>
       </form>
       {insert name='userbar'}
+      <button id="tell-the-world" class="button addthis_button">
+        <img src="http://s7.addthis.com/static/t00/logo1414.gif" />
+        Tell the world!
+      </button>
       {include file='shared/footer.tpl'}
     </div>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
+    <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=openneo"></script>
     <script type="text/javascript" src="/assets/js/index.js?063020102323"></script>
     {include file='shared/feedback.tpl'}
   </body>

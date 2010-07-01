@@ -56,7 +56,7 @@ h3 {
 /* Main */
 #container {
   margin: 1em auto;
-  padding-top: 2em;
+  padding-top: 3em;
   position: relative;
   width: 800px; }
 
@@ -378,6 +378,16 @@ body.index #sections {
     margin-left: .5em; }
 body.index #read-more {
   float: right; }
+body.index #tell-the-world {
+  font-size: 87.5%;
+  left: 0;
+  position: absolute;
+  top: 0; }
+  body.index #tell-the-world img {
+    margin-bottom: -.25em;
+    margin-right: .25em;
+    height: 16px;
+    width: 16px; }
 
 body.standard #container {
   padding-top: 3em;
