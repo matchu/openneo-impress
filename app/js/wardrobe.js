@@ -1287,9 +1287,10 @@ View.Search = function (wardrobe) {
   help_el.find('dt a').live('click', function (e) {
     var el = $(this), siblings = el.parent().children(), query;
     e.preventDefault();
-    if(siblings.length) {
+    if(siblings.length > 1) {
       query = siblings.map(function () {
-        return this[$(this).is('select') ? 'value' : 'innerText'];
+        var el = $(this);
+        return el[el.is('select') ? 'val' : 'text']();
       }).get().join('');
     } else {
       query = el.text();
