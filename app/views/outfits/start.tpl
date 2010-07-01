@@ -39,8 +39,10 @@
         </form>
       </div>
       <ul id="sections">
-        <li id="section-forum">
-          <img src="/assets/images/forum.png" />
+        <li>
+          <a href="http://forum.openneo.net">
+            <img src="/assets/images/forum.png" />
+          </a>
           <h3>
             <a href="http://forum.openneo.net/">Forum</a>
           </h3>
@@ -53,16 +55,18 @@
           </div>
         </li>
         <li>
-          <img src="/assets/images/items.png" />
+          <a href="http://items.impress.openneo.net">
+            <img src="/assets/images/items.png" />
+          </a>
           <h3>
             <a href="http://items.impress.openneo.net">
-              Item Database
+              Infinite Closet
             </a>
           </h3>
           <div>
             <h4>Looking for something?</h4>
             <p>
-              Take a look at what we got!
+              Take a look through our wearables database!
             </p>
             <form action="http://items.impress.openneo.net">
               <input type="search" name="q" placeholder="search items..." />
@@ -70,8 +74,10 @@
             </form>
           </div>
         </li>
-        <li>
-          <img src="/assets/images/blog.png" />
+        <li id="blog-preview">
+          <a href="http://blog.openneo.net">
+            <img src="/assets/images/blog.png" />
+          </a>
           <h3>
             <a href="http://blog.openneo.net/">OpenNeo Blog</a>
           </h3>

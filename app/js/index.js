@@ -155,9 +155,9 @@ $(function () {
     });
   });
   
-  /*$.getJSON('http://blog.openneo.net/api/read/json?callback=?', function (data) {
-    var post = data.posts[0], el = $('#latest-blog-post'),
-      url = post['url-with-slug'], header = 'The OpenNeo Blog', body = '',
+  $.getJSON('http://blog.openneo.net/api/read/json?callback=?', function (data) {
+    var post = data.posts[0], el = $('#blog-preview'),
+      url = post['url-with-slug'], header = "Here's the latest!", body = '',
       truncate_body_at = 100, image;
     if(post.type == 'regular') {
       header = post['regular-title'];
@@ -173,14 +173,13 @@ $(function () {
     if(body.length > truncate_body_at) {
       body = body.substring(0, truncate_body_at);
       body = body.replace(/\s+\w+$/, '');
-      body += '&hellip; <span>read more</span>';
+      body += '&hellip;';
     }
-    el.html(body).attr('href', url);
-    $('<h2/>', {text: header}).prependTo(el);
+    el.find('h4').text(header).wrapInner($('<a/>', {href: url}));
+    el.find('p').html(body);
+    $('<a/>', {'id': 'read-more', href: url, text: 'read more'}).appendTo(el.find('div'));
     if(image) {
-      $('<img/>', {src: image}).prependTo(el);
-      el.addClass('has-image');
+      el.find('img').attr('src', image).parent().attr('href', url);
     }
-    el.show();
-  });*/
+  });
 });

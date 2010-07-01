@@ -51,8 +51,6 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
 }
 
 @mixin awesome-button-color($c) {
-  @include header-text;
-  
   background: $c url(/assets/images/alert-overlay.png) repeat-x;
   
   &:hover {
@@ -66,7 +64,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
   @include awesome-button-color(#006400);
   border: 0;
   display: inline-block; 
-  padding: 5px 10px 6px; 
+  padding: .5em .75em .45em; 
   color: #fff; 
   text-decoration: none;
   -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
@@ -113,7 +111,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
 body {
   color: $text-color;
   font: {
-    family: $body-font;
+    family: $main-font;
     size: 90%;
   }
   line-height: 1.5;
@@ -121,6 +119,10 @@ body {
 
 a {
   color: $link-color;
+}
+
+p {
+  font-family: $text-font;
 }
 
 input, button, select {
@@ -177,7 +179,6 @@ input, button, select, label {
 
 input[type=text], input[type=password], input[type=search], select {
   @include border-radius(3px);
-  @include header-text;
   
   background: #fff;
   border: 1px solid $input-border-color;
@@ -365,4 +366,11 @@ dd {
   font-style: normal;
   font-weight: bold;
   src: local('Droid Serif'), url('http://themes.googleusercontent.com/font?kit=QQt14e8dY39u-eYBZmppwf5Jgr8ufe5A6KahQF76Xmg') format('truetype');
+}
+
+@font-face {
+  font-family: 'Droid Sans';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Droid Sans'), url('http://themes.googleusercontent.com/font?kit=POVDFY-UUf0WFR9DIMCU8g') format('truetype');
 }
