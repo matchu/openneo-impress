@@ -391,7 +391,9 @@ function Wardrobe() {
     }
   }
   
-  Controller.Outfit = function OutfitController() {
+  Controller.all = {};
+  
+  Controller.all.Outfit = function OutfitController() {
     var outfit = this, previous_pet_type, item_ids = [];
     
     this.items = [];
@@ -531,7 +533,7 @@ function Wardrobe() {
     }
   }
   
-  Controller.Closet = function ClosetController() {
+  Controller.all.Closet = function ClosetController() {
     // FIXME: a lot of duplication from outfit controller
     var closet = this, item_ids = [];
     this.items = [];
@@ -574,7 +576,7 @@ function Wardrobe() {
     }
   }
   
-  Controller.BasePet = function BasePetController() {
+  Controller.all.BasePet = function BasePetController() {
     var base_pet = this;
     
     this.setName = function (name) {
@@ -583,7 +585,7 @@ function Wardrobe() {
     }
   }
   
-  Controller.PetAttributes = function PetAttributesController() {
+  Controller.all.PetAttributes = function PetAttributesController() {
     var pet_attributes = this;
     
     function onLoad(attributes) {
@@ -595,7 +597,7 @@ function Wardrobe() {
     }
   }
   
-  Controller.ItemZoneSets = function ItemZoneSetsController() {
+  Controller.all.ItemZoneSets = function ItemZoneSetsController() {
     var item_zone_sets = this;
     
     function onLoad(sets) {
@@ -607,7 +609,7 @@ function Wardrobe() {
     }
   }
   
-  Controller.Search = function SearchController() {
+  Controller.all.Search = function SearchController() {
     var search = this;
     
     this.request = {};
@@ -641,13 +643,13 @@ function Wardrobe() {
 
   var underscored_name;
 
-  for(var name in Controller) {
-    if(Controller.hasOwnProperty(name)) {
+  for(var name in Controller.all) {
+    if(Controller.all.hasOwnProperty(name)) {
       // underscoring translated from
       // http://api.rubyonrails.org/classes/ActiveSupport/Inflector.html#M000710
       underscored_name = name.replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2').
         replace(/([a-z\d])([A-Z])/g,'$1_$2').toLowerCase();
-      wardrobe[underscored_name] = new Controller[name];
+      wardrobe[underscored_name] = new Controller.all[name];
       Controller.apply(wardrobe[underscored_name]);
     }
   }
