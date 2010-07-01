@@ -27,12 +27,14 @@
       </div>
     </div>
   </div>
-  <div id="preview-swf">
-    Javascript and Flash are required to preview outfits. Sorry!
-  </div>
-  <div id="preview-closet">
-    <h2>Closet</h2>
-    <ul></ul>
+  <div id="preview">
+    <div id="preview-swf">
+      Javascript and Flash are required to preview outfits. Sorry!
+    </div>
+    <div id="preview-closet">
+      <h2>Closet</h2>
+      <ul></ul>
+    </div>
   </div>
   <form id="preview-search-form">
     <header>

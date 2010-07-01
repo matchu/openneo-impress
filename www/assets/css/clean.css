@@ -534,7 +534,6 @@ div.jGrowl div.jGrowl-closer {
 
 body.outfits-edit #preview-toolbar {
   margin-bottom: .5em;
-  position: relative;
   text-align: left; }
   body.outfits-edit #preview-toolbar form {
     display: inline;
@@ -576,9 +575,8 @@ body.outfits-edit #pet-state-form li.selected label {
   body.outfits-edit #pet-state-form li.selected label:hover {
     background-color: #005093; }
 body.outfits-edit #sharing {
-  position: absolute;
-  right: 0;
-  top: 0; }
+  float: right;
+  position: relative; }
 body.outfits-edit #short-url-response {
   font-size: 87.5%;
   display: none;
@@ -594,6 +592,8 @@ body.outfits-edit #share-button img {
   width: 16px; }
 body.outfits-edit #share-button:active {
   top: 1px; }
+body.outfits-edit #preview {
+  clear: both; }
 body.outfits-edit #preview-swf {
   float: left;
   height: 400px;
@@ -627,6 +627,7 @@ body.outfits-edit #preview-closet {
     body.outfits-edit #preview-closet .object.no-assets {
       background: #fbe3e4; }
 body.outfits-edit #preview-search-form {
+  clear: both;
   text-align: left; }
   body.outfits-edit #preview-search-form h2 {
     display: -moz-inline-box;

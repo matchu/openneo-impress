@@ -6,7 +6,6 @@ $closet-margin:    20px;
 body.outfits-edit {
   #preview-toolbar {
     margin-bottom: .5em;
-    position: relative;
     text-align: left;
     
     form {
@@ -42,9 +41,8 @@ body.outfits-edit {
   }
   
   #sharing {
-    position: absolute;
-    right: 0;
-    top: 0;
+    float: right;
+    position: relative;
   }
   
   #short-url-response {
@@ -72,6 +70,10 @@ body.outfits-edit {
     &:active {
       top: 1px;
     }
+  }
+  
+  #preview {
+    clear: both;
   }
 
   #preview-swf {
@@ -117,6 +119,7 @@ body.outfits-edit {
   }
 
   #preview-search-form {
+    clear: both;
     text-align: left;
     
     h2 {
