@@ -595,16 +595,20 @@ body.outfits-edit #share-button-toolbox {
     cursor: pointer; }
 body.outfits-edit #preview-swf {
   float: left;
-  height: 500px;
-  width: 500px; }
+  height: 400px;
+  margin-bottom: 1em;
+  width: 400px; }
 body.outfits-edit #preview-closet {
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
   float: left;
-  height: 500px;
+  height: 400px;
   margin-left: 20px;
+  margin-bottom: 1em;
   overflow: auto;
-  width: 280px; }
+  width: 380px; }
+  body.outfits-edit #preview-closet h2 {
+    margin: 0; }
   body.outfits-edit #preview-closet .object {
     background: #eeffee; }
     body.outfits-edit #preview-closet .object img {
@@ -652,7 +656,7 @@ body.outfits-edit #preview-search-form-pagination {
     font-weight: bold; }
 body.outfits-edit #preview-search-form-clear {
   display: none;
-  font-size: 75%;
+  font-size: 87.5%;
   margin-left: 2em; }
 body.outfits-edit #preview-search-form-loading {
   display: none;

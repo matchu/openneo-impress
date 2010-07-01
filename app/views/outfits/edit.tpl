@@ -31,7 +31,7 @@
   <form id="preview-search-form">
     <header>
       <h2>Add an item</h2>
-      <input type="text" name="query" placeholder="Search items..." />
+      <input type="search" name="query" placeholder="Search items..." />
       <input type="submit" value="Go" />
       <div id="preview-search-form-pagination"></div>
       <a id="preview-search-form-clear" href="#">clear</a>

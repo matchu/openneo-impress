@@ -1,6 +1,6 @@
 @import "../../jquery.jgrowl";
 
-$preview-dimension: 500px;
+$preview-dimension: 400px;
 $closet-margin:    20px;
 
 body.outfits-edit {
@@ -74,6 +74,7 @@ body.outfits-edit {
   #preview-swf {
     float: left;
     height: $preview-dimension;
+    margin-bottom: 1em;
     width: $preview-dimension;
   }
 
@@ -82,8 +83,14 @@ body.outfits-edit {
     float: left;
     height: $preview-dimension;
     margin-left: $closet_margin;
+    margin-bottom: 1em;
     overflow: auto;
+    
     width: $container_width - $preview-dimension - $closet_margin;
+    
+    h2 {
+      margin: 0;
+    }
     
     .object {
       background: $module-bg-color;  
@@ -134,7 +141,7 @@ body.outfits-edit {
   
   #preview-search-form-clear {
     display: none;
-    font-size: 75%;
+    font-size: 87.5%;
     margin-left: 2em;
   }
   
