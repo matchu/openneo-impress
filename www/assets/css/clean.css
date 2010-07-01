@@ -652,7 +652,7 @@ body.outfits-edit #preview-search-form-loading {
 body.outfits-edit #preview-search-form-no-results {
   display: none; }
 body.outfits-edit #preview-search-form-help {
-  font-size: 75%;
+  font-size: 87.5%;
   margin-left: 2em; }
 body.outfits-edit .search-helper {
   font-family: inherit; }
