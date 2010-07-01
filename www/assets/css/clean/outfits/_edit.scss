@@ -41,12 +41,25 @@ body.outfits-edit {
     }
   }
   
-  #share-button {
-    margin-right: 1em;
+  #sharing {
     position: absolute;
     right: 0;
     top: 0;
-    
+  }
+  
+  #short-url-response {
+    font-size: 87.5%;
+    display: none;
+    position: absolute;
+    top: -2em;
+    width: 20em;
+  }
+  
+  #share-button-wrapper {
+    display: inline;
+  }
+  
+  #share-button {
     img {
       margin: {
         bottom: -.25em;
@@ -58,16 +71,6 @@ body.outfits-edit {
     
     &:active {
       top: 1px;
-    }
-  }
-  
-  #share-button-toolbox {
-    left: 0;
-    position: absolute;
-    top: 0;
-    
-    a {
-      cursor: pointer;
     }
   }
 

@@ -575,24 +575,25 @@ body.outfits-edit #pet-state-form li.selected label {
   background: #0b61a4 url(/assets/images/alert-overlay.png) repeat-x; }
   body.outfits-edit #pet-state-form li.selected label:hover {
     background-color: #005093; }
-body.outfits-edit #share-button {
-  margin-right: 1em;
+body.outfits-edit #sharing {
   position: absolute;
   right: 0;
   top: 0; }
-  body.outfits-edit #share-button img {
-    margin-bottom: -.25em;
-    margin-right: .25em;
-    height: 16px;
-    width: 16px; }
-  body.outfits-edit #share-button:active {
-    top: 1px; }
-body.outfits-edit #share-button-toolbox {
-  left: 0;
+body.outfits-edit #short-url-response {
+  font-size: 87.5%;
+  display: none;
   position: absolute;
-  top: 0; }
-  body.outfits-edit #share-button-toolbox a {
-    cursor: pointer; }
+  top: -2em;
+  width: 20em; }
+body.outfits-edit #share-button-wrapper {
+  display: inline; }
+body.outfits-edit #share-button img {
+  margin-bottom: -.25em;
+  margin-right: .25em;
+  height: 16px;
+  width: 16px; }
+body.outfits-edit #share-button:active {
+  top: 1px; }
 body.outfits-edit #preview-swf {
   float: left;
   height: 400px;

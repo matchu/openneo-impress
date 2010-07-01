@@ -964,6 +964,8 @@ View.Hash = function (wardrobe) {
       button_id = '#share-button',
       button = $(button_id),
       wrapper = button.parent(),
+      shorten_el = $('#short-url-button'),
+      response_el = $('#short-url-response'),
       SHORT_URL_HOST = 'http://outfits.openneo.net/',
       current_url,
       shortening = false,
@@ -973,6 +975,7 @@ View.Hash = function (wardrobe) {
       var l = window.location;
       current_url = l.protocol + '//' + l.host + l.pathname + l.hash;
       setURL(current_url);
+      response_el.hide();
       shortened = false;
     }
     
@@ -991,6 +994,7 @@ View.Hash = function (wardrobe) {
         break;
       }
       setURL(url);
+      response_el.val(url).show();
       shortening = false;
       shortened = true;
     }
@@ -1002,8 +1006,13 @@ View.Hash = function (wardrobe) {
       }
     }
     
+    shorten_el.click(startShorten);
     wrapper.mouseover(startShorten);
     button.focus(startShorten);
+    
+    response_el.mouseover(function () {
+      response_el.focus().select();
+    });
   })();
 }
 
