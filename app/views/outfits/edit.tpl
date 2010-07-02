@@ -28,7 +28,8 @@
 </div>
 <div id="preview">
   <div id="preview-swf">
-    <p>Flash and Javascript (but not Java!) are required to preview outfits. Sorry!</p>
+    <p>Flash and Javascript (but not Java!) are required to preview outfits.</p>
+    <p>If this message stays after the page is done loading, check those first.</p>
   </div>
   <div id="preview-closet">
     <h2>Closet</h2>
