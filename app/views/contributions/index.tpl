@@ -60,9 +60,9 @@ Go to:
 {    elseif $contributed_class == 'Pwnage_ObjectAsset'}
 {    assign var=object value=$contributed_obj->getParent()}
     showed us the
-    <span class="contributed-name">
-      {$object->getName()|escape}
-    </span>
+    <a class="contributed-name" href="http://items.impress.openneo.net/{$object->getId()}">
+      {$object->getName()|escape}</a
+    >
     on a new body type
     <img src="{$object->getThumbnailUrl()}" />
 {    elseif $contributed_class == 'Pwnage_PetState'}
@@ -78,9 +78,9 @@ Go to:
 {    assign var=species value=$contributed_obj->getSpecies()}
 {    assign var=color value=$contributed_obj->getColor()}
     showed us the
-    <span class="contributed-name">
-      {$color->getName()} {$species->getName()}
-    </span>
+    <a class="contributed-name" href="http://items.impress.openneo.net/{$object->getId()}">
+      {$object->getName()|escape}</a
+    >
     for the first time
     <img src="http://pets.neopets.com/cp/{$contributed_obj->getImageHash()}/1/3.png" />
 {    /if}
