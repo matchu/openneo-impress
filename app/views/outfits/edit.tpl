@@ -28,7 +28,7 @@
 </div>
 <div id="preview">
   <div id="preview-swf">
-    Javascript and Flash are required to preview outfits. Sorry!
+    <p>Flash and Javascript (but not Java!) are required to preview outfits. Sorry!</p>
   </div>
   <div id="preview-closet">
     <h2>Closet</h2>
