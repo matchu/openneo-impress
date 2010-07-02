@@ -187,11 +187,13 @@ function Wardrobe() {
     return items;
   }
   
-  var ITEMS_URL = ITEMS_SERVER + '/index.js?callback=?',
-    PER_PAGE = 21;
+  var ITEMS_URL = ITEMS_SERVER + '/index.js?callback=?';
   
-  Item.loadByQuery = function (query, page, success, error) {
-    $.getJSON(ITEMS_URL, {q: query, per_page: PER_PAGE, page: page}, function (data) {
+  Item.PER_PAGE = 21;
+  
+  Item.loadByQuery = function (query, offset, success, error) {
+    var page = Math.round(offset / Item.PER_PAGE) + 1;
+    $.getJSON(ITEMS_URL, {q: query, per_page: Item.PER_PAGE, page: page}, function (data) {
       var items = [], item, item_data;
       if(data.items) {
         for(var i = 0; i < data.items.length; i++) {
@@ -200,7 +202,7 @@ function Wardrobe() {
           item.update(item_data);
           items.push(item);
         }
-        success(items, data.total_pages);
+        success(items, data.total_pages, page);
       } else if(data.error) {
         error(data.error);
       }
@@ -623,21 +625,24 @@ function Wardrobe() {
       search.events.trigger('error', error);
     }
     
-    this.setItemsByQuery = function (query, page) {
+    this.setItemsByQuery = function (query, where) {
+      var offset = where.offset ? where.offset : (Item.PER_PAGE * (where.page - 1));
       search.request = {
         query: query,
-        page: page
+        offset: offset
       };
       search.events.trigger('updateRequest', search.request);
-      if(query && page) {
-        Item.loadByQuery(query, page, function (items, total_pages) {
-          itemsOnLoad(items, total_pages, page);
-        }, itemsOnError);
+      if(query) {
+        Item.loadByQuery(query, offset, itemsOnLoad, itemsOnError);
         search.events.trigger('startRequest');
       } else {
         search.events.trigger('updateItems', []);
         search.events.trigger('updatePagination', 0, 0);
       }
+    }
+    
+    this.setPerPage = function (per_page) {
+      Item.PER_PAGE = per_page;
     }
   }
 
@@ -812,6 +817,60 @@ View.Closet = function (wardrobe) {
   wardrobe.closet.bind('updateItems', $.proxy(item_set, 'setItems'));
 }
 
+View.Fullscreen = function (wardrobe) {
+  var full = $(document.body).hasClass('fullscreen'), win = $(window),
+    preview_el = $('#preview'), search_el = $('#preview-search-form'),
+    preview_swf = $('#preview-swf'), closet_el = $('#preview-closet'),
+    footer = $('#footer');
+  
+  function fit() {
+    if(full) {
+      preview_swf = $('#preview-swf'); // swf replaced
+      var available = {
+        height:  search_el.offset().top - preview_el.offset().top,
+        width: preview_el.innerWidth() - closet_el.outerWidth() - 12 // 12px margin
+      }, dim = {}, margin = {}, size = {
+        old: {height: preview_swf.height(), width: preview_swf.width()},
+        next: {}
+      }, offset;
+      if(available.height > available.width) {
+        dim.larger = 'height';
+        dim.smaller = 'width';
+        margin.active = 'marginTop';
+        margin.inactive = 'marginLeft';
+      } else {
+        dim.larger = 'width';
+        dim.smaller = 'height';
+        margin.active = 'marginLeft';
+        margin.inactive = 'marginTop';
+      }
+      size.next[dim.smaller] = available[dim.smaller];
+      size.next[dim.larger] = available[dim.smaller];
+      size.next[margin.active] = (available[dim.larger] - size.next[dim.larger]) / 2;
+      size.next[margin.inactive] = 0;
+      preview_swf.css(size.next);
+      
+      preview_el.height(available.height);
+    }
+  }
+  $('#preview').data('fit', fit);
+  
+  win.resize(fit).load(fit);
+  fit();
+  
+  var Konami=function(){var a={addEvent:function(b,c,d,e){if(b.addEventListener)b.addEventListener(c,d,false);else if(b.attachEvent){b["e"+c+d]=d;b[c+d]=function(){b["e"+c+d](window.event,e)};b.attachEvent("on"+c,b[c+d])}},input:"",pattern:"3838404037393739666513",load:function(b){this.addEvent(document,"keydown",function(c,d){if(d)a=d;a.input+=c?c.keyCode:event.keyCode;if(a.input.indexOf(a.pattern)!=-1){a.code(b);a.input=""}},this);this.iphone.load(b)},code:function(b){window.location=b},iphone:{start_x:0,start_y:0,stop_x:0,stop_y:0,tap:false,capture:false,keys:["UP","UP","DOWN","DOWN","LEFT","RIGHT","LEFT","RIGHT","TAP","TAP","TAP"],code:function(b){a.code(b)},load:function(b){a.addEvent(document,"touchmove",function(c){if(c.touches.length==1&&a.iphone.capture==true){c=c.touches[0];a.iphone.stop_x=c.pageX;a.iphone.stop_y=c.pageY;a.iphone.tap=false;a.iphone.capture=false;a.iphone.check_direction()}});a.addEvent(document,"touchend",function(){a.iphone.tap==true&&a.iphone.check_direction(b)},false);a.addEvent(document,"touchstart",function(c){a.iphone.start_x=c.changedTouches[0].pageX;a.iphone.start_y=c.changedTouches[0].pageY;a.iphone.tap=true;a.iphone.capture=true})},check_direction:function(b){x_magnitude=Math.abs(this.start_x-this.stop_x);y_magnitude=Math.abs(this.start_y-this.stop_y);x=this.start_x-this.stop_x<0?"RIGHT":"LEFT";y=this.start_y-this.stop_y<0?"DOWN":"UP";result=x_magnitude>y_magnitude?x:y;result=this.tap==true?"TAP":result;if(result==this.keys[0])this.keys=this.keys.slice(1,this.keys.length);this.keys.length==0&&this.code(b)}}};return a};
+  konami = new Konami();
+  konami.code = function () {
+    $(document.body).removeClass('fullscreen');
+    preview_swf.removeAttr('style').css('visibility', 'visible');
+    preview_el.removeAttr('style');
+    wardrobe.search.setPerPage(21);
+    wardrobe.search.setItemsByQuery(wardrobe.search.request.query, {offset: wardrobe.search.request.offset});
+    full = false;
+  }
+  konami.load();
+}
+
 View.Hash = function (wardrobe) {
   var data = {}, proposed_data = {}, previous_query, parse_in_progress = false, TYPES = {
     INTEGER: 1,
@@ -823,7 +882,7 @@ View.Hash = function (wardrobe) {
     name: TYPES.STRING,
     objects: TYPES.INTEGER_ARRAY,
     search: TYPES.STRING,
-    search_page: TYPES.INTEGER,
+    search_offset: TYPES.INTEGER,
     species: TYPES.INTEGER,
     state: TYPES.INTEGER
   }, onUpdateQuery;
@@ -877,8 +936,8 @@ View.Hash = function (wardrobe) {
     if(new_data.state != data.state) {
       wardrobe.outfit.setPetStateById(new_data.state);
     }
-    if(new_data.search != data.search || new_data.search_page != data.search_page) {
-      wardrobe.search.setItemsByQuery(new_data.search, new_data.search_page);
+    if(new_data.search != data.search || new_data.search_offset != data.search_offset) {
+      wardrobe.search.setItemsByQuery(new_data.search, {offset: new_data.search_offset});
     }
     data = new_data;
     parse_in_progress = false;
@@ -920,7 +979,6 @@ View.Hash = function (wardrobe) {
     if(!arraysMatch(item_ids, data.objects)) {
       changes.objects = item_ids;
     }
-    // FIXME: no, closet should be drawing from its own item set
     if(arraysMatch(item_ids, data.closet) || arraysMatch(item_ids, data.objects)) {
       changes.closet = undefined;
     } else {
@@ -951,9 +1009,9 @@ View.Hash = function (wardrobe) {
   });
   
   wardrobe.search.bind('updateRequest', function (request) {
-    if(request.page != data.search_page || request.query != data.search) {
+    if(request.offset != data.search_offset || request.query != data.search) {
       changeQuery({
-        search_page: request.page,
+        search_offset: request.offset,
         search: request.query
       });
     }
@@ -1169,8 +1227,9 @@ View.Search = function (wardrobe) {
       NEXT_TEXT: 'Next &rarr;',
       PAGE_EL: $('<a/>', {href: '#'}),
       CURRENT_EL: $('<span/>', {'class': 'current'}),
-      EL_ID: '#preview-search-form-pagination'
-    }
+      EL_ID: '#preview-search-form-pagination',
+      PER_PAGE: 21
+    }, object_width = 112, last_request;
     
   PAGINATION.EL = $(PAGINATION.EL_ID);
   PAGINATION.GAP_EL = $('<span/>', {'class': 'gap', html: PAGINATION.GAP_TEXT})
@@ -1184,8 +1243,28 @@ View.Search = function (wardrobe) {
   
   this.initialize = $.proxy(wardrobe.item_zone_sets, 'load');
   
+  wardrobe.search.setPerPage(PAGINATION.PER_PAGE);
+  
+  function updatePerPage() {
+    var new_per_page = Math.floor(form.width() / object_width),
+      offset, new_page;
+    if(new_per_page != PAGINATION.PER_PAGE) {
+      PAGINATION.PER_PAGE = new_per_page;
+      wardrobe.search.setPerPage(PAGINATION.PER_PAGE);
+      if(last_request) {
+        loadOffset(last_request.offset);
+      }
+    }
+  }
+  $(window).resize(updatePerPage).load(updatePerPage);
+  updatePerPage();
+  
+  function loadOffset(offset) {
+    wardrobe.search.setItemsByQuery(input_el.val(), {offset: offset});
+  }
+  
   function loadPage(page) {
-    wardrobe.search.setItemsByQuery(input_el.val(), page);
+    wardrobe.search.setItemsByQuery(input_el.val(), {page: page});
   }
   
   function stopLoading() {
@@ -1208,6 +1287,7 @@ View.Search = function (wardrobe) {
   });
   
   wardrobe.search.bind('updateItems', function (items) {
+    var fit = $('#preview').data('fit') || $.noop;
     stopLoading();
     item_set.setItems(items);
     if(wardrobe.search.request.query) {
@@ -1217,9 +1297,12 @@ View.Search = function (wardrobe) {
     } else {
       help_el.show();
     }
+    form.toggleClass('has-results', items.length > 0);
+    fit();
   });
   
   wardrobe.search.bind('updateRequest', function (request) {
+    last_request = request;
     error_el.hide('fast');
     help_el.hide();
     no_results_el.hide();
@@ -1337,7 +1420,7 @@ View.Search = function (wardrobe) {
   }));
   
   wardrobe.pet_attributes.bind('update', prepBuildHelper('species', getSpecies));
-  wardrobe.pet_attributes.bind('update', prepBuildHelper('only', getSpecies));
+  //wardrobe.pet_attributes.bind('update', prepBuildHelper('only', getSpecies));
 }
 
 View.Title = function (wardrobe) {

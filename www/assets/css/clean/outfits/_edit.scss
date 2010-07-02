@@ -49,6 +49,7 @@ body.outfits-edit {
     font-size: 87.5%;
     display: none;
     position: absolute;
+    right: 0;
     top: -2em;
     width: 20em;
   }
@@ -84,7 +85,6 @@ body.outfits-edit {
   }
 
   #preview-closet {
-    @include border-radius(10px);
     float: left;
     height: $preview-dimension;
     margin-left: $closet_margin;
@@ -178,9 +178,90 @@ body.outfits-edit {
     
     display: none;
   }
+  
+  #fullscreen-copyright {
+    display: none;
+  }
+  
+  &.fullscreen {
+    $fullscreen-closet-width: 400px;
+    $fullscreen-search-border: 1px 1px 0;
+    
+    height: 100%;
+    
+    #container {
+      @include box-sizing(border-box);
+      height: 100%;
+      margin: 0 auto;
+      min-width: 800px;
+      padding-top: 2.5em;
+      position: relative;
+      width: 80%;
+    }
+    
+    h1 {
+      display: none;
+    }
+    
+    #short-url-response {
+      position: static;
+    }
+    
+    #preview {
+      width: 100%;
+    }
+    
+    #preview-closet {
+      @include border-radius(10px);
+      border: 1px solid $soft-border-color;
+      float: right;
+      height: 100%;
+      margin: 0;
+      position: relative;
+      width: $fullscreen-closet-width;
+    }
+    
+    #preview-search-form {
+      /*background: white;
+      border: {
+        color: $module-border-color;
+        style: solid;
+        width: $fullscreen-search-border;
+      }*/
+      bottom: 1em;
+      left: 0;
+      overflow: auto;
+      padding: .5em 1em;
+      position: absolute;
+      width: 100%;
+    }
+    
+    #preview-search-form-help {
+      div {
+        @include inline-block;
+        width: 48%;
+      }
+    }
+    
+    #footer {
+      bottom: 0;
+      left: 0;
+      position: absolute;
+      width: 100%;
+      
+      ul, p, li {
+        display: inline;
+      }
+      
+      ul {
+        margin-right: 2em;
+      }
+    }
+  }
 }
 
 .object {
+  padding: 6px;
   position: relative;
   
   ul {

@@ -13,6 +13,9 @@ caption, tbody, tfoot, thead, tr, th, td {
   background: transparent; }
 
 /* Typography */
+html, body {
+  height: 100%; }
+
 body {
   color: #004400;
   font-family: "Droid Sans", Helvetica, Arial, Verdana, sans-serif;
@@ -581,6 +584,7 @@ body.outfits-edit #short-url-response {
   font-size: 87.5%;
   display: none;
   position: absolute;
+  right: 0;
   top: -2em;
   width: 20em; }
 body.outfits-edit #share-button-wrapper {
@@ -600,8 +604,6 @@ body.outfits-edit #preview-swf {
   margin-bottom: 1em;
   width: 400px; }
 body.outfits-edit #preview-closet {
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
   float: left;
   height: 400px;
   margin-left: 20px;
@@ -674,8 +676,69 @@ body.outfits-edit .search-helper {
   font-family: inherit; }
 body.outfits-edit .possible-error {
   display: none; }
+body.outfits-edit #fullscreen-copyright {
+  display: none; }
+body.outfits-edit.fullscreen {
+  height: 100%; }
+  body.outfits-edit.fullscreen #container {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+    margin: 0 auto;
+    min-width: 800px;
+    padding-top: 2.5em;
+    position: relative;
+    width: 80%; }
+  body.outfits-edit.fullscreen h1 {
+    display: none; }
+  body.outfits-edit.fullscreen #short-url-response {
+    position: static; }
+  body.outfits-edit.fullscreen #preview {
+    width: 100%; }
+  body.outfits-edit.fullscreen #preview-closet {
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border: 1px solid #aaddaa;
+    float: right;
+    height: 100%;
+    margin: 0;
+    position: relative;
+    width: 400px; }
+  body.outfits-edit.fullscreen #preview-search-form {
+    /*background: white;
+    border: {
+      color: $module-border-color;
+      style: solid;
+      width: $fullscreen-search-border;
+    }*/
+    bottom: 1em;
+    left: 0;
+    overflow: auto;
+    padding: .5em 1em;
+    position: absolute;
+    width: 100%; }
+  body.outfits-edit.fullscreen #preview-search-form-help div {
+    display: -moz-inline-box;
+    -moz-box-orient: vertical;
+    display: inline-block;
+    vertical-align: middle;
+    *display: inline;
+    *vertical-align: auto;
+    width: 48%; }
+  body.outfits-edit.fullscreen #footer {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    width: 100%; }
+    body.outfits-edit.fullscreen #footer ul, body.outfits-edit.fullscreen #footer p, body.outfits-edit.fullscreen #footer li {
+      display: inline; }
+    body.outfits-edit.fullscreen #footer ul {
+      margin-right: 2em; }
 
 .object {
+  padding: 6px;
   position: relative; }
   .object ul {
     display: none;
