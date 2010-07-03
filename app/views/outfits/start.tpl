@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:og="http://opengraphprotocol.org/schema/">
+<html>
   <head>
     <title>Dress to Impress</title>
     <link type="text/css" rel="stylesheet" href="/assets/css/clean.css?070320100021" />
