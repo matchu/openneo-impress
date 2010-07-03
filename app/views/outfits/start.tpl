@@ -2,8 +2,7 @@
 <html xmlns:og="http://opengraphprotocol.org/schema/">
   <head>
     <title>Dress to Impress</title>
-    <link type="text/css" rel="stylesheet" href="/assets/css/start/jquery_ui.css" />
-    <link type="text/css" rel="stylesheet" href="/assets/css/clean.css" />
+    <link type="text/css" rel="stylesheet" href="/assets/css/clean.css?070320100021" />
     <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Serif">
     <meta name="description" content="Neopets wearables made easy! Plan your whole outfit before you even pay a Neopoint." />
     <link rel="image_src" href="http://impress.openneo.net/assets/images/default_preview.png" / >
