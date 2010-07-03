@@ -56,12 +56,20 @@ class Pwnage_JSFile {
   
   public function minify() {
     $basename = basename($this->file);
-    $this->prepPublicDir();
-    echo "Processing $basename...\n";
-    $request = new Pwnage_ClosureRequest($this->file);
-    $output = $request->exec();
-    file_put_contents($this->public_path, $output);
-    echo "$basename saved.\n";
+    if($this->needsUpdated()) {
+      $this->prepPublicDir();
+      echo "Processing $basename...\n";
+      $request = new Pwnage_ClosureRequest($this->file);
+      $output = $request->exec();
+      file_put_contents($this->public_path, $output);
+      echo "$basename saved.\n";
+    } else {
+      echo "$basename seems up-to-date\n";
+    }
+  }
+  
+  protected function needsUpdated() {
+    return filemtime($this->file) > filemtime($this->public_path);
   }
   
   protected function prepPublicDir() {
