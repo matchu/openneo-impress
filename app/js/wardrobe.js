@@ -1030,8 +1030,9 @@ View.Hash = function (wardrobe) {
       shortened = false;
     
     onUpdateQuery = function () {
-      var l = window.location;
-      current_url = l.protocol + '//' + l.host + l.pathname + l.hash;
+      var l = window.location, hash = l.hash;
+      if(!hash) hash = '#' + l.search.substr(1);
+      current_url = l.protocol + '//' + l.host + l.pathname + hash;
       setURL(current_url);
       response_el.hide();
       shortened = false;
