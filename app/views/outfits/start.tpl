@@ -149,6 +149,9 @@
       <form id="i-found-something" action="{path to=load_pet}" method="POST">
         <input type="hidden" name="origin"
           value="{path to=root}" />
+        <a href="{path to=bulk_pets}">
+          add many pets
+        </a>
         <h2>I found something!</h2>
         <p>
           Enter the name of the pet you found, and we'll keep a copy of what
@@ -170,7 +173,8 @@
     </div>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
     <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=openneo"></script>
-    <script type="text/javascript" src="/assets/js/index.js?063020102323"></script>
+    <script type="text/javascript" src="/assets/js/pet_query.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js?070220102142"></script>
     {include file='shared/feedback.tpl'}
   </body>
 </html>

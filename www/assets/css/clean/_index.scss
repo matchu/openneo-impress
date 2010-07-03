@@ -133,6 +133,12 @@ body.index {
 
   #i-found-something {
     margin-left: 1%;
+    
+    a {
+      float: right;
+      font-size: 87.5%;
+      margin-top: 1em;
+    }
   }
   
   $section-count: 3;

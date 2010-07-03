@@ -17,6 +17,7 @@ class Pwnage_User extends PwnageCore_DbObject {
     }
     Pwnage_Contribution::saveCollection($contributions);
     $this->update();
+    return $contributions;
   }
   
   public function getFreshLoginCookie($existing_string) {

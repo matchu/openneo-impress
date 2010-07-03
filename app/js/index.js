@@ -1,7 +1,3 @@
-function petImage(id, size) {
-  return 'http://pets.neopets.com/' + id + '/1/' + size + '.png';
-}
-
 var preview_el = $('#pet-preview'),
   img_el = preview_el.find('img'),
   response_el = preview_el.find('span'),
@@ -27,7 +23,7 @@ var Preview = {
     var name = name_el.val(), job;
     if(name) {
       currentName = name;
-      if(name != Preview.Job.current.name) {
+      if(!Preview.Job.current || name != Preview.Job.current.name) {
         job = new Preview.Job.Name(name);
         job.setAsCurrent();
         Preview.displayLoading();
@@ -86,30 +82,7 @@ Preview.Job.Hash = function (hash) {-
 $(function () {
   var previewWithNameTimeout;
   
-  var query = {};
-  $.each(document.location.search.substr(1).split('&'), function () {
-    var split_piece = this.split('=');
-    if(split_piece.length == 2) {
-      query[split_piece[0]] = split_piece[1];
-    }
-  });
-  
-  if(query.name) {
-    name_el.val(query.name);
-    if(query.species && query.color) {
-      var notice = $('<div></div>', {
-          'class': 'notice',
-          'html': "Thanks for showing us <strong>" + query.name + "</strong>! " +
-            "Keep up the good work!"
-        }),
-        image = $('<img/>', {
-          'class': 'inline-image',
-          'src': petImage('cpn/' + query.name, 1)
-        });
-      image.prependTo(notice);
-      notice.prependTo('#container');
-    }
-  }
+  name_el.val(PetQuery.name);
   Preview.updateWithName();
   
   name_el.keyup(function () {

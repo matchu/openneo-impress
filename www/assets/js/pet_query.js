@@ -1,0 +1,2 @@
+function petImage(a,b){return"http://pets.neopets.com/"+a+"/1/"+b+".png"}var PetQuery={};$.each(document.location.search.substr(1).split("&"),function(){var a=this.split("=");if(a.length==2)PetQuery[a[0]]=a[1]});
+if(PetQuery.name)if(PetQuery.species&&PetQuery.color){var notice=$("<div></div>",{"class":"notice",html:"Thanks for showing us <strong>"+PetQuery.name+"</strong>! Keep up the good work!"}),image=$("<img/>",{"class":"inline-image",src:petImage("cpn/"+PetQuery.name,1)});image.prependTo(notice);notice.prependTo("#container")};

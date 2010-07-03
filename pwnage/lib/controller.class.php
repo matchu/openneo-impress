@@ -54,7 +54,11 @@ class PwnageCore_Controller {
       die(htmlentities($e->getMessage()));
     } catch(PwnageCore_NotFoundException $e) {
       header('HTTP/1.0 404 Not Found');
-      die('404 Not Found');
+      $message = htmlentities($e->getMessage());
+      if(!$message) $message = '404 Not Found';
+      die($message);
+    } catch(PwnageCore_InternalServerError $e) {
+      die(htmlentities($e->getMessage()));
     } catch(Exception $e) {
       header('HTTP/1.0 500 Internal Server Error');
       if(PWNAGE_ENVIRONMENT == 'development') {
@@ -296,6 +300,7 @@ class PwnageCore_TooManyRendersException extends Exception {
 }
 
 class PwnageCore_BadRequestException extends Exception {}
+class PwnageCore_InternalServerError extends Exception {}
 class PwnageCore_NotFoundException extends Exception {}
 
 function stripslashes_walk($key, &$value) {  

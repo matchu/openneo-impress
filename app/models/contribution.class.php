@@ -50,7 +50,10 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
   }
   
   public function getPointValue() {
-    return self::$point_values_by_contributed_class[$this->getContributedClass()];
+    if(!isset($this->point_value)) {
+      $this->point_value = self::$point_values_by_contributed_class[$this->getContributedClass()];
+    }
+    return $this->point_value;
   }
   
   public function getUser() {

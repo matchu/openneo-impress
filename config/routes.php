@@ -19,6 +19,12 @@ $map->connect('/pets/load', array(
   'name' => 'load_pet'
 ));
 
+$map->connect('/pets/bulk', array(
+  'controller' => 'pets',
+  'action'     => 'bulk',
+  'name'       => 'bulk_pets'
+));
+
 $map->connect('/pet_types/needed', array(
   'controller' => 'pet_types',
   'action' => 'needed',

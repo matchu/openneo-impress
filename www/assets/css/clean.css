@@ -52,7 +52,7 @@ h3 {
   line-height: 1;
   margin-bottom: 1.00em; }
 
-.inline-image {
+.inline-image, #bulk-pets-form ul img {
   margin-right: 1em;
   vertical-align: middle; }
 
@@ -66,14 +66,14 @@ h3 {
 input, button, select, label {
   cursor: pointer; }
 
-input[type=text], input[type=password], input[type=search], select {
+input[type=text], #bulk-pets-form textarea, input[type=password], input[type=search], select {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   background: #fff;
   border: 1px solid #cceecc;
   color: #448844;
   padding: .25em; }
-  input[type=text]:focus, input[type=text]:active, input[type=password]:focus, input[type=password]:active, input[type=search]:focus, input[type=search]:active, select:focus, select:active {
+  input[type=text]:focus, #bulk-pets-form textarea:focus, input[type=text]:active, #bulk-pets-form textarea:active, input[type=password]:focus, input[type=password]:active, input[type=search]:focus, input[type=search]:active, select:focus, select:active {
     color: inherit; }
 
 a.button, input[type=submit], button {
@@ -120,7 +120,8 @@ ul.buttons {
 #footer {
   clear: both;
   font-size: 75%;
-  padding-top: 1em;
+  margin-bottom: 1em;
+  padding-top: 2em;
   text-align: center; }
   #footer li {
     display: inline;
@@ -343,6 +344,10 @@ body.index #how-can-i-help {
   margin-right: 1%; }
 body.index #i-found-something {
   margin-left: 1%; }
+  body.index #i-found-something a {
+    float: right;
+    font-size: 87.5%;
+    margin-top: 1em; }
 body.index #sections {
   overflow: hidden;
   display: inline-block;
@@ -370,7 +375,7 @@ body.index #sections {
     z-index: 2; }
   body.index #sections h4, body.index #sections input {
     font-size: 116%; }
-  body.index #sections h4, body.index #sections input[type=text] {
+  body.index #sections h4, body.index #sections input[type=text], body.index #sections #bulk-pets-form textarea, #bulk-pets-form body.index #sections textarea {
     color: inherit; }
   body.index #sections img {
     -moz-opacity: 0.75;
@@ -781,3 +786,59 @@ body.outfits-edit.fullscreen {
           background-color: #999999; }
   .object:hover ul {
     display: block; }
+
+#bulk-pets-form textarea, #bulk-pets-form div {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *display: inline;
+  *vertical-align: auto; }
+#bulk-pets-form textarea {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *display: inline;
+  *vertical-align: auto;
+  display: inline;
+  font: inherit;
+  height: 1.5em;
+  overflow: hidden;
+  resize: none; }
+#bulk-pets-form ul {
+  list-style: none;
+  margin-bottom: 1em; }
+  #bulk-pets-form ul li {
+    display: -moz-inline-box;
+    -moz-box-orient: vertical;
+    display: inline-block;
+    vertical-align: middle;
+    *display: inline;
+    *vertical-align: auto;
+    background: #eee;
+    margin: 0 auto;
+    min-width: 25%;
+    text-align: left; }
+    #bulk-pets-form ul li.loaded {
+      background: #e6efc2; }
+    #bulk-pets-form ul li.failed {
+      background: #fbe3e4; }
+  #bulk-pets-form ul img {
+    float: left;
+    height: 50px;
+    width: 50px; }
+  #bulk-pets-form ul span {
+    display: block; }
+  #bulk-pets-form ul .response {
+    font-size: 75%;
+    font-style: italic;
+    margin-left: 75px; }
+
+body.js .noscript {
+  display: none; }
+body.js .script-only {
+  display: block; }
+
+.script-only {
+  display: none; }

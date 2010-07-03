@@ -1,39 +1,65 @@
 <?php
 class Pwnage_PetsController extends Pwnage_ApplicationController {
+  public function bulk() {}
+  
   public function load() {
+    $this->requireParam($this->post, 'name');
+    if($this->format != 'json') $this->requireParam($this->post, 'origin');
     $pet = new Pwnage_Pet();
 
     $destination = $this->post['origin'];
     $query = array();
     $error = false;
 
-    if($pet_name = $this->post['name']) {
-      $pet->name = $pet_name;
-      try {
-        if($pet->exists()) {
-          try {
-            if($this->userIsLoggedIn()) {
-              $this->getCurrentUser()->contributePet($pet);
-            } else {
-              $pet->save();
-            }
-          } catch(Exception $e) {
-            if(PWNAGE_ENVIRONMENT == 'development') {
-              throw $e;
+    $pet->name = $this->post['name'];
+    try {
+      if($pet->exists()) {
+        try {
+          if($this->userIsLoggedIn()) {
+            $contributions = $this->getCurrentUser()->contributePet($pet);
+          } else {
+            $pet->save();
+          }
+        } catch(Exception $e) {
+          if(PWNAGE_ENVIRONMENT == 'development') {
+            throw $e;
+          } else {
+            if($this->format == 'json') {
+              throw new PwnageCore_InternalServerError('Error saving pet. Try again later.');
             } else {
               $this->setFlash('pets/save_error', 'warning');
               $warning = true;
             }
           }
+        }
+      } else {
+        if($this->format == 'json') {
+          throw new PwnageCore_NotFoundException('Pet not found.');
         } else {
           $this->setFlash('pets/not_found', 'error');
           $error = true;
         }
-      } catch(Pwnage_AMFConnectionError $e) {
+      }
+    } catch(Pwnage_AMFConnectionError $e) {
+      if($this->format == 'json') {
+        throw new PwnageCore_InternalServerError('Could not connect to Neopets. Try again later.');
+      } else {
         $this->setFlash('connection_error', 'error');
         $error = true;
       }
-      
+    }
+    
+    if($this->format == 'json') {
+      if(isset($contributions)) {
+        $response = 0;
+        foreach($contributions as $contribution) {
+          $response += $contribution->getPointValue();
+        }
+      } else {
+        $response = true;
+      }
+      $this->respondWith($response);
+    } else {
       if($error) {
         $query['name'] = $pet_name;
       } else {
@@ -61,9 +87,8 @@ class Pwnage_PetsController extends Pwnage_ApplicationController {
           $destination = $this->post['origin'];
         }
       }
+      $this->redirect($this->buildPath($destination, $query));
     }
-    
-    $this->redirect($this->buildPath($destination, $query));
   }
   
   private function buildQuery($data, $leading='') {
