@@ -61,7 +61,7 @@ class Pwnage_PetsController extends Pwnage_ApplicationController {
       $this->respondWith($response);
     } else {
       if($error) {
-        $query['name'] = $pet_name;
+        $query['name'] = $pet->name;
       } else {
         if(isset($this->post['destination'])) {
           $destination = $this->post['destination'];
@@ -79,7 +79,7 @@ class Pwnage_PetsController extends Pwnage_ApplicationController {
         $query['species'] = $pet->getSpecies()->getId();
         $query['state'] = $pet->getPetState()->getId();
         $query['objects'] = $object_ids;
-        $query['name'] = $pet_name;
+        $query['name'] = $pet->name;
         if($warning) {
           $would_be_destination = $this->buildPath($destination, $query);
           $query = array();
