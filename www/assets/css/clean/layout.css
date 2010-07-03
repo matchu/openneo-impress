@@ -213,6 +213,11 @@ dd {
   #home-link span:before {
     content: "<< "; }
 
+.pagination a, .pagination span {
+  margin: 0 .5em; }
+.pagination .current {
+  font-weight: bold; }
+
 /* Fonts */
 /* A font by Jos Buivenga (exljbris) -> www.exljbris.nl */
 @font-face {
