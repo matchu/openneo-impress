@@ -626,7 +626,7 @@ function Wardrobe() {
     }
     
     this.setItemsByQuery = function (query, where) {
-      var offset = where.offset ? where.offset : (Item.PER_PAGE * (where.page - 1));
+      var offset = (typeof where.offset != 'undefined') ? where.offset : (Item.PER_PAGE * (where.page - 1));
       search.request = {
         query: query,
         offset: offset

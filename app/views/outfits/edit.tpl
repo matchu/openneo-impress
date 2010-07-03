@@ -84,4 +84,4 @@
 <script type="text/javascript" src="http://bit.ly/javascript-api.js?version=latest&amp;login=openneo&amp;apiKey=R_4d0438829b7a99860de1d3edf55d8dc8"></script>
 <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=openneo"></script>
 <script type="text/javascript" src="/assets/js/jquery.jgrowl.js"></script>
-<script type="text/javascript" src="/assets/js/wardrobe.js?v=070120102134"></script>
+<script type="text/javascript" src="/assets/js/wardrobe.js?v=070320101904"></script>
