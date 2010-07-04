@@ -1,19 +1,11 @@
 <?php
+require_once dirname(__FILE__).'/insert.asset.php';
 function smarty_insert_js($params, &$smarty) {
-  static $timestamps;
-  if(!isset($timestamps)) {
-    $timestamps_path = PWNAGE_ROOT.'/tmp/asset_timestamps.php';
-    $timestamps = file_exists($timestamps_path) ? include($timestamps_path) : array();
-  }
   $base_file = $params['src'];
-  $file = "js/$base_file.js";
-  $src = '/assets/';
-  if((PWNAGE_ENVIRONMENT == 'development' || isset($_GET['debug'])) && (!isset($params['debug']) || $params['debug'] !== false)) {
-    $src .= 'js/debug.php?file='.$base_file;
-  } elseif(isset($timestamps[$file])) {
-    $src .= "timestamped/${timestamps[$file]}";
+  if(ASSETS_DEBUG_MODE && (!isset($params['debug']) || $params['debug'] !== false)) {
+    $src = '/assets/js/debug.php?file='.$base_file;
   } else {
-    $src .= "js/$file";
+    $src = smarty_insert_asset(array('file' => "js/$base_file.js"), $smarty);
   }
   return '<script type="text/javascript" src="'.htmlentities($src).'"></script>';
 }

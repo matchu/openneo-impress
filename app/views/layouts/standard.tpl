@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Dress to Impress - {$_title|default:'Welcome!'}</title>
-    <link type="text/css" rel="stylesheet" href="/assets/css/clean.css?070320100021" />
+    {insert name=css src=clean}
   </head>
   <body class="standard {$controller->name}-{$controller->current_action} fullscreen">
     {include file='shared/analytics.tpl'}
