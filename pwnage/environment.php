@@ -40,7 +40,7 @@ if(function_exists('apache_getenv')) {
     }
   }
 }
-if(!$environment) $environment = 'development';
+if(!$environment) $environment = 'production';
 define('PWNAGE_ENVIRONMENT', $environment);
 unset($environment);
 ?>
