@@ -1,1 +1,1 @@
-{insert name=js src=analytics}
+{insert name=js src=analytics debug=no}

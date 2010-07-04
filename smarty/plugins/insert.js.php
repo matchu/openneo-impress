@@ -8,7 +8,7 @@ function smarty_insert_js($params, &$smarty) {
   $base_file = $params['src'];
   $file = "js/$base_file.js";
   $src = '/assets/';
-  if(PWNAGE_ENVIRONMENT == 'development' || isset($_GET['debug'])) {
+  if((PWNAGE_ENVIRONMENT == 'development' || isset($_GET['debug'])) && (!isset($params['debug']) || $params['debug'] !== false)) {
     $src .= 'js/debug.php?file='.$base_file;
   } elseif(isset($timestamps[$file])) {
     $src .= "timestamped/${timestamps[$file]}";
