@@ -172,8 +172,8 @@
     </div>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
     <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=openneo"></script>
-    <script type="text/javascript" src="/assets/js/pet_query.js"></script>
-    <script type="text/javascript" src="/assets/js/index.js?070220102142"></script>
+    {insert name=js src='js/pet_query.js'}
+    {insert name=js src='js/index.js'}
     {include file='shared/feedback.tpl'}
   </body>
 </html>

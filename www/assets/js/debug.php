@@ -1,8 +1,7 @@
 <?php
 /*
   Security note: this script does not check for development mode.
-  Since the main app is open-source, anyway, we don't bother with the overhead
-  and let Apache do it, instead.
+  Since the main app is open-source, anyway, we don't bother with the overhead.
   
   However, if you have Javascript files that, for whatever reason, you *don't*
   want available to the world non-minified, disable this script! It is only
@@ -10,26 +9,17 @@
   
 */
 
-function ensureThat($condition) {
+function ensureThat($condition, $otherwise) {
   if(!$condition) {
     header('HTTP/1.0 404 Not Found');
-    die();
+    die($otherwise);
   }
 }
 
 $file = $_GET['file'];
-ensureThat(preg_match(':^[a-z/]+$:', $file));
+$file = preg_replace('/\.js\Z/', '', $file);
+ensureThat(preg_match(':\A[a-z/_]+\Z:', $file), '$file must be [a-z/_] only');
 $path = "../../../app/js/$file.js";
-ensureThat(file_exists($path));
+ensureThat(file_exists($path), '$file not found');
 header('Content-type: text/javascript');
 include($path);
-?>
-if(typeof _notified_of_debug_mode == 'undefined') {
-  _notified_of_debug_mode = true;
-  alert('You are in debug mode!\n\n'
-    + 'You are now using the uncompressed Javascript files. This should cause '
-    + 'you no particular issues, but if you are actively changing the files, '
-    + 'remember to run scripts/minify_js.php when done in order to ensure that '
-    + 'those not in debug mode will get the latest script version.');
-  window.onunload = function () { alert('Remember to compress the scripts!') }
-}
