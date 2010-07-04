@@ -1,3 +1,5 @@
+(function () { // don't need to export anything in here
+
 var preview_el = $('#pet-preview'),
   img_el = preview_el.find('img'),
   response_el = preview_el.find('span'),
@@ -74,7 +76,7 @@ Preview.Job.Name = function (name) {
   Preview.Job.apply(this, [name, 'cpn']);
 }
 
-Preview.Job.Hash = function (hash) {-
+Preview.Job.Hash = function (hash) {
   Preview.Job.apply(this, [hash, 'cp']);
 }
 
@@ -169,3 +171,5 @@ $(function () {
     }
   });
 });
+
+})();

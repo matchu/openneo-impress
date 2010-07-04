@@ -29,5 +29,5 @@
   </span>
 </form>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script type="text/javascript" src="/assets/js/pet_query.js"></script>
-<script type="text/javascript" src="/assets/js/pets/bulk.js?070220102337"></script>
+{insert name=js src=pet_query}
+{insert name=js src=pets/bulk}

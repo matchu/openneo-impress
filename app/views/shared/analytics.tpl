@@ -1,1 +1,1 @@
-<script type="text/javascript" src="/assets/js/analytics.js?v=clicky"></script>
+{insert name=js src=analytics}
