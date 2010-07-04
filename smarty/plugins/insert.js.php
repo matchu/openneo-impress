@@ -11,9 +11,9 @@ function smarty_insert_js($params, &$smarty) {
   if(isset($_GET['debug'])) {
     $src .= 'js/debug.php?file='.$base_file;
   } elseif(isset($timestamps[$file])) {
-    $src .= "$file?v=${timestamps[$file]}";
+    $src .= "timestamped/${timestamps[$file]}";
   } else {
-    $src .= $file;
+    $src .= "js/$file";
   }
   return '<script type="text/javascript" src="'.htmlentities($src).'"></script>';
 }
