@@ -125,6 +125,10 @@ body.index {
     input, button {
       font-size: 115%;
     }
+    
+    input[type=text] {
+      border-color: $module-border-color;
+    }
   }
 
   #how-can-i-help {

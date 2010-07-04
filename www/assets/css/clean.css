@@ -345,6 +345,8 @@ body.index #how-can-i-help, body.index #i-found-something {
     font-style: italic; }
   body.index #how-can-i-help input, body.index #how-can-i-help button, body.index #i-found-something input, body.index #i-found-something button {
     font-size: 115%; }
+  body.index #how-can-i-help input[type=text], body.index #how-can-i-help #bulk-pets-form textarea, #bulk-pets-form body.index #how-can-i-help textarea, body.index #i-found-something input[type=text], body.index #i-found-something #bulk-pets-form textarea, #bulk-pets-form body.index #i-found-something textarea {
+    border-color: #006600; }
 body.index #how-can-i-help {
   margin-right: 1%; }
 body.index #i-found-something {
