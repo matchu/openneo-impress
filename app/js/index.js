@@ -169,6 +169,7 @@ $(function () {
     if(image) {
       el.find('img').attr('src', image).parent().attr('href', url);
     }
+    el.children('div').hide().fadeIn('slow');
   });
 });
 

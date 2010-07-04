@@ -384,6 +384,8 @@ body.index #sections {
     font-size: 116%; }
   body.index #sections h4, body.index #sections input[type=text], body.index #sections #bulk-pets-form textarea, #bulk-pets-form body.index #sections textarea {
     color: inherit; }
+  body.index #sections h4 a {
+    background: #ffffc0; }
   body.index #sections img {
     -moz-opacity: 0.75;
     -webkit-opacity: 0.75;

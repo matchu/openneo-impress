@@ -192,6 +192,10 @@ body.index {
       color: inherit;
     }
     
+    h4 a {
+      background: #ffffc0;
+    }
+    
     img {
       @include opacity(.75);
       float: right;
