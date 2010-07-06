@@ -687,7 +687,8 @@ function Wardrobe() {
 
 Partial.ItemSet = function ItemSet(wardrobe, selector) {
   var item_set = this, ul = $(selector), items = [], setClosetItems,
-    setOutfitItems, setOutfitItemsControls;
+    setOutfitItems, setOutfitItemsControls, no_assets_full_message = $('#no-assets-full-message'),
+    container = $('#container');
   
   Partial.ItemSet.setWardrobe(wardrobe);
   
@@ -715,11 +716,18 @@ Partial.ItemSet = function ItemSet(wardrobe, selector) {
   }
   
   function setHasAssets(specific_items) {
-    var item, no_assets, li, existing_why_red;
+    var item, no_assets, li, no_assets_message;
     for(var i = 0, l = specific_items.length; i < l; i++) {
       item = specific_items[i];
       no_assets = item.couldNotLoadAssetsFitting(wardrobe.outfit.pet_type);
-      $('li.object-' + item.id).toggleClass('no-assets', no_assets);
+      li = $('li.object-' + item.id).toggleClass('no-assets', no_assets);
+      (function (li) {
+        no_assets_message = li.find('span.no-assets-message');
+        no_assets_message.remove();
+        if(no_assets) {
+          $('<span/>', {'class': 'no-assets-message', text: 'No data yet'}).appendTo(li);
+        }
+      })(li);
     }
   }
   
@@ -741,6 +749,16 @@ Partial.ItemSet = function ItemSet(wardrobe, selector) {
     setClosetItems(wardrobe.closet.items);
     setOutfitItems(wardrobe.outfit.items);
   }
+  
+  $('span.no-assets-message').live('mouseover', function () {
+    var el = $(this), o = el.offset();
+    no_assets_full_message.css({
+      left: o.left + (el.width() / 2) - (no_assets_full_message.width() / 2) - container.offset().left,
+      top: o.top + el.height() + 10
+    });
+  }).live('mouseout', function () {
+    no_assets_full_message.removeAttr('style');
+  });
   
   wardrobe.outfit.bind('updateItemAssets', function () { setHasAssets(wardrobe.outfit.items) });
   wardrobe.outfit.bind('updateItems', setOutfitItems);

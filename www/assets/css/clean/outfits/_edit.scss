@@ -98,14 +98,14 @@ body.outfits-edit {
     }
     
     .object {
-      background: $module-bg-color;  
+      background: $module-bg-color;
       
       img {
         @include opacity(.5);
       }
       
       &.worn {
-        background: inherit;
+        background: transparent;
         
         img {
           @include opacity(1);
@@ -114,8 +114,39 @@ body.outfits-edit {
       
       &.no-assets {
         background: $error-bg-color;
+        color: $error-color;
+        padding-bottom: 1.25em;
+        
+        .no-assets-message {
+          display: block;
+        }
       }
     }
+  }
+  
+  .no-assets-message {
+    background: $error-bg-color - #080808;
+    bottom: 0;
+    color: $error-color - #080808;
+    cursor: pointer;
+    display: none;
+    font-size: 75%;
+    left: 0;
+    position: absolute;
+    width: 100%;
+  }
+  
+  #no-assets-full-message {
+    @include border-radius(5px);
+    background: $error-bg-color + #111;
+    border: 1px solid $error-border-color + #111;
+    color: $error-color + #111;
+    font-size: 75%;
+    left: -9999px;
+    padding: .25em;
+    position: absolute;
+    top: -9999px;
+    width: 30em;
   }
 
   #preview-search-form {

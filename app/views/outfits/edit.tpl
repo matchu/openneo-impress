@@ -76,6 +76,9 @@
   </div>
   <ul></ul>
 </form>
+<div id="no-assets-full-message">
+  We haven't seen this item on this body type before. Have you? Submit its name on the home page if you have!
+</div>
 <!--[if IE]>
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->

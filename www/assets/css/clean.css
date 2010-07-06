@@ -634,14 +634,40 @@ body.outfits-edit #preview-closet {
       -o-opacity: 0.5;
       -khtml-opacity: 0.5; }
     body.outfits-edit #preview-closet .object.worn {
-      background: inherit; }
+      background: transparent; }
       body.outfits-edit #preview-closet .object.worn img {
         -moz-opacity: 1;
         -webkit-opacity: 1;
         -o-opacity: 1;
         -khtml-opacity: 1; }
     body.outfits-edit #preview-closet .object.no-assets {
-      background: #fbe3e4; }
+      background: #fbe3e4;
+      color: #8a1f11;
+      padding-bottom: 1.25em; }
+      body.outfits-edit #preview-closet .object.no-assets .no-assets-message {
+        display: block; }
+body.outfits-edit .no-assets-message {
+  background: #f3dbdc;
+  bottom: 0;
+  color: #821709;
+  cursor: pointer;
+  display: none;
+  font-size: 75%;
+  left: 0;
+  position: absolute;
+  width: 100%; }
+body.outfits-edit #no-assets-full-message {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: #fff4f5;
+  border: 1px solid #ffd3d5;
+  color: #9b3022;
+  font-size: 75%;
+  left: -9999px;
+  padding: .25em;
+  position: absolute;
+  top: -9999px;
+  width: 30em; }
 body.outfits-edit #preview-search-form {
   clear: both;
   text-align: left; }

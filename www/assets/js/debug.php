@@ -9,6 +9,9 @@
   
 */
 
+header("Cache-Control: no-cache, must-revalidate");
+header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+
 function ensureThat($condition, $otherwise) {
   if(!$condition) {
     header('HTTP/1.0 404 Not Found');
