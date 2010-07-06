@@ -992,6 +992,13 @@ View.Hash = function (wardrobe) {
     onUpdateQuery();
   }
   
+  wardrobe.closet.bind('updateItems', function (items) {
+    var item_ids = items.map('id');
+    if(!arraysMatch(item_ids, data.closet)) {
+      changeQuery({closet: item_ids});
+    }
+  });
+  
   wardrobe.outfit.bind('updateItems', function (items) {
     var item_ids = items.map('id'), changes = {};
     if(!arraysMatch(item_ids, data.objects)) {
