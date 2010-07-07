@@ -67,7 +67,7 @@ class Pwnage_Pet extends Pwnage_Outfit {
     return $this->pet_type;
   }
   
-  private function getViewerData() {
+  public function getViewerData() {
     if(!isset($this->viewer_data)) {
       $this->loadViewerData();
     }
@@ -100,6 +100,11 @@ class Pwnage_Pet extends Pwnage_Outfit {
     if($assets = $this->getAssets()) {
       Pwnage_SwfAsset::saveCollection($assets);
     }
+    
+    // Save pet load log
+    $pet_load = new Pwnage_PetLoad();
+    $pet_load->setOriginPet($this);
+    $pet_load->save();
   }
   
   public function save() {
