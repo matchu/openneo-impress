@@ -50,14 +50,17 @@
   </header>
   <dl id="preview-search-form-help"> 
     <div>
-      <dt>floating doll</dt>
-      <dd>returns any item with the words "floating" and "doll" in it</dd>
+      <dt>kreludor "altador cup" -background</dt>
+      <dd>
+        returns any item with the word "kreludor" and the phrase "altador cup"
+        in it, but not the word "background"
+      </dd>
     </div>
     <div>
-      <dt>"altador cup" -background</dt>
+      <dt>blue is:nc</dt>
       <dd>
-        returns any item with the phrase "altador cup" in it, but not the word
-        "background"
+        returns any NC mall item with the word "blue" in it<br />
+        (use "-is:nc" to only get NP items)
       </dd>
     </div>
     <div>
