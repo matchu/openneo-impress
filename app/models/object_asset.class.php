@@ -181,7 +181,7 @@ SQL
             echo "$pet_name failed integrity check; saving new data...\n";
             $pet->update();
             $pet = Pwnage_Pet::first(array(
-              'select' => 'name, species_id, color_id',
+              'select' => 'name',
               'where' => array('pet_type_id = ?', $pet_type_id)
             ));
           }
