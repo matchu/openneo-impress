@@ -179,6 +179,7 @@ SQL
           if($has_unexpected_attributes)
           {
             echo "$pet_name failed integrity check; saving new data...\n";
+            $pet->pet_type_id = $pet->getPetType()->getId();
             $pet->update();
             $pet = Pwnage_Pet::first(array(
               'select' => 'name',
