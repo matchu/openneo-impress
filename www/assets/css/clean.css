@@ -819,7 +819,7 @@ body.outfits-edit.fullscreen {
           top: 1px; }
         .object ul li a:hover {
           background-color: #999999; }
-  .object:hover ul {
+  .object:hover ul, .object:hover .object-info {
     display: block; }
 
 .nc-icon {
@@ -835,6 +835,31 @@ body.outfits-edit.fullscreen {
     -webkit-opacity: 0.5;
     -o-opacity: 0.5;
     -khtml-opacity: 0.5; }
+
+.object-info {
+  -moz-border-radius: 12px;
+  -webkit-border-radius: 12px;
+  -moz-opacity: 0.75;
+  -webkit-opacity: 0.75;
+  -o-opacity: 0.75;
+  -khtml-opacity: 0.75;
+  background: #aaa;
+  color: #fff;
+  display: none;
+  height: 16px;
+  position: absolute;
+  right: 8px;
+  text-align: center;
+  top: 0;
+  width: 16px; }
+  .object-info span {
+    position: relative;
+    top: -2px; }
+  .object-info:hover {
+    -moz-opacity: 1;
+    -webkit-opacity: 1;
+    -o-opacity: 1;
+    -khtml-opacity: 1; }
 
 #bulk-pets-form textarea, #bulk-pets-form div {
   display: -moz-inline-box;

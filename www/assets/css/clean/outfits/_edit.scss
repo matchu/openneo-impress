@@ -316,21 +316,50 @@ body.outfits-edit {
     }
   }
   
-  &:hover ul {
-    display: block;
+  &:hover {
+    ul, .object-info {
+      display: block;
+    }
   }
 }
+
+// the difference between the horizontal edge of the object element and the
+// image edge
+$object-img-diff: ($object-width - $object-img-size) / 2 + $object-padding;
 
 .nc-icon {
   background: url(/assets/images/nc.png) no-repeat;
   height: $nc-icon-size;
   position: absolute;
-  right: ($object-width - $object-img-size) / 2 + $object-padding;
+  right: $object-img-diff;
   text-indent: -9999px;
   top: $object-img-size - $nc-icon-size;
   width: $nc-icon-size;
   
   &:hover {
     @include opacity(.5);
+  }
+}
+
+.object-info {
+  @include border-radius(12px);
+  @include opacity(.75);
+  background: #aaa;
+  color: #fff;
+  display: none;
+  height: 16px;
+  position: absolute;
+  right: $object-img-diff / 2;
+  text-align: center;
+  top: 0;
+  width: 16px;
+  
+  span {
+    position: relative;
+    top: -2px;
+  }
+  
+  &:hover {
+    @include opacity(1);
   }
 }

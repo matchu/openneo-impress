@@ -732,7 +732,7 @@ Partial.ItemSet = function ItemSet(wardrobe, selector) {
   }
   
   this.setItems = function (new_items) {
-    var item, li, controls;
+    var item, li, controls, info_link;
     items = new_items;
     ul.children().remove();
     for(var i = 0; i < items.length; i++) {
@@ -744,10 +744,19 @@ Partial.ItemSet = function ItemSet(wardrobe, selector) {
         'title': item.description
       });
       controls = $('<ul/>');
-      if(typeof item.rarity_index != 'undefined' && (item.rarity_index == 500 || item.rarity_index == 0)) {
+      info_link = $('<a/>', {
+        'class': 'object-info',
+        html: '<span>?</span>',
+        href: ITEMS_SERVER + '/' + item.id,
+        target: '_blank'
+      });
+      if(
+        typeof item.rarity_index != 'undefined' &&
+        (item.rarity_index == 500 || item.rarity_index == 0)
+      ) {
         $('<div/>', {'class': 'nc-icon', text: 'NC', title: 'NC'}).appendTo(li);
       }
-      li.append(img).append(controls).append(item.name).appendTo(ul);
+      li.append(img).append(controls).append(info_link).append(item.name).appendTo(ul);
     }
     setClosetItems(wardrobe.closet.items);
     setOutfitItems(wardrobe.outfit.items);
