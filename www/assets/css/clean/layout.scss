@@ -295,7 +295,7 @@ ul.buttons {
   position: relative;
   text-align: center;
   vertical-align: top;
-  width: 100px;
+  width: $object-width;
   
   a {
     text-decoration: none;
@@ -311,9 +311,9 @@ ul.buttons {
   
   img {
     display: block;
-    height: 80px;
+    height: $object-img-size;
     margin: 0 auto;
-    width: 80px;
+    width: $object-img-size;
   }
 }
 

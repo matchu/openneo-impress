@@ -744,6 +744,9 @@ Partial.ItemSet = function ItemSet(wardrobe, selector) {
         'title': item.description
       });
       controls = $('<ul/>');
+      if(typeof item.rarity_index != 'undefined' && (item.rarity_index == 500 || item.rarity_index == 0)) {
+        $('<div/>', {'class': 'nc-icon', text: 'NC', title: 'NC'}).appendTo(li);
+      }
       li.append(img).append(controls).append(item.name).appendTo(ul);
     }
     setClosetItems(wardrobe.closet.items);

@@ -1,5 +1,8 @@
 @import "../../jquery.jgrowl";
 
+$object-padding: 6px;
+$nc-icon-size: 16px;
+
 $preview-dimension: 400px;
 $closet-margin:    20px;
 
@@ -292,7 +295,7 @@ body.outfits-edit {
 }
 
 .object {
-  padding: 6px;
+  padding: $object-padding;
   position: relative;
   
   ul {
@@ -315,5 +318,19 @@ body.outfits-edit {
   
   &:hover ul {
     display: block;
+  }
+}
+
+.nc-icon {
+  background: url(/assets/images/nc.png) no-repeat;
+  height: $nc-icon-size;
+  position: absolute;
+  right: ($object-width - $object-img-size) / 2 + $object-padding;
+  text-indent: -9999px;
+  top: $object-img-size - $nc-icon-size;
+  width: $nc-icon-size;
+  
+  &:hover {
+    @include opacity(.5);
   }
 }
