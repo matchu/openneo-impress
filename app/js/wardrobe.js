@@ -746,7 +746,7 @@ Partial.ItemSet = function ItemSet(wardrobe, selector) {
       controls = $('<ul/>');
       info_link = $('<a/>', {
         'class': 'object-info',
-        html: '<span>?</span>',
+        html: '<span>i</span>',
         href: ITEMS_SERVER + '/' + item.id,
         target: '_blank'
       });

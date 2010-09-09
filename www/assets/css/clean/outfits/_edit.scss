@@ -350,11 +350,14 @@ $object-img-diff: ($object-width - $object-img-size) / 2 + $object-padding;
   height: 16px;
   position: absolute;
   right: $object-img-diff / 2;
-  text-align: center;
   top: 0;
   width: 16px;
   
   span {
+    font: {
+      family: $text-font;
+      weight: bold;
+    }
     position: relative;
     top: -2px;
   }

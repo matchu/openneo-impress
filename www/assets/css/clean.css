@@ -849,10 +849,11 @@ body.outfits-edit.fullscreen {
   height: 16px;
   position: absolute;
   right: 8px;
-  text-align: center;
   top: 0;
   width: 16px; }
   .object-info span {
+    font-family: "Droid Serif", Georgia, "Times New Roman", Times, serif;
+    font-weight: bold;
     position: relative;
     top: -2px; }
   .object-info:hover {
