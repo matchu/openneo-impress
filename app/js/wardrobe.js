@@ -1,4 +1,5 @@
-var View = {}, Partial = {}, main_wardrobe, ITEMS_SERVER = 'items.impress.openneo.net';
+var View = {}, Partial = {}, main_wardrobe, ITEMS_SERVER = 'items.impress.openneo.net',
+  SHORT_URL_HOST = 'http://bit.ly/';
 if(document.location.hostname.substr(0, 5) == 'beta.') {
   ITEMS_SERVER = 'beta.' + ITEMS_SERVER;
 }
@@ -1061,7 +1062,6 @@ View.Hash = function (wardrobe) {
       wrapper = button.parent(),
       shorten_el = $('#short-url-button'),
       response_el = $('#short-url-response'),
-      SHORT_URL_HOST = 'http://outfits.openneo.net/',
       current_url,
       shortening = false,
       shortened = false;
