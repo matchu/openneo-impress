@@ -73,7 +73,8 @@ class Pwnage_ObjectAsset extends Pwnage_SwfAsset {
   }
   
   static function rejectExistingInCollection($objects) {
-    return parent::rejectExistingInCollection($objects, self::$table);
+    return parent::rejectExistingInCollection($objects, self::$table,
+      'type = "object"');
   }
   
   static function spiderMall($limit=100, $colors=false, $objects=false) {

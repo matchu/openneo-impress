@@ -204,7 +204,7 @@ class PwnageCore_DbObject {
     }
   }
   
-  static function rejectExistingInCollection($objects, $table) {
+  static function rejectExistingInCollection($objects, $table, $additional_condition='') {
     if(empty($objects)) return $objects;
     $objects_by_id = array();
     foreach($objects as $object) {
@@ -212,7 +212,11 @@ class PwnageCore_DbObject {
     }
     $db = PwnageCore_Db::getInstance();
     $id_set = implode(',', array_keys($objects_by_id));
-    $stmt = $db->query("SELECT id FROM $table WHERE id IN ($id_set)");
+    $sql = "SELECT id FROM $table WHERE id IN ($id_set)";
+    if(!empty($additional_condition)) {
+      $sql .= " AND $additional_condition";
+    }
+    $stmt = $db->query($sql);
     while($existing_id = $stmt->fetchColumn()) {
       unset($objects_by_id[$existing_id]);
     }
