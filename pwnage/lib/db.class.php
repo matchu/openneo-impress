@@ -4,6 +4,9 @@ require_once PWNAGE_ROOT.'/pwnage/lib/spyc.php';
 class PwnageCore_Db {
   protected $query_log = array();
   protected $pdo;
+  protected $current_query;
+  protected $current_query_params;
+  protected $current_query_start_time;
   static $_instance;
   
   protected function __construct() {
@@ -41,7 +44,22 @@ class PwnageCore_Db {
   
   public function exec($str) {
     $this->logQuery($str);
-    return $this->pdo->exec($str);
+    $stmt = $this->pdo->exec($str);
+    $this->finishQuery();
+    return $stmt;
+  }
+  
+  protected function finishQuery() {
+    $seconds = microtime(true) - $this->current_query_start_time;
+    $ms = round($seconds * 1000);
+    if(isset($this->current_query_params)) {
+      PwnageCore_Logger::query($this->current_query, $ms,
+        $this->current_query_params);
+    } else {
+      PwnageCore_Logger::query($this->current_query, $ms);
+    }
+    unset($this->current_query, $this->current_query_start_time,
+      $this->current_query_params);
   }
   
   public function lastInsertId() {
@@ -50,6 +68,8 @@ class PwnageCore_Db {
   
   protected function logQuery($str) {
     if(PWNAGE_ENVIRONMENT == 'development') $this->query_log[] = $str;
+    $this->current_query = $str;
+    $this->current_query_start_time = microtime(true);
   }
   
   public function outputQueryLog() {
@@ -69,12 +89,14 @@ class PwnageCore_Db {
   public function query($str, $params=array()) {
     $this->logQuery($str);
     if($params) {
-      $statement = $this->pdo->prepare($str);
-      $statement->execute($params);
-      return $statement;
+      $this->current_query_params = $params;
+      $stmt = $this->pdo->prepare($str);
+      $stmt->execute($params);
     } else {
-      return $this->pdo->query($str);
+      $stmt = $this->pdo->query($str);
     }
+    $this->finishQuery();
+    return $stmt;
   }
   
   public function quote($str) {

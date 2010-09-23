@@ -28,6 +28,15 @@ function output404() {
   die('404 Not Found');
 }
 
+PwnageCore_Logger::open(PWNAGE_ROOT . '/log/' . PWNAGE_ENVIRONMENT . '.log');
+PwnageCore_Logger::request(
+  $base_path,              // path
+  $_SERVER['REMOTE_ADDR'], // ip
+  $_GET,                   // get
+  $_POST,                  // post
+  $_COOKIE                 // cookie
+);
+
 if($route) {
   try {
     $controller = PwnageCore_Controller::getByName($route->getController());
@@ -40,4 +49,6 @@ if($route) {
 } else {
   output404();
 }
+
+PwnageCore_Logger::close();
 ?>
