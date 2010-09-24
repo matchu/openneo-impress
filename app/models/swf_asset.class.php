@@ -146,10 +146,10 @@ class Pwnage_SwfAsset extends PwnageCore_DbObject {
     $delete_where_clause = array();
     foreach($object_assets_by_body_id_and_parent_id as $body_id => $assets_by_parent_id) {
       $delete_where_subclause = array();
-      foreach($assets_by_parent_id as $parent_id => $assets) {
+      foreach($assets_by_parent_id as $parent_id => $assets_for_parent_id) {
         $parent_id = (int) $parent_id;
         $asset_ids = array();
-        foreach($assets as $asset) {
+        foreach($assets_for_parent_id as $asset) {
           $asset_ids[] = (int) $asset->getId();
         }
         $asset_ids_str = implode(',', $asset_ids);
