@@ -239,7 +239,7 @@ ul.buttons {
   }
 }
 
-.notice, .error {
+.notice, .error, .warning {
   margin-bottom: 1em;
   padding: .25em .5em;
   text-align: center;
@@ -255,6 +255,12 @@ ul.buttons {
   background: $error-bg-color;
   border: 1px solid $error-border-color;
   color: $error-color;
+}
+
+.warning {
+  background: $warning-bg-color;
+  border: 1px solid $warning-border-color;
+  color: $warning-color;
 }
 
 #userbar {

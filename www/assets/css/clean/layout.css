@@ -127,7 +127,7 @@ ul.buttons {
     display: inline;
     margin: 0 .5em; }
 
-.notice, .error {
+.notice, .error, .warning {
   margin-bottom: 1em;
   padding: .25em .5em;
   text-align: center; }
@@ -141,6 +141,11 @@ ul.buttons {
   background: #fbe3e4;
   border: 1px solid #fbc2c4;
   color: #8a1f11; }
+
+.warning {
+  background: #fff6bf;
+  border: 1px solid #ffd324;
+  color: #514721; }
 
 #userbar {
   font-family: Delicious, Helvetica, Arial, Verdana, sans-serif;
