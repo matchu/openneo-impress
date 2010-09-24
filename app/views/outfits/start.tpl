@@ -10,6 +10,7 @@
   <body class="index">
     <div id="container">
       {include file='shared/analytics.tpl'}
+      {insert name=announcement}
       {insert name=flashes}
       <div id="outfit-forms">
         <div id="pet-preview">
