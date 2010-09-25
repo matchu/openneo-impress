@@ -87,3 +87,4 @@ Onion
 Magma
 Relic
 Woodland
+Transparent
