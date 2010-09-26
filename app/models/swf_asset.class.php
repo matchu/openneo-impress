@@ -143,28 +143,30 @@ class Pwnage_SwfAsset extends PwnageCore_DbObject {
       }
       $asset->saveFile();
     }
-    $delete_where_clause = array();
-    foreach($object_assets_by_body_id_and_parent_id as $body_id => $assets_by_parent_id) {
-      $delete_where_subclause = array();
-      foreach($assets_by_parent_id as $parent_id => $assets_for_parent_id) {
-        $parent_id = (int) $parent_id;
-        $asset_ids = array();
-        foreach($assets_for_parent_id as $asset) {
-          $asset_ids[] = (int) $asset->getId();
+    if(count($object_assets_by_body_id_and_parent_id) > 0) {
+      $delete_where_clause = array();
+      foreach($object_assets_by_body_id_and_parent_id as $body_id => $assets_by_parent_id) {
+        $delete_where_subclause = array();
+        foreach($assets_by_parent_id as $parent_id => $assets_for_parent_id) {
+          $parent_id = (int) $parent_id;
+          $asset_ids = array();
+          foreach($assets_for_parent_id as $asset) {
+            $asset_ids[] = (int) $asset->getId();
+          }
+          $asset_ids_str = implode(',', $asset_ids);
+          $delete_where_subclause[] = "(parent_id = $parent_id AND swf_asset_id NOT IN ($asset_ids_str))";
         }
-        $asset_ids_str = implode(',', $asset_ids);
-        $delete_where_subclause[] = "(parent_id = $parent_id AND swf_asset_id NOT IN ($asset_ids_str))";
+        $delete_where_clause[] = "(body_id IN ($body_id, 0) AND (" . implode(' OR ', $delete_where_subclause) . "))";
       }
-      $delete_where_clause[] = "(body_id IN ($body_id, 0) AND (" . implode(' OR ', $delete_where_subclause) . "))";
+      $delete_where_clause_str = 'type = "object" AND ' . implode(' OR ', $delete_where_clause);
+      $delete_query = "DELETE FROM psa USING swf_assets sa INNER JOIN " .
+        "parents_swf_assets psa ON sa.id = psa.swf_asset_id WHERE " .
+        $delete_where_clause_str;
     }
-    $delete_where_clause_str = 'type = "object" AND ' . implode(' OR ', $delete_where_clause);
-    $delete_query = "DELETE FROM psa USING swf_assets sa INNER JOIN " .
-      "parents_swf_assets psa ON sa.id = psa.swf_asset_id WHERE " .
-      $delete_where_clause_str;
     $db = PwnageCore_Db::getInstance();
     $db->beginTransaction();
     try {
-      $db->exec($delete_query);
+      if(isset($delete_query)) $db->exec($delete_query);
       parent::saveCollection($assets, self::$table, self::$columns);
       Pwnage_ParentSwfAssetRelationship::saveCollection($relationships);
     } catch(PDOException $e) {
