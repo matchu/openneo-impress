@@ -44,7 +44,7 @@ class Pwnage_PetsController extends Pwnage_ApplicationController {
       if($this->format == 'json') {
         throw new PwnageCore_InternalServerError('Could not connect to Neopets. Try again later.');
       } else {
-        $this->setFlash('connection_error', 'error');
+        $this->setFlash('pets/connection_error', 'error');
         $error = true;
       }
     }
