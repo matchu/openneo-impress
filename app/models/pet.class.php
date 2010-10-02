@@ -18,7 +18,24 @@ class Pwnage_Pet extends Pwnage_Outfit {
   }
   
   public function getBiology() {
-    return $this->getPetData()->biology_by_zone;
+    $biology = $this->getPetData()->biology_by_zone;
+    if(isset($biology[''])) {
+      // Do not consider Corridor of Chance effects to be a part of the biology,
+      // but do store them in log files for reference.
+      $effect_asset = $biology[''];
+      unset($biology['']);
+      $amf = $effect_asset->getAMFData();
+      $body_id = $this->getPetType()->getBodyId();
+      $effect_log_part_id_dir = PWNAGE_ROOT . '/log/effects/' . $amf->part_id;
+      if(!is_dir($effect_log_part_id_dir)) {
+        mkdir($effect_log_part_id_dir);
+      }
+      $effect_log_path = $effect_log_part_id_dir . '/' . $body_id . '.txt';
+      if(!file_exists($effect_log_path)) {
+        file_put_contents($effect_log_path, json_encode($amf));
+      }
+    }
+    return $biology;
   }
   
   public function getContributions() {
