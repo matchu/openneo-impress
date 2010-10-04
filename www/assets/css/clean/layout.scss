@@ -233,7 +233,12 @@ ul.buttons {
   padding-top: 2em;
   text-align: center;
   
-  li {
+  ul, div {
+    display: inline;
+    margin: 0 1em;
+  }
+  
+  li, div ul {
     display: inline;
     margin: 0 .5em;
   }

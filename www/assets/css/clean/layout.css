@@ -123,7 +123,10 @@ ul.buttons {
   margin-bottom: 1em;
   padding-top: 2em;
   text-align: center; }
-  #footer li {
+  #footer ul, #footer div {
+    display: inline;
+    margin: 0 1em; }
+  #footer li, #footer div ul {
     display: inline;
     margin: 0 .5em; }
 
