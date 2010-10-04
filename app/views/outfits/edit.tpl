@@ -57,10 +57,10 @@
       </dd>
     </div>
     <div>
-      <dt>blue is:nc</dt>
+      <dt>collar -is:nc -is:pb</dt>
       <dd>
-        returns any NC mall item with the word "blue" in it<br />
-        (use "-is:nc" to only get NP items)
+        returns any item with the word "collar" in it, but is not from the NC
+        mall, and is not from a deluxe paint brush set
       </dd>
     </div>
     <div>
