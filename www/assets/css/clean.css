@@ -761,7 +761,7 @@ body.outfits-edit.fullscreen {
       style: solid;
       width: $fullscreen-search-border;
     }*/
-    bottom: 1em;
+    bottom: 3em;
     left: 0;
     overflow: auto;
     padding: .5em 1em;
@@ -780,8 +780,8 @@ body.outfits-edit.fullscreen {
     left: 0;
     position: absolute;
     width: 100%; }
-    body.outfits-edit.fullscreen #footer ul, body.outfits-edit.fullscreen #footer p, body.outfits-edit.fullscreen #footer li {
-      display: inline; }
+    body.outfits-edit.fullscreen #footer p {
+      margin-bottom: 0; }
     body.outfits-edit.fullscreen #footer ul {
       margin-right: 2em; }
 

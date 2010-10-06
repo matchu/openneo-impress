@@ -262,7 +262,7 @@ body.outfits-edit {
         style: solid;
         width: $fullscreen-search-border;
       }*/
-      bottom: 1em;
+      bottom: 3em;
       left: 0;
       overflow: auto;
       padding: .5em 1em;
@@ -283,8 +283,8 @@ body.outfits-edit {
       position: absolute;
       width: 100%;
       
-      ul, p, li {
-        display: inline;
+      p {
+        margin-bottom: 0;
       }
       
       ul {
