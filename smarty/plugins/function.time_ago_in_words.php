@@ -1,6 +1,7 @@
 <?php
 function smarty_function_time_ago_in_words($params, &$smarty) {
-  $diff = time() - strtotime($params['time']);
+  $time = $params['time'];
+  $diff = time() - strtotime($time);
 	if ($diff<60)
 		return $diff . " second" . plural($diff) . " ago";
 	$diff = round($diff/60);
@@ -15,7 +16,7 @@ function smarty_function_time_ago_in_words($params, &$smarty) {
 	$diff = round($diff/7);
 	if ($diff<4)
 		return $diff . " week" . plural($diff) . " ago";
-	return "on " . date("F j, Y", strtotime($date));
+	return "on " . date("F j, Y", strtotime($time));
 }
 
 function plural($num) {
