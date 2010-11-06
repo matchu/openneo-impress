@@ -23,7 +23,7 @@ class Pwnage_ContributionsController extends Pwnage_ApplicationController {
   
   private function preparePagination($options=array()) {
     $pagination = Pwnage_Contribution::paginate(array_merge(array(
-      'select' => 'id, contributed_class, contributed_id, created_at, user_id',
+      'select' => 'id, contributed_type, contributed_id, created_at, user_id',
       'order_by' => 'id DESC',
       'page' => $this->get['page'],
       'per_page' => 30
