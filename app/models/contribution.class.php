@@ -9,14 +9,20 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
   static $table = 'contributions';
   static $columns = array('contributed_class', 'contributed_id', 'user_id');
   static $point_values_by_contributed_class = array(
-    'Pwnage_Object' => 3,
-    'Pwnage_ObjectAsset' => 2,
-    'Pwnage_PetType' => 15,
-    'Pwnage_PetState' => 10
+    'Item' => 3,
+    'SwfAsset' => 2,
+    'PetType' => 15,
+    'PetState' => 10
   );
   static $contributed_class_relationships = array(
-    'Pwnage_Object' => 'Pwnage_ObjectAsset',
-    'Pwnage_PetType' => 'Pwnage_PetState'
+    'Item' => 'SwfAsset',
+    'PetType' => 'PetState'
+  );
+  static $contributed_class_map = array(
+    'Item' => 'Pwnage_Object',
+    'SwfAsset' => 'Pwnage_ObjectAsset',
+    'PetType' => 'Pwnage_PetType',
+    'PetState' => 'Pwnage_PetState'
   );
   
   protected function beforeSave() {
@@ -33,7 +39,8 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
   
   public function getContributedClass() {
     if(!isset($this->contributed_class)) {
-      $this->contributed_class = get_class($this->contributed_obj);
+      $this->contributed_class = array_search(get_class($this->contributed_obj),
+        self::$contributed_class_map);
     }
     return $this->contributed_class;
   }
@@ -87,7 +94,8 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
     foreach(self::$contributed_class_relationships as $parent_class => $child_class) {
       if(!empty($needed_ids_by_class[$child_class])) {
         // load children first, so we can know parent IDs needed
-        $children = call_user_func(array($child_class, 'find'), $needed_ids_by_class[$child_class], array(
+        $child_real_class = self::$contributed_class_map[$child_class];
+        $children = call_user_func(array($child_real_class, 'find'), $needed_ids_by_class[$child_class], array(
           'select' => $select_by_class[$child_class]
         ));
         // assign children to contributions
@@ -100,7 +108,8 @@ class Pwnage_Contribution extends PwnageCore_DbObject {
         // load parents (pass child array to polymorphic method)
         $ids = isset($needed_ids_by_class[$parent_class]) ?
           $needed_ids_by_class[$parent_class] : array();
-        $parents = call_user_func(array($parent_class, 'allByIdsOrChildren'),
+        $parent_real_class = self::$contributed_class_map[$parent_class];
+        $parents = call_user_func(array($parent_real_class, 'allByIdsOrChildren'),
           $ids, &$children, array(
             'select' => $select_by_class[$parent_class]
           ));

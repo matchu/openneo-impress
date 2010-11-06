@@ -50,14 +50,14 @@ Go to:
     </span>
 {    assign var=contributed_class value=$contribution->getContributedClass()}
 {    assign var=contributed_obj value=$contribution->getContributedObj()}
-{    if $contributed_class == 'Pwnage_Object'}
+{    if $contributed_class == 'Item'}
     showed us the 
-    <span class="contributed-name">
-      {$contributed_obj->getName()|escape}
-    </span>
+    <a class="contributed-name" href="http://items.impress.openneo.net/{$contributed_obj->getId()}">
+      {$contributed_obj->getName()|escape}</a
+    >
     for the first time
     <img src="{$contributed_obj->getThumbnailUrl()}" />
-{    elseif $contributed_class == 'Pwnage_ObjectAsset'}
+{    elseif $contributed_class == 'SwfAsset'}
 {    assign var=object value=$contributed_obj->getParent()}
     showed us the
     <a class="contributed-name" href="http://items.impress.openneo.net/{$object->getId()}">
@@ -65,7 +65,7 @@ Go to:
     >
     on a new body type
     <img src="{$object->getThumbnailUrl()}" />
-{    elseif $contributed_class == 'Pwnage_PetState'}
+{    elseif $contributed_class == 'PetState'}
 {    assign var=pet_type value=$contributed_obj->getPetType()}
 {    assign var=species value=$pet_type->getSpecies()}
 {    assign var=color value=$pet_type->getColor()}
@@ -74,13 +74,13 @@ Go to:
       {$color->getName()} {$species->getName()}
     </span>
     <img src="http://pets.neopets.com/cp/{$pet_type->getImageHash()}/1/3.png" />
-{    elseif $contributed_class == 'Pwnage_PetType'}
+{    elseif $contributed_class == 'PetType'}
 {    assign var=species value=$contributed_obj->getSpecies()}
 {    assign var=color value=$contributed_obj->getColor()}
     showed us the
-    <a class="contributed-name" href="http://items.impress.openneo.net/{$object->getId()}">
-      {$object->getName()|escape}</a
-    >
+    <span class="contributed-name">
+      {$color->getName()} {$species->getName()}
+    </span>
     for the first time
     <img src="http://pets.neopets.com/cp/{$contributed_obj->getImageHash()}/1/3.png" />
 {    /if}

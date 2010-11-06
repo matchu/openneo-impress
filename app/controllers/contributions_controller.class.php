@@ -30,10 +30,10 @@ class Pwnage_ContributionsController extends Pwnage_ApplicationController {
     ), $options));
     $contributions =& $pagination->results;
     Pwnage_Contribution::preloadContributedAndParents($contributions, array(
-      'Pwnage_Object' => 'id, name, thumbnail_url',
-      'Pwnage_ObjectAsset' => 'id',
-      'Pwnage_PetState' => 'id, pet_type_id',
-      'Pwnage_PetType' => 'id, species_id, color_id, image_hash'
+      'Item' => 'id, name, thumbnail_url',
+      'SwfAsset' => 'id',
+      'PetState' => 'id, pet_type_id',
+      'PetType' => 'id, species_id, color_id, image_hash'
     ));
     $this->set('pagination', $pagination);
     return $pagination;
