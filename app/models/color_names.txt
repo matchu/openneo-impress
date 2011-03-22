@@ -89,3 +89,4 @@ Relic
 Woodland
 Transparent
 Maractite
+8-Bit
