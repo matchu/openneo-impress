@@ -6,8 +6,8 @@ class Pwnage_AuthServer extends PwnageCore_DbObject {
     
   public function getLoginUrl() {
     $app = 'impress';
-    if(PWNAGE_ENVIRONMENT == 'development' && isset($_GET['login_to_beta'])) {
-      $app = 'beta.'.$app;
+    if(PWNAGE_ENVIRONMENT == 'development') {
+      $app = 'beta'.$app;
     }
     $path = $_SERVER['REQUEST_URI'];
     if(!$path) $path = '/';
